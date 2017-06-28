@@ -40,7 +40,15 @@ limitations under the License.
 
     <target name="build.war" depends="compile.java" >
         <delete file="${output.dir}/javametrics.war"/>
+        <exec executable="git" outputproperty="javametrics.revision">
+            <arg value="rev-parse"/>
+            <arg value="--short"/>
+            <arg value="HEAD"/>
+        </exec>
         <war file="${output.dir}/javametrics.war" webxml="${basedir}/WebContent/WEB-INF/web.xml" duplicate="fail">
+            <manifest>
+                <attribute name="Implementation-Version" value="${javametrics.revision}"/>
+            </manifest>
             <fileset dir="${web.dir}/WebContent">
                 <include name = "**/*.*"/>
                 <!-- Exlude the Eclipse output dir otherwise we get duplicate classes in javametrics.war -->

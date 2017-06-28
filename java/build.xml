@@ -34,7 +34,18 @@ limitations under the License.
     </target>
 
     <target name="build.lib" depends="compile.java">
-        <jar file="${lib.dir}/javametrics.jar" manifest="${basedir}/META-INF/MANIFEST.MF" basedir="${classes.dir}" />
+        <exec executable="git" outputproperty="javametrics.revision">
+            <arg value="rev-parse"/>
+            <arg value="--short"/>
+            <arg value="HEAD"/>
+        </exec>
+        <jar file="${lib.dir}/javametrics.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Premain-Class" value="com.ibm.javametrics.instrument.Agent"/>
+                <attribute name="Agent-Class" value="com.ibm.javametrics.instrument.Agent"/>
+                <attribute name="Implementation-Version" value="${javametrics.revision}"/>
+            </manifest>
+        </jar>
         <copy todir="${lib.dir}/asm">
           <fileset dir="${basedir}/lib/asm"/>
         </copy>
