@@ -1,0 +1,6 @@
+[submodule "native/omr-agentcore"]
+	path = native/omr-agentcore
+	url = https://github.com/RuntimeTools/omr-agentcore
+[submodule "web/WebContent/graphmetrics"]
+	path = web/WebContent/graphmetrics
+	url = https://github.com/RuntimeTools/graphmetrics

@@ -1,0 +1,123 @@
+### Jazz Ignore 0
+# Default value for core.ignore.recursive is *.class
+#  Changing this value changes check-in behaviour for the entire project. 
+#
+# Default value for core.ignore is bin
+#  Changing this value changes check-in behaviour for the local directory.
+#
+# Ignore properties should contain a space separated list of filename patterns.
+# Each pattern is case sensitive and surrounded by braces ('{' and '}'). 
+# "*" matches zero or more characters, and "?" matches single characters. 
+#
+#   e.g: {*.sh} {\.*}    ignores shell scripts and hidden files
+
+# NOTE: modifying ignore files will not change the ignore status of derived 
+# resources.
+
+core.ignore.recursive= \
+	{*.class} 
+
+core.ignore= \
+	{.autotools} \
+	{.cproject} \
+	{.project} \
+	{.settings} \
+	{Agent.asm} \
+	{AgentReceiver.asm} \
+	{Bucket.asm} \
+	{BucketDataQueueEntry.asm} \
+	{BucketList.asm} \
+	{Buckets.asm} \
+	{CFacade.asm} \
+	{CPU} \
+	{Clients.asm} \
+	{ConnectorManager.asm} \
+	{ENVMXBean.asm} \
+	{EnvironmentDataProvider.java} \
+	{File.asm} \
+	{FileUtils.asm} \
+	{HLConnector.asm} \
+	{HLConnectorPlugin.asm} \
+	{Heap.asm} \
+	{HelloWorld.java} \
+	{JMXConnector.asm} \
+	{JMXConnectorPlugin.asm} \
+	{JMXPullSource.asm} \
+	{JMXSourceManager.asm} \
+	{JMXSources.asm} \
+	{JMXUtility.asm} \
+	{LegacyData.asm} \
+	{LinkedList.asm} \
+	{LockingDataProvider.asm} \
+	{Log.asm} \
+	{LogManager.asm} \
+	{Logger.asm} \
+	{Logging.asm} \
+	{MQTTAsync.asm} \
+	{MQTTConnector.asm} \
+	{MQTTPacket.asm} \
+	{MQTTPacketOut.asm} \
+	{MQTTPersistence.asm} \
+	{MQTTPersistenceDefault.asm} \
+	{MQTTProtocolClient.asm} \
+	{MQTTProtocolOut.asm} \
+	{MainClass.java} \
+	{MemoryCounterDataProvider.asm} \
+	{MemoryDataProvider.asm} \
+	{Messages.asm} \
+	{MethodLookupProvider.asm} \
+	{MonitorDataQueue.asm} \
+	{OSJMXPullSource.asm} \
+	{OSMXBean.asm} \
+	{OStreamConnector.asm} \
+	{Port.asm} \
+	{Process.asm} \
+	{Properties.asm} \
+	{PropertiesFile.asm} \
+	{PullSourceCounter.asm} \
+	{Queues.asm} \
+	{RT} \
+	{RTJMXPullSource.asm} \
+	{RTMXBean.asm} \
+	{Socket.asm} \
+	{SocketBuffer.asm} \
+	{StackTrace.asm} \
+	{SystemReceiver.asm} \
+	{Thread.asm} \
+	{ThreadData.asm} \
+	{ThreadDataProvider.asm} \
+	{ThreadPool.asm} \
+	{Threadpool.asm} \
+	{TraceDataProvider.asm} \
+	{TraceReceiver.asm} \
+	{Tree.asm} \
+	{WorkerThread.asm} \
+	{WorkerThreadControl.asm} \
+	{bin} \
+	{build} \
+	{environment} \
+	{healthcenter.asm} \
+	{healthcenter.res} \
+	{libz.so} \
+	{libzmia.so} \
+	{locking} \
+	{log_file.txt} \
+	{log_filewin.txt} \
+	{logfile.txt} \
+	{logfile2.txt} \
+	{memory} \
+	{memorycounters} \
+	{methoddictionary} \
+	{output} \
+	{plugin.asm} \
+	{pr1.py} \
+	{prueba.java} \
+	{pruebajni.cpp} \
+	{strUtils.asm} \
+	{sysUtils.asm} \
+	{test.asm} \
+	{threads} \
+	{trace} \
+	{utf-8.asm} \
+	{vc120.pdb} \
+	{zip.asm} 

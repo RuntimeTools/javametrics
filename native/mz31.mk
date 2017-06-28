@@ -1,0 +1,25 @@
+#include makefile for z/OS
+PLATFORM=_ZOS
+PORTDIR=zos
+CC=c++
+GCC=c++
+ASM=c89 -Wa,list -Wc,"langlvl(extc99)" -o"$@" -DIPv6_FUNCTION_SUPPORT -DLONGLONG -D_ALL_SOURCE -D_XOPEN_SOURCE_EXTENDED -DIBM_ATOE -D_POSIX_SOURCE -O3 -Wc,ARCH\(5\) -Wc,TUNE\(9\) -Wl,compat=ZOSV1R13  -Wc,xplink,convlit\(ISO8859-1\),rostring,FLOAT\(IEEE,FOLD,AFP\),enum\(4\) -Wa,goff -Wc,NOANSIALIAS -Wc,inline\(auto,noreport,600,5000\) -Wc,TARGET\(zOSV1R13\)  -W "c,list,offset" -D_LARGE_FILES -Wc,gonumber -Wc,DLL,EXPORTALL -DUT_DIRECT_TRACE_REGISTRATION -DTR_HOST_S390 -c
+ASM_OBJS= ${COMMON_OUT}/zos_switch_from_ifa.o ${COMMON_OUT}/zos_switch_to_ifa.o
+LINK=c++
+LINK_OPT= -Wl,dll,xplink
+LD_OPT=
+OBJOPT=-o"$@"
+ARCHIVE=ar -r 
+ARC_EXT=a
+CFLAGS= -D__BIG_ENDIAN -c -O2 -Wc,ilp32,expo,dll,xplink -Wc,"LANG(EXTENDED),COMPACT,COMPRESS,NOCONVLIT" -DREVERSED -DIBMRAS_DEBUG_LOGGING
+LIB_EXT=so
+EXE_EXT=
+LIBFLAGS= 
+LIB_OBJOPT=-o"$@"
+LIBPATH=
+EXEFLAGS=
+EXELIBS=
+JAVA_PLAT_INCLUDE=${JAVA_SDK_INCLUDE}
+LIB_PREFIX=lib
+#COPY_CONNECTOR=
+
