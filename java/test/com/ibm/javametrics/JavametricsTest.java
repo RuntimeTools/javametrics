@@ -42,19 +42,18 @@ public class JavametricsTest {
 	public void testGetTopic() {
 		try {
 			Javametrics.getTopic(null);
+			fail("Exception expected for Javametrics.getTopic(null)");
 		} catch (JavametricsException jme) {
 			// expected, continue test
-			try {
-				Javametrics.getTopic("");
-			} catch (JavametricsException jme2) {
-				// expected, continue test
-				Topic topic = Javametrics.getTopic("myTopic");
-				assertNotNull(topic);
-				return;
-			}
-			fail("Exception expected for Javametrics.getTopic(\"\")");
 		}
-		fail("Exception expected for Javametrics.getTopic(null)");
+		try {
+			Javametrics.getTopic("");
+			fail("Exception expected for Javametrics.getTopic(\"\")");
+		} catch (JavametricsException jme2) {
+			// expected, continue test
+		}
+		Topic topic = Javametrics.getTopic("myTopic");
+		assertNotNull(topic);
 	}
 
 	/**
@@ -63,6 +62,18 @@ public class JavametricsTest {
 	 */
 	@Test
 	public void testIsEnabled() {
+		try {
+			Javametrics.isEnabled(null);
+			fail("Exception expected for Javametrics.isEnabled(null)");
+		} catch (JavametricsException jme2) {
+			// expected, continue test
+		}
+		try {
+			Javametrics.isEnabled("");
+			fail("Exception expected for Javametrics.isEnabled(\"\")");
+		} catch (JavametricsException jme2) {
+			// expected, continue test
+		}
 		Topic topic = Javametrics.getTopic("testTopic");
 		assertTrue(Javametrics.isEnabled("testTopic"));
 		topic.disable();
@@ -85,7 +96,7 @@ public class JavametricsTest {
 			@Override
 			public void receive(String pluginName, String data) {
 				if (pluginName.equals("api")) {
-					List<String> events =  TestUtils.splitIntoJSONObjects(data);
+					List<String> events = TestUtils.splitIntoJSONObjects(data);
 					for (Iterator<String> iterator = events.iterator(); iterator.hasNext();) {
 						String oneEvent = iterator.next();
 						// Only store data we sent from this test case
@@ -116,6 +127,39 @@ public class JavametricsTest {
 				foundMyData = true;
 			}
 			assertTrue("Should have received the data we sent", foundMyData);
+		}
+	}
+
+	/**
+	 * Test method for
+	 * {@link com.ibm.javametrics.Javametrics#sendJSON(String, String)}.
+	 */
+	@Test
+	public void testSendJSON() {
+		try {
+			Javametrics.sendJSON(null, "hello");
+			fail("Javametrics.sendJSON(null, ..) should throw an exception");
+		} catch (JavametricsException e) {
+			// expected, continue test
+		}
+		try {
+			Javametrics.sendJSON("", "hello");
+			fail("Javametrics.sendJSON(\"\", ..) should throw an exception");
+		} catch (JavametricsException je) {
+			// expected, continue test
+		}
+
+		try {
+			Javametrics.sendJSON("hello", null);
+			fail("Javametrics.sendJSON(.., null) should throw an exception");
+		} catch (JavametricsException je) {
+			// expected, continue test
+		}
+		try {
+			Javametrics.sendJSON("hello", "");
+			fail("Javametrics.sendJSON(..,\"\") should throw an exception");
+		} catch (JavametricsException je) {
+			// expected
 		}
 	}
 
