@@ -24,15 +24,16 @@ import com.ibm.javametrics.dataproviders.GCDataProvider;
 import com.ibm.javametrics.dataproviders.MemoryPoolDataProvider;
 
 /**
- * Uses MBean data providers to send data to the Javametrics agent at regular intervals.
+ * Uses MBean data providers to send data to the Javametrics agent at regular
+ * intervals.
  */
 public class JavametricsMBeanConnector {
 
 	private static final String GC_TOPIC = "gc";
-    private static final String CPU_TOPIC = "cpu";
-    private static final String MEMORYPOOLS_TOPIC = "memoryPools";
-    
-    private ScheduledExecutorService exec;
+	private static final String CPU_TOPIC = "cpu";
+	private static final String MEMORYPOOLS_TOPIC = "memoryPools";
+
+	private ScheduledExecutorService exec;
 
 	/**
 	 * Create a JavametricsMBeanConnector
@@ -54,7 +55,7 @@ public class JavametricsMBeanConnector {
 			message.append("\", \"gcTime\": \"");
 			message.append(gcTime);
 			message.append("\"}}");
-            Javametrics.sendJSON(GC_TOPIC, message.toString());
+			Javametrics.sendJSON(GC_TOPIC, message.toString());
 		}
 	}
 
@@ -66,12 +67,12 @@ public class JavametricsMBeanConnector {
 			StringBuilder message = new StringBuilder();
 			message.append("{\"time\":\"");
 			message.append(timeStamp);
-			message.append( "\", \"system\": \"");
+			message.append("\", \"system\": \"");
 			message.append(system);
 			message.append("\", \"process\": \"");
 			message.append(process);
 			message.append("\"}}");
-            Javametrics.sendJSON(CPU_TOPIC, message.toString());
+			Javametrics.sendJSON(CPU_TOPIC, message.toString());
 		}
 	}
 
@@ -83,7 +84,7 @@ public class JavametricsMBeanConnector {
 		if (usedHeapAfterGC >= 0) { // check that some data is available
 			StringBuilder message = new StringBuilder();
 			message.append("{\"time\":\"");
-			message.append( timeStamp);
+			message.append(timeStamp);
 			message.append("\", \"usedHeapAfterGC\": \"");
 			message.append(usedHeapAfterGC);
 			message.append("\", \"usedHeap\": \"");
@@ -91,7 +92,7 @@ public class JavametricsMBeanConnector {
 			message.append("\", \"usedNative\": \"");
 			message.append(usedNative);
 			message.append("\"}}");
-	        Javametrics.sendJSON(MEMORYPOOLS_TOPIC, message.toString());
+			Javametrics.sendJSON(MEMORYPOOLS_TOPIC, message.toString());
 		}
 	}
 }
