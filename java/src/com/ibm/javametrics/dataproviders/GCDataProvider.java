@@ -52,6 +52,9 @@ public class GCDataProvider {
 		} else {
 			long collectionTime = totalCollectionTime - previousCollectionTime;
 			long elapsedTime = now - previousRequestTimeStamp;
+			if(elapsedTime == 0) {
+				return 0;
+			}
 			double timeInGc = (double)collectionTime / (double)elapsedTime;
 			previousCollectionTime = totalCollectionTime;
 			previousRequestTimeStamp = now;

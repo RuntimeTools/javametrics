@@ -42,7 +42,7 @@ public class Javametrics {
 	 * @param topicName
 	 * @return a {@link Topic} with the given name
 	 */
-	public static Topic getTopic(String topicName) {
+	public static synchronized Topic getTopic(String topicName) {
 		if (topicName == null || topicName.length() == 0) {
 			throw new JavametricsException("Topic names must not be null or 0 length");
 		}

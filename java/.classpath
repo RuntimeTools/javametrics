@@ -9,5 +9,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/asm/asm-5.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/asm/asm-commons-5.0.4.jar"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
