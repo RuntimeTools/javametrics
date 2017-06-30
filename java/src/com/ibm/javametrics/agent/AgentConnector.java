@@ -13,15 +13,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.ibm.javametrics;
+package com.ibm.javametrics.agent;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class JavametricsAgentConnector {
+import com.ibm.javametrics.JavametricsListener;
 
-    private static native void regListener(JavametricsAgentConnector jm);
+public class AgentConnector {
+
+    private static native void regListener(AgentConnector jm);
     private static native void deregListener();
     private static native void sendMessage(String message, byte[] id);
     private static native void pushDataToAgent(String data);
@@ -39,7 +41,7 @@ public class JavametricsAgentConnector {
     private static final String HISTORY_TOPIC = "/history/";//$NON-NLS-1$
 
     private Set<JavametricsListener> javametricsListeners = new HashSet<JavametricsListener>();
-    public JavametricsAgentConnector() {
+    public AgentConnector() {
         try {
             regListener(this);
             initialized = true;
@@ -68,21 +70,21 @@ public class JavametricsAgentConnector {
         }
     }
 
-    protected void addListener(JavametricsListener jml) {
+    public void addListener(JavametricsListener jml) {
         javametricsListeners.add(jml);
     }
 
-    protected boolean removeListener(JavametricsListener jml) {
+    public boolean removeListener(JavametricsListener jml) {
         return javametricsListeners.remove(jml);
     }
 
-    protected void sendDataToAgent(String data) {
+    public void sendDataToAgent(String data) {
         if (initialized) {
             pushDataToAgent(data);
         }
     }
 
-    protected void send(String message) {
+    public void send(String message) {
         if (initialized) {
             sendMessage(message, CLIENT_ID);
         }

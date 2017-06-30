@@ -17,6 +17,9 @@ package com.ibm.javametrics;
 
 import java.util.HashMap;
 
+import com.ibm.javametrics.agent.AgentConnector;
+import com.ibm.javametrics.dataproviders.MBeanDataProvider;
+
 /**
  * Javametrics public API class. Used to create Topics which can send data to
  * Javametrics. JSON formatted data can also be sent directly using sendJSON.
@@ -26,12 +29,12 @@ public class Javametrics {
     /*
      * Connect to the native agent
      */
-    private static JavametricsAgentConnector javametricsAgentConnector = new JavametricsAgentConnector();
+    private static AgentConnector javametricsAgentConnector = new AgentConnector();
 
     /*
      * Start the mbean data providers
      */
-    static JavametricsMBeanConnector jmbc = new JavametricsMBeanConnector();
+    static MBeanDataProvider jmbc = new MBeanDataProvider();
     
 	private static HashMap<String, Topic> topics = new HashMap<String, Topic>();
 
