@@ -29,92 +29,96 @@ public class Javametrics {
     /*
      * Connect to the native agent
      */
-    private static AgentConnector javametricsAgentConnector = new AgentConnector();
+    private static AgentConnector agentConnector = new AgentConnector();
 
     /*
      * Start the mbean data providers
      */
-    static MBeanDataProvider jmbc = new MBeanDataProvider();
-    
-	private static HashMap<String, Topic> topics = new HashMap<String, Topic>();
+    static MBeanDataProvider mbeanProvider = new MBeanDataProvider();
 
-	/**
-	 * Get a Topic to send data on. If a topic with the given name already
-	 * exists then that will be returned to you
-	 * 
-	 * @param topicName
-	 * @return a {@link Topic} with the given name
-	 */
-	public static synchronized Topic getTopic(String topicName) {
-		if (topicName == null || topicName.length() == 0) {
-			throw new JavametricsException("Topic names must not be null or 0 length");
-		}
-		if (topics.containsKey(topicName)) {
-			return topics.get(topicName);
-		} else {
-			Topic topic = new TopicImpl(topicName);
-			topics.put(topicName, topic);
-			return topic;
-		}
-	}
+    private static HashMap<String, Topic> topics = new HashMap<String, Topic>();
 
-	protected static void sendData(String data) {
-		if (javametricsAgentConnector != null) {
-			javametricsAgentConnector.sendDataToAgent(data);
-		}
-	}
+    /**
+     * Get a Topic to send data on. If a topic with the given name already
+     * exists then that will be returned to you
+     * 
+     * @param topicName
+     * @return a {@link Topic} with the given name
+     */
+    public static synchronized Topic getTopic(String topicName) {
+        if (topicName == null || topicName.length() == 0) {
+            throw new JavametricsException("Topic names must not be null or 0 length");
+        }
+        if (topics.containsKey(topicName)) {
+            return topics.get(topicName);
+        } else {
+            Topic topic = new TopicImpl(topicName);
+            topics.put(topicName, topic);
+            return topic;
+        }
+    }
 
-	/**
-	 * Send data to Javametrics
-	 * 
-	 * @param topicName
-	 *            the name of the topic to send data on
-	 * @param payload
-	 *             A JSON object formatted as a String
-	 */
-	public static void sendJSON(String topicName, String payload) {
-		if (topicName == null || topicName.length() == 0) {
-			throw new JavametricsException("Topic names must not be null or 0 length");
-		}
-		if (payload == null || payload.length() == 0) {
-			throw new JavametricsException("Payload must exist");
-		}
-		getTopic(topicName).sendJSON(payload);
-	}
+    protected static void sendData(String data) {
+        if (agentConnector != null) {
+            agentConnector.sendDataToAgent(data);
+        }
+    }
 
-	/**
-	 * Returns true if the given topic is enabled
-	 * 
-	 * @param topicName
-	 * @return
-	 */
-	public static boolean isEnabled(String topicName) {
-		if (topicName == null || topicName.length() == 0) {
-			throw new JavametricsException("Topic names must not be null or 0 length");
-		}
-		return getTopic(topicName).isEnabled();
-	}
+    /**
+     * Send data to Javametrics
+     * 
+     * @param topicName
+     *            the name of the topic to send data on
+     * @param payload
+     *            A JSON object formatted as a String
+     */
+    public static void sendJSON(String topicName, String payload) {
+        if (topicName == null || topicName.length() == 0) {
+            throw new JavametricsException("Topic names must not be null or 0 length");
+        }
+        if (payload == null || payload.length() == 0) {
+            throw new JavametricsException("Payload must exist");
+        }
+        getTopic(topicName).sendJSON(payload);
+    }
 
-	/**
-	 * Add a JavametricsListener, which will be informed of Javametrics events
-	 * @param jml the JavametricsListener to be added
-	 */
-	public static void addListener(JavametricsListener jml) {
-		javametricsAgentConnector.addListener(jml);
-		
-		/*
-		 * Request history data so new listeners receive the environment data
-		 */
-	    javametricsAgentConnector.send("history");
-	}
+    /**
+     * Returns true if the given topic is enabled
+     * 
+     * @param topicName
+     * @return
+     */
+    public static boolean isEnabled(String topicName) {
+        if (topicName == null || topicName.length() == 0) {
+            throw new JavametricsException("Topic names must not be null or 0 length");
+        }
+        return getTopic(topicName).isEnabled();
+    }
 
-	/**
-	 * Remove a JavametricsListener
-	 * @param jml the JavametricsListener to be removed
-	 * @return true if the listener was registered
-	 */
-	public static boolean removeListener(JavametricsListener jml) {
-		return javametricsAgentConnector.removeListener(jml);
-	}
+    /**
+     * Add a JavametricsListener, which will be informed of Javametrics events
+     * 
+     * @param jml
+     *            the JavametricsListener to be added
+     */
+    public static void addListener(JavametricsListener jml) {
+        agentConnector.addListener(jml);
+
+        /*
+         * Request history data so new listeners receive the environment data
+         */
+        agentConnector.send("history");
+    }
+
+    /**
+     * Remove a JavametricsListener
+     * 
+     * @param jml
+     *            the JavametricsListener to be removed
+     * @return true if the listener was registered
+     */
+    public static boolean removeListener(JavametricsListener jml) {
+        return agentConnector.removeListener(jml);
+    }
 
 }

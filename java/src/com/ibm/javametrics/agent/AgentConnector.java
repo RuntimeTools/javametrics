@@ -24,10 +24,12 @@ import com.ibm.javametrics.JavametricsListener;
 public class AgentConnector {
 
     private static native void regListener(AgentConnector jm);
-    private static native void deregListener();
-    private static native void sendMessage(String message, byte[] id);
-    private static native void pushDataToAgent(String data);
 
+    private static native void deregListener();
+
+    private static native void sendMessage(String message, byte[] id);
+
+    private static native void pushDataToAgent(String data);
 
     /*
      * Set to true when connected to the native agent
@@ -41,12 +43,14 @@ public class AgentConnector {
     private static final String HISTORY_TOPIC = "/history/";//$NON-NLS-1$
 
     private Set<JavametricsListener> javametricsListeners = new HashSet<JavametricsListener>();
+
     public AgentConnector() {
         try {
             regListener(this);
             initialized = true;
         } catch (UnsatisfiedLinkError ule) {
-            System.err.println("Javametrics: Native agent not loaded. Use -agentpath parameter to load Javametrics agent.");
+            System.err.println(
+                    "Javametrics: Native agent not loaded. Use -agentpath parameter to load Javametrics agent.");
         }
     }
 
