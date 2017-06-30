@@ -23,7 +23,7 @@ import com.ibm.javametrics.JavametricsListener;
 
 public class AgentConnector {
 
-    private static native void regListener(AgentConnector jm);
+    private static native void regListener(AgentConnector ac);
 
     private static native void deregListener();
 
