@@ -443,18 +443,18 @@ if (!*env) {
 
 extern "C" {
 JNIEXPORT void JNICALL
-Java_com_ibm_javametrics_JavametricsAgentConnector_regListener(JNIEnv *env, jclass clazz, jobject obj) {
+Java_com_ibm_javametrics_agent_AgentConnector_regListener(JNIEnv *env, jclass clazz, jobject obj) {
 	api_callback = env->NewGlobalRef(obj);
 	registerListener(&sendMsg);
 }
 
 JNIEXPORT void JNICALL
-Java_com_ibm_javametrics_JavametricsAgentConnector_deregListener(JNIEnv *env, jobject obj) {
+Java_com_ibm_javametrics_agent_AgentConnector_deregListener(JNIEnv *env, jobject obj) {
 	deregisterListener();
 }
 
 JNIEXPORT void JNICALL
-Java_com_ibm_javametrics_JavametricsAgentConnector_sendMessage(JNIEnv *env, jobject obj, jstring topic, jbyteArray ident) {
+Java_com_ibm_javametrics_agent_AgentConnector_sendMessage(JNIEnv *env, jobject obj, jstring topic, jbyteArray ident) {
 
 	const char *s = env->GetStringUTFChars(topic,NULL);
 	if (s) {
@@ -467,7 +467,7 @@ Java_com_ibm_javametrics_JavametricsAgentConnector_sendMessage(JNIEnv *env, jobj
 }
 
 JNIEXPORT void JNICALL
-Java_com_ibm_javametrics_JavametricsAgentConnector_pushDataToAgent(JNIEnv *env, jobject obj, jstring data) {
+Java_com_ibm_javametrics_agent_AgentConnector_pushDataToAgent(JNIEnv *env, jobject obj, jstring data) {
 
 	const char *sendData = env->GetStringUTFChars(data,NULL);
 	if (sendData) {

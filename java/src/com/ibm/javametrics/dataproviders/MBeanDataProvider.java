@@ -13,21 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.ibm.javametrics;
+package com.ibm.javametrics.dataproviders;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.javametrics.dataproviders.CPUDataProvider;
-import com.ibm.javametrics.dataproviders.GCDataProvider;
-import com.ibm.javametrics.dataproviders.MemoryPoolDataProvider;
+import com.ibm.javametrics.Javametrics;
 
 /**
  * Uses MBean data providers to send data to the Javametrics agent at regular
  * intervals.
  */
-public class JavametricsMBeanConnector {
+public class MBeanDataProvider {
 
 	private static final String GC_TOPIC = "gc";
 	private static final String CPU_TOPIC = "cpu";
@@ -38,7 +36,7 @@ public class JavametricsMBeanConnector {
 	/**
 	 * Create a JavametricsMBeanConnector
 	 */
-	public JavametricsMBeanConnector() {
+	public MBeanDataProvider() {
 		exec = Executors.newSingleThreadScheduledExecutor();
 		exec.scheduleAtFixedRate(this::emitGCData, 2, 2, TimeUnit.SECONDS);
 		exec.scheduleAtFixedRate(this::emitCPUUsage, 2, 2, TimeUnit.SECONDS);

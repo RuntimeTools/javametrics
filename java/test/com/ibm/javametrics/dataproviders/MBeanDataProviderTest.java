@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package com.ibm.javametrics;
+package com.ibm.javametrics.dataproviders;
 
 import static org.junit.Assert.*;
 
@@ -27,11 +27,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.javametrics.Javametrics;
+import com.ibm.javametrics.JavametricsListener;
+import com.ibm.javametrics.TestUtils;
+
 /**
  * Test for built in data providers
  *
  */
-public class JavametricsMBeanConnectorTest {
+public class MBeanDataProviderTest {
 
 	private static final List<String> received = new ArrayList<String>();
 
