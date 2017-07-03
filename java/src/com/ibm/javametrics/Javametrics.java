@@ -18,7 +18,6 @@ package com.ibm.javametrics;
 import java.util.HashMap;
 
 import com.ibm.javametrics.agent.AgentConnector;
-import com.ibm.javametrics.dataproviders.MBeanDataProvider;
 
 /**
  * Javametrics public API class. Used to create Topics which can send data to
@@ -26,15 +25,12 @@ import com.ibm.javametrics.dataproviders.MBeanDataProvider;
  */
 public class Javametrics {
 
+    public static final String API_TYPE = "api";
+    
     /*
      * Connect to the native agent
      */
-    private static AgentConnector agentConnector = new AgentConnector();
-
-    /*
-     * Start the mbean data providers
-     */
-    static MBeanDataProvider mbeanProvider = new MBeanDataProvider();
+    private static AgentConnector agentConnector = AgentConnector.getConnector();
 
     private static HashMap<String, Topic> topics = new HashMap<String, Topic>();
 
@@ -60,7 +56,7 @@ public class Javametrics {
 
     protected static void sendData(String data) {
         if (agentConnector != null) {
-            agentConnector.sendDataToAgent(data);
+            agentConnector.sendDataToAgent(API_TYPE, data);
         }
     }
 
@@ -103,11 +99,6 @@ public class Javametrics {
      */
     public static void addListener(JavametricsListener jml) {
         agentConnector.addListener(jml);
-
-        /*
-         * Request history data so new listeners receive the environment data
-         */
-        agentConnector.send("history");
     }
 
     /**
