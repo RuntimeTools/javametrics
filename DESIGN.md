@@ -1,27 +1,22 @@
 # Javametrics Design
 
 Application Metrics for Java&trade; is composed of:
-* Native Agent based on [RuntimeTools/omr-agentcore](https://github.com/RuntimeTools/omr-agentcore)
+* An Agent which collects and publishes data
 * API to allow data providers to send data to the Agent and listeners to receive data from the Agent
 * Data providers
 * Web application utilizing [RuntimeTools/graphmetrics](https://github.com/RuntimeTools/graphmetrics) to visualize the data 
 
 ## Components 
-### Native Agent
-A Java native agent activated by the Java command line option `-agentpath`. The javametrics native library entrypoint is defined in `native/src/javametrics.cpp`. This initializes the omr-agentcore and activates the native plugins:
-* `envplugin` - provides common environment data.
-* `apiplugin` - provides a c++ api to the agent.
+### Agent
+An Agent that stores data added via the API and emits data to receivers.
 
 ### Javametrics API
-Javametrics provides a Java API to interface with the native agent. The interface in the `com.ibm.javametrics` package consists of: 
-* `Javametrics` - provides API to send data to the native agent apiplugin and to register listeners.
+Javametrics provides a Java API to interface with the Agent. The interface in the `com.ibm.javametrics` package consists of: 
+* `Javametrics` - provides API to send data to the agent and to register listeners.
 * `JavametricsListener` - implemented by registered listeners.
 * `Topic` - API to send data to the agent for a named topic.
 
 ### Data Providers
-
-#### Native plugins
-* Environment data is provided by the omr-agentcore `envplugin`.
 
 #### MBean providers
 `com.ibm.javametrics.dataproviders.MBeanDataProvider` is initialized statically in `com.ibm.javametrics.Javametrics` class. It gathers data from the MBean providers every 2 seconds and sends the data to the agent using the Javametrics API. MBean providers in the `com.ibm.javametrics.dataproviders` package are:
