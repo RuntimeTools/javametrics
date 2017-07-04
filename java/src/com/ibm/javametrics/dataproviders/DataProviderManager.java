@@ -22,25 +22,48 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.javametrics.Javametrics;
 
 /**
- * Uses MBean data providers to send data to the Javametrics agent at regular
- * intervals.
+ * Uses MBean data providers to send data to the Javametrics agent.
  */
-public class MBeanDataProvider {
+public class DataProviderManager {
 
     private static final String GC_TOPIC = "gc";
     private static final String CPU_TOPIC = "cpu";
     private static final String MEMORYPOOLS_TOPIC = "memoryPools";
+	private static final String ENV_TOPIC = "env";
 
     private ScheduledExecutorService exec;
 
     /**
      * Create a JavametricsMBeanConnector
      */
-    public MBeanDataProvider(long interval) {
+    public DataProviderManager(long interval) {
         exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(this::emitGCData, interval, interval, TimeUnit.SECONDS);
         exec.scheduleAtFixedRate(this::emitCPUUsage, interval, interval, TimeUnit.SECONDS);
         exec.scheduleAtFixedRate(this::emitMemoryPoolUsage, interval, interval, TimeUnit.SECONDS);
+    }
+
+    /*
+     * Schedule a refresh of any persistent data.
+     */
+    public void emitPersistentData() {
+        // Persistent data provides, env, profiling status etc...
+        // Schedule it so it doesn't delay this thread.
+        exec.execute(this::emitEnvironmentData);
+    }
+
+    private void emitEnvironmentData() {
+        String paramFormat = "{\"Parameter\":\"%s\",\"Value\":\"%s\"}";
+        StringBuilder message = new StringBuilder("[");
+        message.append(String.format(paramFormat, "Hostname", EnvironmentDataProvider.getHostname()));
+        message.append(',');
+        message.append(String.format(paramFormat, "OS Architecture", EnvironmentDataProvider.getArchitecture()));
+        message.append(',');
+        message.append(String.format(paramFormat, "Number of Processors", EnvironmentDataProvider.getCPUCount()));
+        message.append(',');
+        message.append(String.format(paramFormat, "Command Line", EnvironmentDataProvider.getCommandLine()));
+        message.append("]");
+        Javametrics.getInstance().sendJSON(ENV_TOPIC, message.toString());
     }
 
     private void emitGCData() {
