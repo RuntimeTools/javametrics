@@ -16,7 +16,9 @@
 
 package com.ibm.javametrics;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,12 +36,12 @@ public class TopicTest {
 
 	
 	private static final List<String> received = new ArrayList<String>();
-	private static Topic testTopic = Javametrics.getTopic("testTopic");
+	private static Topic testTopic = Javametrics.getInstance().getTopic("testTopic");
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
-		Javametrics.addListener(new JavametricsListener() {
+		Javametrics.getInstance().addListener(new JavametricsListener() {
 			
 			@Override
 			public void receive(String pluginName, String data) {
@@ -66,7 +68,7 @@ public class TopicTest {
 	
 	/**
 	 * Test method for
-	 * {@link com.ibm.javametrics.TopicImpl#send(java.lang.String)}.
+	 * {@link com.ibm.javametrics.impl.TopicImpl#send(java.lang.String)}.
 	 */
 	@Test
 	public void testSendString() {
@@ -98,7 +100,7 @@ public class TopicTest {
 
 	/**
 	 * Test method for
-	 * {@link com.ibm.javametrics.TopicImpl#send(long, long, java.lang.String)}.
+	 * {@link com.ibm.javametrics.impl.TopicImpl#send(long, long, java.lang.String)}.
 	 */
 	@Test
 	public void testSendLongLongString() {
@@ -109,7 +111,7 @@ public class TopicTest {
 	}
 
 	/**
-	 * Test method for {@link com.ibm.javametrics.TopicImpl#send(long, long)}.
+	 * Test method for {@link com.ibm.javametrics.impl.TopicImpl#send(long, long)}.
 	 */
 	@Test
 	public void testSendLongLong() {
@@ -121,7 +123,7 @@ public class TopicTest {
 
 	/**
 	 * Test method for
-	 * {@link com.ibm.javametrics.TopicImpl#sendJSON(java.lang.String)}.
+	 * {@link com.ibm.javametrics.impl.TopicImpl#sendJSON(java.lang.String)}.
 	 */
 	@Test
 	public void testSendJSON() {
@@ -130,13 +132,13 @@ public class TopicTest {
 	}
 
 	/**
-	 * Test method for {@link com.ibm.javametrics.TopicImpl#disable()}. Test
-	 * method for {@link com.ibm.javametrics.TopicImpl#enable()}. Test method
-	 * for {@link com.ibm.javametrics.TopicImpl#isEnabled()}.
+	 * Test method for {@link com.ibm.javametrics.impl.TopicImpl#disable()}. Test
+	 * method for {@link com.ibm.javametrics.impl.TopicImpl#enable()}. Test method
+	 * for {@link com.ibm.javametrics.impl.TopicImpl#isEnabled()}.
 	 */
 	@Test
 	public void testDisableEnable() {
-		Topic topic = new TopicImpl("hello");
+		Topic topic = Javametrics.getInstance().getTopic("hello");
 		assertTrue(topic.isEnabled());
 		topic.disable();
 		assertFalse(topic.isEnabled());

@@ -34,6 +34,6 @@ public class StringDataBucket implements Bucket {
 
     @Override
     public void pushData(String data) {
-        bucket.append(data);        
+        bucket.append(data);
     }
 }

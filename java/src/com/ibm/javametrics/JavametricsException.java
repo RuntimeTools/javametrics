@@ -20,26 +20,26 @@ package com.ibm.javametrics;
  */
 public class JavametricsException extends RuntimeException {
 
-	private static final long serialVersionUID = -8487122983395576783L;
+    private static final long serialVersionUID = -8487122983395576783L;
 
-	public JavametricsException() {
-	}
+    public JavametricsException() {
+    }
 
-	public JavametricsException(String message) {
-		super(message);
-	}
+    public JavametricsException(String message) {
+        super(message);
+    }
 
-	public JavametricsException(Throwable cause) {
-		super(cause);
-	}
+    public JavametricsException(Throwable cause) {
+        super(cause);
+    }
 
-	public JavametricsException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public JavametricsException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public JavametricsException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
+    public JavametricsException(String message, Throwable cause, boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 
 }
