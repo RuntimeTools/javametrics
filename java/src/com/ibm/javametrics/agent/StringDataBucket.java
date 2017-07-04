@@ -17,7 +17,8 @@ package com.ibm.javametrics.agent;
 
 public class StringDataBucket implements Bucket {
 
-    private StringBuffer bucket = new StringBuffer();
+    private static final int INITIAL_BUCKET_SIZE = 4 * 1024;
+    private StringBuffer bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
 
     @Override
     public int getSize() {
@@ -27,7 +28,7 @@ public class StringDataBucket implements Bucket {
     @Override
     public String empty() {
         String data = bucket.toString();
-        bucket = new StringBuffer();
+        bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
         return data;
     }
 
