@@ -20,77 +20,67 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.ibm.javametrics.JavametricsListener;
+import com.ibm.javametrics.dataproviders.MBeanDataProvider;
 
-public class AgentConnector {
+public class AgentConnector implements Receiver {
 
-    private static native void regListener(AgentConnector ac);
-
-    private static native void deregListener();
-
-    private static native void sendMessage(String message, byte[] id);
-
-    private static native void pushDataToAgent(String data);
-
-    /*
-     * Set to true when connected to the native agent
-     */
-    private boolean initialized = false;
-
-    private static final String CLIENT_ID = "localNative";//$NON-NLS-1$
-    private static final String COMMA = ","; //$NON-NLS-1$
-    private static final String DATASOURCE_TOPIC = "/datasource";//$NON-NLS-1$
-    private static final String CONFIGURATION_TOPIC = "configuration/";//$NON-NLS-1$
-    private static final String HISTORY_TOPIC = "/history/";//$NON-NLS-1$
-
+    public static final String HISTORY_MESSAGE = "history";
+    
     private Set<JavametricsListener> javametricsListeners = new HashSet<JavametricsListener>();
 
-    public AgentConnector() {
-        try {
-            regListener(this);
-            initialized = true;
-        } catch (UnsatisfiedLinkError ule) {
-            System.err.println(
-                    "Javametrics: Native agent not loaded. Use -agentpath parameter to load Javametrics agent.");
+    private Agent agent;
+
+    private static final int COLLECTION_INTERVAL = 2;
+
+    static MBeanDataProvider mbeanProvider = null;
+
+    private static AgentConnector instance = null;
+
+    public static AgentConnector getConnector() {
+        if (instance == null) {
+            instance = new AgentConnector();
         }
+        return instance;
     }
 
-    private void sendMessage(String name, String command, String... params) {
-        if (initialized) {
-            StringBuffer sb = new StringBuffer();
-            sb.append(command);
-            for (String parameter : params) {
-                sb.append(COMMA).append(parameter);
-            }
-            sb.trimToSize();
-            sendMessage(name, sb.toString().getBytes());
-        }
+    private AgentConnector() {
+        agent = AgentFactory.getAgent();
+        agent.registerReceiver(this);
+        
+        /*
+         * Start the mbean data providers
+         */
+        mbeanProvider = new MBeanDataProvider(COLLECTION_INTERVAL);
     }
 
-    public void receiveData(String type, byte[] data) {
-        final String dataString = new String(data);
+    /* (non-Javadoc)
+     * @see com.ibm.javametrics.agent.Receiver#receiveData(java.lang.String, java.lang.String)
+     */
+    public void receiveData(String type, String data) {
         for (Iterator<JavametricsListener> iterator = javametricsListeners.iterator(); iterator.hasNext();) {
             JavametricsListener javametricsListener = iterator.next();
-            javametricsListener.receive(type, dataString);
+            javametricsListener.receive(type, data);
         }
     }
 
     public void addListener(JavametricsListener jml) {
         javametricsListeners.add(jml);
+
+        /*
+         * Request history data so new listeners receive the environment data
+         */
+        sendMessage(HISTORY_MESSAGE);
     }
 
     public boolean removeListener(JavametricsListener jml) {
         return javametricsListeners.remove(jml);
     }
 
-    public void sendDataToAgent(String data) {
-        if (initialized) {
-            pushDataToAgent(data);
-        }
+    public void sendDataToAgent(String type, String data) {
+        agent.pushData(type, data);
     }
 
-    public void send(String message) {
-        if (initialized) {
-            sendMessage(message, CLIENT_ID);
-        }
+    public void sendMessage(String command) {
+        agent.command(command);
     }
 }

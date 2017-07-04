@@ -36,11 +36,11 @@ public class MBeanDataProvider {
 	/**
 	 * Create a JavametricsMBeanConnector
 	 */
-	public MBeanDataProvider() {
+	public MBeanDataProvider(long interval) {
 		exec = Executors.newSingleThreadScheduledExecutor();
-		exec.scheduleAtFixedRate(this::emitGCData, 2, 2, TimeUnit.SECONDS);
-		exec.scheduleAtFixedRate(this::emitCPUUsage, 2, 2, TimeUnit.SECONDS);
-		exec.scheduleAtFixedRate(this::emitMemoryPoolUsage, 2, 2, TimeUnit.SECONDS);
+		exec.scheduleAtFixedRate(this::emitGCData, interval, interval, TimeUnit.SECONDS);
+		exec.scheduleAtFixedRate(this::emitCPUUsage, interval, interval, TimeUnit.SECONDS);
+		exec.scheduleAtFixedRate(this::emitMemoryPoolUsage, interval, interval, TimeUnit.SECONDS);
 	}
 
 	private void emitGCData() {
