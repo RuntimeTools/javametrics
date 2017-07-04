@@ -27,60 +27,60 @@ import java.util.List;
  */
 public class MemoryPoolDataProvider {
 
-	/**
-	 * Get the current heap size in bytes Returns -1 if no data is available
-	 */
-	public static long getHeapMemory() {
-		long total = 0;
-		List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
-		if (memoryPoolBeans.isEmpty()) {
-			return -1;
-		}
-		for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
-			MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-			if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
-				total += memoryPoolMXBean.getUsage().getUsed();
-			}
-		}
-		return total;
-	}
+    /**
+     * Get the current heap size in bytes Returns -1 if no data is available
+     */
+    public static long getHeapMemory() {
+        long total = 0;
+        List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
+        if (memoryPoolBeans.isEmpty()) {
+            return -1;
+        }
+        for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
+            MemoryPoolMXBean memoryPoolMXBean = iterator.next();
+            if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
+                total += memoryPoolMXBean.getUsage().getUsed();
+            }
+        }
+        return total;
+    }
 
-	/**
-	 * Get the most recent heap size immediately after GC in bytes. Returns -1
-	 * if no data is available
-	 */
-	public static long getUsedHeapAfterGC() {
-		long total = 0;
-		List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
-		if (memoryPoolBeans.isEmpty()) {
-			return -1;
-		}
-		for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
-			MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-			if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
-				total += memoryPoolMXBean.getCollectionUsage().getUsed();
-			}
-		}
-		return total;
-	}
+    /**
+     * Get the most recent heap size immediately after GC in bytes. Returns -1
+     * if no data is available
+     */
+    public static long getUsedHeapAfterGC() {
+        long total = 0;
+        List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
+        if (memoryPoolBeans.isEmpty()) {
+            return -1;
+        }
+        for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
+            MemoryPoolMXBean memoryPoolMXBean = iterator.next();
+            if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
+                total += memoryPoolMXBean.getCollectionUsage().getUsed();
+            }
+        }
+        return total;
+    }
 
-	/**
-	 * Get the size of native memory used by the JVM in bytes. Returns -1 if no
-	 * data is available
-	 */
-	public static long getNativeMemory() {
-		long total = 0;
-		List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
-		if (memoryPoolBeans.isEmpty()) {
-			return -1;
-		}
-		for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
-			MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-			if (memoryPoolMXBean.getType().equals(MemoryType.NON_HEAP)) {
-				total += memoryPoolMXBean.getUsage().getUsed();
-			}
-		}
-		return total;
-	}
+    /**
+     * Get the size of native memory used by the JVM in bytes. Returns -1 if no
+     * data is available
+     */
+    public static long getNativeMemory() {
+        long total = 0;
+        List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
+        if (memoryPoolBeans.isEmpty()) {
+            return -1;
+        }
+        for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
+            MemoryPoolMXBean memoryPoolMXBean = iterator.next();
+            if (memoryPoolMXBean.getType().equals(MemoryType.NON_HEAP)) {
+                total += memoryPoolMXBean.getUsage().getUsed();
+            }
+        }
+        return total;
+    }
 
 }

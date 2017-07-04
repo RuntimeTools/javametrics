@@ -1,3 +1,5 @@
+## API Documentation
+
 Javametrics can be used to send and receive generic monitoring data from your application, as well as to enable or disable existing types of data.
 ___
 #### `public class Javametrics`

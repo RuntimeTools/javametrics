@@ -33,52 +33,53 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/", subprotocols = "javametrics-dash")
 public class JavametricsWebSocket implements Emitter {
 
-	private Set<Session> openSessions = new HashSet<>();
+    private Set<Session> openSessions = new HashSet<>();
 
-	public JavametricsWebSocket() {
-		super();
-	}
+    public JavametricsWebSocket() {
+        super();
+    }
 
-	@OnOpen
-	public void open(Session session) {
-		try {
-			session.getBasicRemote().sendText(
-					"{\"topic\": \"title\", \"payload\": {\"title\":\"Application Metrics for Java\", \"docs\": \"http://github.com/RuntimeTools/javametrics\"}}");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		openSessions.add(session);
+    @OnOpen
+    public void open(Session session) {
+        try {
+            session.getBasicRemote().sendText(
+                    "{\"topic\": \"title\", \"payload\": {\"title\":\"Application Metrics for Java\", \"docs\": \"http://github.com/RuntimeTools/javametrics\"}}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        openSessions.add(session);
         DataHandler.registerEmitter(this);
-	}
+    }
 
-	@OnClose
-	public void close(Session session) {
+    @OnClose
+    public void close(Session session) {
         DataHandler.deregisterEmitter(this);
-		openSessions.remove(session);
-	}
+        openSessions.remove(session);
+    }
 
-	@OnError
-	public void onError(Throwable error) {
-	}
+    @OnError
+    public void onError(Throwable error) {
+    }
 
-	@OnMessage
-	public void handleMessage(String message, Session session) {
-	}
+    @OnMessage
+    public void handleMessage(String message, Session session) {
+    }
 
-	/* (non-Javadoc)
-	 * @see com.ibm.javametrics.MetricsEmitter#emit(java.lang.String)
-	 */
-	public void emit(String message) {
-		openSessions.forEach((session) -> {
-			try {
-				if (session.isOpen()) {
-					session.getBasicRemote().sendText(message);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-	}
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.javametrics.MetricsEmitter#emit(java.lang.String)
+     */
+    public void emit(String message) {
+        openSessions.forEach((session) -> {
+            try {
+                if (session.isOpen()) {
+                    session.getBasicRemote().sendText(message);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
 }

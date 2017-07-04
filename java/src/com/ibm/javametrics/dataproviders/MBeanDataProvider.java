@@ -27,70 +27,70 @@ import com.ibm.javametrics.Javametrics;
  */
 public class MBeanDataProvider {
 
-	private static final String GC_TOPIC = "gc";
-	private static final String CPU_TOPIC = "cpu";
-	private static final String MEMORYPOOLS_TOPIC = "memoryPools";
+    private static final String GC_TOPIC = "gc";
+    private static final String CPU_TOPIC = "cpu";
+    private static final String MEMORYPOOLS_TOPIC = "memoryPools";
 
-	private ScheduledExecutorService exec;
+    private ScheduledExecutorService exec;
 
-	/**
-	 * Create a JavametricsMBeanConnector
-	 */
-	public MBeanDataProvider(long interval) {
-		exec = Executors.newSingleThreadScheduledExecutor();
-		exec.scheduleAtFixedRate(this::emitGCData, interval, interval, TimeUnit.SECONDS);
-		exec.scheduleAtFixedRate(this::emitCPUUsage, interval, interval, TimeUnit.SECONDS);
-		exec.scheduleAtFixedRate(this::emitMemoryPoolUsage, interval, interval, TimeUnit.SECONDS);
-	}
+    /**
+     * Create a JavametricsMBeanConnector
+     */
+    public MBeanDataProvider(long interval) {
+        exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(this::emitGCData, interval, interval, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(this::emitCPUUsage, interval, interval, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(this::emitMemoryPoolUsage, interval, interval, TimeUnit.SECONDS);
+    }
 
-	private void emitGCData() {
-		long timeStamp = System.currentTimeMillis();
-		double gcTime = GCDataProvider.getGCCollectionTime();
-		if (gcTime >= 0) { // Don't send -1 'no data' values
-			StringBuilder message = new StringBuilder();
-			message.append("{\"time\":\"");
-			message.append(timeStamp);
-			message.append("\", \"gcTime\": \"");
-			message.append(gcTime);
-			message.append("\"}}");
-			Javametrics.sendJSON(GC_TOPIC, message.toString());
-		}
-	}
+    private void emitGCData() {
+        long timeStamp = System.currentTimeMillis();
+        double gcTime = GCDataProvider.getGCCollectionTime();
+        if (gcTime >= 0) { // Don't send -1 'no data' values
+            StringBuilder message = new StringBuilder();
+            message.append("{\"time\":\"");
+            message.append(timeStamp);
+            message.append("\", \"gcTime\": \"");
+            message.append(gcTime);
+            message.append("\"}}");
+            Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
+        }
+    }
 
-	private void emitCPUUsage() {
-		long timeStamp = System.currentTimeMillis();
-		double process = CPUDataProvider.getProcessCpuLoad();
-		double system = CPUDataProvider.getSystemCpuLoad();
-		if (system >= 0 && process >= 0) {
-			StringBuilder message = new StringBuilder();
-			message.append("{\"time\":\"");
-			message.append(timeStamp);
-			message.append("\", \"system\": \"");
-			message.append(system);
-			message.append("\", \"process\": \"");
-			message.append(process);
-			message.append("\"}}");
-			Javametrics.sendJSON(CPU_TOPIC, message.toString());
-		}
-	}
+    private void emitCPUUsage() {
+        long timeStamp = System.currentTimeMillis();
+        double process = CPUDataProvider.getProcessCpuLoad();
+        double system = CPUDataProvider.getSystemCpuLoad();
+        if (system >= 0 && process >= 0) {
+            StringBuilder message = new StringBuilder();
+            message.append("{\"time\":\"");
+            message.append(timeStamp);
+            message.append("\", \"system\": \"");
+            message.append(system);
+            message.append("\", \"process\": \"");
+            message.append(process);
+            message.append("\"}}");
+            Javametrics.getInstance().sendJSON(CPU_TOPIC, message.toString());
+        }
+    }
 
-	private void emitMemoryPoolUsage() {
-		long timeStamp = System.currentTimeMillis();
-		long usedHeapAfterGC = MemoryPoolDataProvider.getUsedHeapAfterGC();
-		long usedNative = MemoryPoolDataProvider.getNativeMemory();
-		long usedHeap = MemoryPoolDataProvider.getHeapMemory();
-		if (usedHeapAfterGC >= 0) { // check that some data is available
-			StringBuilder message = new StringBuilder();
-			message.append("{\"time\":\"");
-			message.append(timeStamp);
-			message.append("\", \"usedHeapAfterGC\": \"");
-			message.append(usedHeapAfterGC);
-			message.append("\", \"usedHeap\": \"");
-			message.append(usedHeap);
-			message.append("\", \"usedNative\": \"");
-			message.append(usedNative);
-			message.append("\"}}");
-			Javametrics.sendJSON(MEMORYPOOLS_TOPIC, message.toString());
-		}
-	}
+    private void emitMemoryPoolUsage() {
+        long timeStamp = System.currentTimeMillis();
+        long usedHeapAfterGC = MemoryPoolDataProvider.getUsedHeapAfterGC();
+        long usedNative = MemoryPoolDataProvider.getNativeMemory();
+        long usedHeap = MemoryPoolDataProvider.getHeapMemory();
+        if (usedHeapAfterGC >= 0) { // check that some data is available
+            StringBuilder message = new StringBuilder();
+            message.append("{\"time\":\"");
+            message.append(timeStamp);
+            message.append("\", \"usedHeapAfterGC\": \"");
+            message.append(usedHeapAfterGC);
+            message.append("\", \"usedHeap\": \"");
+            message.append(usedHeap);
+            message.append("\", \"usedNative\": \"");
+            message.append(usedNative);
+            message.append("\"}}");
+            Javametrics.getInstance().sendJSON(MEMORYPOOLS_TOPIC, message.toString());
+        }
+    }
 }

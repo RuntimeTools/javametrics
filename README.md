@@ -46,7 +46,7 @@ Coming soon
 
 <a name="api-doc"></a>
 ## API Documentation
-- [API Documentation](apiDocumentation.md)
+- [API Documentation](API-DOCUMENTATION.md)
 
 <a name="building"></a>
 ## Building the jar and war files from source
