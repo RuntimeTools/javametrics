@@ -15,24 +15,19 @@
  ******************************************************************************/
 package com.ibm.javametrics;
 
-import java.util.HashMap;
-
-import com.ibm.javametrics.agent.AgentConnector;
+import com.ibm.javametrics.impl.JavametricsImpl;
 
 /**
  * Javametrics public API class. Used to create Topics which can send data to
  * Javametrics. JSON formatted data can also be sent directly using sendJSON.
  */
-public class Javametrics {
+public interface Javametrics {
 
-    public static final String API_TYPE = "api";
-    
-    /*
-     * Connect to the native agent
-     */
-    private static AgentConnector agentConnector = AgentConnector.getConnector();
+    public static Javametrics instance = new JavametricsImpl();
 
-    private static HashMap<String, Topic> topics = new HashMap<String, Topic>();
+    public static Javametrics getInstance() {
+        return instance;
+    }
 
     /**
      * Get a Topic to send data on. If a topic with the given name already
@@ -41,24 +36,15 @@ public class Javametrics {
      * @param topicName
      * @return a {@link Topic} with the given name
      */
-    public static synchronized Topic getTopic(String topicName) {
-        if (topicName == null || topicName.length() == 0) {
-            throw new JavametricsException("Topic names must not be null or 0 length");
-        }
-        if (topics.containsKey(topicName)) {
-            return topics.get(topicName);
-        } else {
-            Topic topic = new TopicImpl(topicName);
-            topics.put(topicName, topic);
-            return topic;
-        }
-    }
+    public Topic getTopic(String topicName);
 
-    protected static void sendData(String data) {
-        if (agentConnector != null) {
-            agentConnector.sendDataToAgent(API_TYPE, data);
-        }
-    }
+    /**
+     * Returns true if the given topic is enabled
+     * 
+     * @param topicName
+     * @return
+     */
+    public boolean isEnabled(String topicName);
 
     /**
      * Send data to Javametrics
@@ -68,28 +54,7 @@ public class Javametrics {
      * @param payload
      *            A JSON object formatted as a String
      */
-    public static void sendJSON(String topicName, String payload) {
-        if (topicName == null || topicName.length() == 0) {
-            throw new JavametricsException("Topic names must not be null or 0 length");
-        }
-        if (payload == null || payload.length() == 0) {
-            throw new JavametricsException("Payload must exist");
-        }
-        getTopic(topicName).sendJSON(payload);
-    }
-
-    /**
-     * Returns true if the given topic is enabled
-     * 
-     * @param topicName
-     * @return
-     */
-    public static boolean isEnabled(String topicName) {
-        if (topicName == null || topicName.length() == 0) {
-            throw new JavametricsException("Topic names must not be null or 0 length");
-        }
-        return getTopic(topicName).isEnabled();
-    }
+    public void sendJSON(String topicName, String payload);
 
     /**
      * Add a JavametricsListener, which will be informed of Javametrics events
@@ -97,9 +62,7 @@ public class Javametrics {
      * @param jml
      *            the JavametricsListener to be added
      */
-    public static void addListener(JavametricsListener jml) {
-        agentConnector.addListener(jml);
-    }
+    public void addListener(JavametricsListener jml);
 
     /**
      * Remove a JavametricsListener
@@ -108,8 +71,6 @@ public class Javametrics {
      *            the JavametricsListener to be removed
      * @return true if the listener was registered
      */
-    public static boolean removeListener(JavametricsListener jml) {
-        return agentConnector.removeListener(jml);
-    }
+    public boolean removeListener(JavametricsListener jml);
 
 }
