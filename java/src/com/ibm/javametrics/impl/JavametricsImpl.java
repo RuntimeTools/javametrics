@@ -27,7 +27,7 @@ import com.ibm.javametrics.Topic;
 import com.ibm.javametrics.agent.Agent;
 import com.ibm.javametrics.agent.AgentFactory;
 import com.ibm.javametrics.agent.Receiver;
-import com.ibm.javametrics.dataproviders.MBeanDataProvider;
+import com.ibm.javametrics.dataproviders.DataProviderManager;
 
 public class JavametricsImpl implements Javametrics, Receiver {
 
@@ -36,7 +36,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
 
     private Agent agent;
     private static final int COLLECTION_INTERVAL = 2;
-    static MBeanDataProvider mbeanProvider = null;
+    static DataProviderManager providerManager = null;
 
     private Set<JavametricsListener> javametricsListeners = new HashSet<JavametricsListener>();
 
@@ -53,7 +53,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
         /*
          * Start the mbean data providers
          */
-        mbeanProvider = new MBeanDataProvider(COLLECTION_INTERVAL);
+        providerManager = new DataProviderManager(COLLECTION_INTERVAL);
     }
 
     /*
@@ -123,6 +123,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
      */
     public void addListener(JavametricsListener jml) {
         javametricsListeners.add(jml);
+        providerManager.emitPersistentData();
     }
 
     /*
