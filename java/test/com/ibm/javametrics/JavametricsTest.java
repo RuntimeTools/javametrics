@@ -41,18 +41,18 @@ public class JavametricsTest {
 	@Test
 	public void testGetTopic() {
 		try {
-			Javametrics.getTopic(null);
-			fail("Exception expected for Javametrics.getTopic(null)");
+			Javametrics.getInstance().getTopic(null);
+			fail("Exception expected for Javametrics.getInstance().getTopic(null)");
 		} catch (JavametricsException jme) {
 			// expected, continue test
 		}
 		try {
-			Javametrics.getTopic("");
-			fail("Exception expected for Javametrics.getTopic(\"\")");
+			Javametrics.getInstance().getTopic("");
+			fail("Exception expected for Javametrics.getInstance().getTopic(\"\")");
 		} catch (JavametricsException jme2) {
 			// expected, continue test
 		}
-		Topic topic = Javametrics.getTopic("myTopic");
+		Topic topic = Javametrics.getInstance().getTopic("myTopic");
 		assertNotNull(topic);
 	}
 
@@ -63,23 +63,23 @@ public class JavametricsTest {
 	@Test
 	public void testIsEnabled() {
 		try {
-			Javametrics.isEnabled(null);
-			fail("Exception expected for Javametrics.isEnabled(null)");
+			Javametrics.getInstance().isEnabled(null);
+			fail("Exception expected for Javametrics.getInstance().isEnabled(null)");
 		} catch (JavametricsException jme2) {
 			// expected, continue test
 		}
 		try {
-			Javametrics.isEnabled("");
-			fail("Exception expected for Javametrics.isEnabled(\"\")");
+			Javametrics.getInstance().isEnabled("");
+			fail("Exception expected for Javametrics.getInstance().isEnabled(\"\")");
 		} catch (JavametricsException jme2) {
 			// expected, continue test
 		}
-		Topic topic = Javametrics.getTopic("testTopic");
-		assertTrue(Javametrics.isEnabled("testTopic"));
+		Topic topic = Javametrics.getInstance().getTopic("testTopic");
+		assertTrue(Javametrics.getInstance().isEnabled("testTopic"));
 		topic.disable();
-		assertFalse(Javametrics.isEnabled("testTopic"));
+		assertFalse(Javametrics.getInstance().isEnabled("testTopic"));
 		topic.enable();
-		assertTrue(Javametrics.isEnabled("testTopic"));
+		assertTrue(Javametrics.getInstance().isEnabled("testTopic"));
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class JavametricsTest {
 	@Test
 	public void testAddListenerAndSendJSON() {
 		final List<String> received = new ArrayList<String>();
-		Javametrics.addListener(new JavametricsListener() {
+		Javametrics.getInstance().addListener(new JavametricsListener() {
 
 			@Override
 			public void receive(String pluginName, String data) {
@@ -107,7 +107,7 @@ public class JavametricsTest {
 				}
 			}
 		});
-		Javametrics.sendJSON("myTopic", "{\"message\": \"hello\"}");
+		Javametrics.getInstance().sendJSON("myTopic", "{\"message\": \"hello\"}");
 		int timeout = 3000;
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() - timeout < startTime && received.size() == 0) {
@@ -137,27 +137,27 @@ public class JavametricsTest {
 	@Test
 	public void testSendJSON() {
 		try {
-			Javametrics.sendJSON(null, "hello");
-			fail("Javametrics.sendJSON(null, ..) should throw an exception");
+			Javametrics.getInstance().sendJSON(null, "hello");
+			fail("Javametrics.getInstance().sendJSON(null, ..) should throw an exception");
 		} catch (JavametricsException e) {
 			// expected, continue test
 		}
 		try {
-			Javametrics.sendJSON("", "hello");
-			fail("Javametrics.sendJSON(\"\", ..) should throw an exception");
+			Javametrics.getInstance().sendJSON("", "hello");
+			fail("Javametrics.getInstance().sendJSON(\"\", ..) should throw an exception");
 		} catch (JavametricsException je) {
 			// expected, continue test
 		}
 
 		try {
-			Javametrics.sendJSON("hello", null);
-			fail("Javametrics.sendJSON(.., null) should throw an exception");
+			Javametrics.getInstance().sendJSON("hello", null);
+			fail("Javametrics.getInstance().sendJSON(.., null) should throw an exception");
 		} catch (JavametricsException je) {
 			// expected, continue test
 		}
 		try {
-			Javametrics.sendJSON("hello", "");
-			fail("Javametrics.sendJSON(..,\"\") should throw an exception");
+			Javametrics.getInstance().sendJSON("hello", "");
+			fail("Javametrics.getInstance().sendJSON(..,\"\") should throw an exception");
 		} catch (JavametricsException je) {
 			// expected
 		}
@@ -179,11 +179,11 @@ public class JavametricsTest {
 				}
 			}
 		};
-		Javametrics.addListener(jml);
-		Javametrics.removeListener(jml);
+		Javametrics.getInstance().addListener(jml);
+		Javametrics.getInstance().removeListener(jml);
 		// clear any data that may have been sent by built in data providers
 		received.clear();
-		Javametrics.sendJSON("myTopic", "{\"message\": \"hello\"}");
+		Javametrics.getInstance().sendJSON("myTopic", "{\"message\": \"hello\"}");
 		int timeout = 3000;
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() - timeout < startTime && received.size() == 0) {

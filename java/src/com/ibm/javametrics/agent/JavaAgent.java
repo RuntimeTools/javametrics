@@ -23,6 +23,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.javametrics.impl.JavametricsImpl;
+
 public class JavaAgent implements Agent {
 
     private static final int MAX_BUCKET_SIZE = 1024 * 1024;
@@ -79,7 +81,7 @@ public class JavaAgent implements Agent {
 
     @Override
     public void command(String command, String... params) {
-        if (command.equals(AgentConnector.HISTORY_MESSAGE)) {
+        if (command.equals(JavametricsImpl.HISTORY_MESSAGE)) {
             // TODO call buckets to get history and persistent data
         }
     }

@@ -42,7 +42,7 @@ public class MBeanDataProviderTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
-		Javametrics.addListener(new JavametricsListener() {
+		Javametrics.getInstance().addListener(new JavametricsListener() {
 
 			@Override
 			public void receive(String pluginName, String data) {
@@ -62,9 +62,9 @@ public class MBeanDataProviderTest {
 	@Test
 	public void testDefault() {
 		// Make sure topics are enabled as this can be affected by testDisableTopics
-		Javametrics.getTopic("gc").enable();
-		Javametrics.getTopic("memoryPools").enable();
-		Javametrics.getTopic("cpu").enable();
+		Javametrics.getInstance().getTopic("gc").enable();
+		Javametrics.getInstance().getTopic("memoryPools").enable();
+		Javametrics.getInstance().getTopic("cpu").enable();
 		// wait for at least 6 events or 5 seconds
 		int timeout = 10000;
 		long startTime = System.currentTimeMillis();
@@ -99,9 +99,9 @@ public class MBeanDataProviderTest {
 
 	@Test
 	public void testDisableTopics() {
-		Javametrics.getTopic("gc").disable();
-		Javametrics.getTopic("memoryPools").disable();
-		Javametrics.getTopic("cpu").disable();
+		Javametrics.getInstance().getTopic("gc").disable();
+		Javametrics.getInstance().getTopic("memoryPools").disable();
+		Javametrics.getInstance().getTopic("cpu").disable();
 		// Wait 3 seconds to make sure all events already sent have come through.
 		try {
 			TimeUnit.SECONDS.sleep(3);
