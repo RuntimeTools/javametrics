@@ -87,8 +87,10 @@ public class Agent {
 
         } catch (NoClassDefFoundError ncdfe) {
             System.err.println("Javametrics: Unable to start javaagent: " + ncdfe);
+            ncdfe.printStackTrace();
         } catch (Exception e) {
             System.err.println("Javametrics: Unable to start javaagent: " + e);
+            e.printStackTrace();
         }
     }
 

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import com.ibm.javametrics.Javametrics;
+import com.ibm.javametrics.JavametricsException;
 
 /**
  * Class containing static methods to be called from injected code
@@ -70,6 +71,7 @@ public class ServletCallback {
         } catch (Exception e) {
             // Log any exception caused by our injected code
             System.err.println("Javametrics: Servlet callback exception: " + e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -106,7 +108,7 @@ public class ServletCallback {
                 /*
                  * should never happen
                  */
-                return;
+                throw new JavametricsException("Unable to find request tracker");
             }
 
             /*
@@ -172,6 +174,7 @@ public class ServletCallback {
         } catch (Exception e) {
             // Log any exception caused by our injected code
             System.err.println("Javametrics: Servlet callback exception: " + e.toString());
+            e.printStackTrace();
         }
 
     }
