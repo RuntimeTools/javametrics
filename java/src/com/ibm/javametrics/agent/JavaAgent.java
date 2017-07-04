@@ -41,25 +41,28 @@ public class JavaAgent implements Agent {
     }
 
     private void init() {
-        buckets.put("api", new APIBucket());
         exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(this::empty, collectionInterval, collectionInterval, TimeUnit.SECONDS);
     }
 
     public void pushData(String type, String data) {
-        synchronized (this) {
+        synchronized (buckets) {
             Bucket bucket = buckets.get(type);
-            if (bucket != null) {
-                if ((bucket.getSize() + data.length()) > MAX_BUCKET_SIZE) {
-                    emit(type, bucket.empty());
-                }
-                bucket.pushData(data);
+            if (bucket == null) {
+                bucket = new StringDataBucket();
+                buckets.put(type, bucket);
             }
+
+            if ((bucket.getSize() + data.length()) > MAX_BUCKET_SIZE) {
+                emit(type, bucket.empty());
+            }
+
+            bucket.pushData(data);
         }
     }
 
     private void empty() {
-        synchronized (this) {
+        synchronized (buckets) {
             buckets.forEach((name, bucket) -> {
                 emit(name, bucket.empty());
             });

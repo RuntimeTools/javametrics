@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.ibm.javametrics.agent;
 
-public class APIBucket implements Bucket {
+public class StringDataBucket implements Bucket {
 
     private StringBuffer bucket = new StringBuffer();
 
