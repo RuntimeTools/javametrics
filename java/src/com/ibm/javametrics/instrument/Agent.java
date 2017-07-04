@@ -60,7 +60,8 @@ public class Agent {
             String jarUrl = (Agent.class.getResource("Agent.class").toString());
             int jarIndex = jarUrl.indexOf(JAVAMETRICS_JAR_URL);
             if (jarIndex == -1) {
-                System.err.println("Javametrics: Unable to start javaagent: Agent class not loaded from javametrics.jar");                
+                System.err
+                        .println("Javametrics: Unable to start javaagent: Agent class not loaded from javametrics.jar");
             }
             String libUrl = jarUrl.substring(0, jarUrl.indexOf(JAVAMETRICS_JAR_URL));
 
