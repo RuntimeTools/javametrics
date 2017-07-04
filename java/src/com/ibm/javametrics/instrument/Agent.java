@@ -58,6 +58,12 @@ public class Agent {
              * Determine the url to our jar lib folder
              */
             String jarUrl = (Agent.class.getResource("Agent.class").toString());
+            int jarIndex = jarUrl.indexOf(JAVAMETRICS_JAR_URL);
+            if (jarIndex == -1) {
+                System.err
+                        .println("Javametrics: Unable to start javaagent: Agent class not loaded from javametrics.jar");
+                return;
+            }
             String libUrl = jarUrl.substring(0, jarUrl.indexOf(JAVAMETRICS_JAR_URL));
 
             URL[] urls = { new URL(libUrl + JAVAMETRICS_JAR_URL), new URL(libUrl + ASM_JAR_URL),
