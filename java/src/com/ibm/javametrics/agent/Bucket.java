@@ -18,7 +18,9 @@ package com.ibm.javametrics.agent;
 public interface Bucket {
     public void pushData(String data);
 
-    public String empty();
+    public String getNext();
+    
+    public void empty();
 
     public int getSize();
 

@@ -44,33 +44,41 @@ public class JavaAgent implements Agent {
 
     private void init() {
         exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(this::empty, collectionInterval, collectionInterval, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(this::drain, collectionInterval, collectionInterval, TimeUnit.SECONDS);
     }
 
     public void pushData(String type, String data) {
         synchronized (buckets) {
             Bucket bucket = buckets.get(type);
             if (bucket == null) {
-                bucket = new StringDataBucket();
+                bucket = new JsonDataBucket();
                 buckets.put(type, bucket);
             }
 
             if ((bucket.getSize() + data.length()) > MAX_BUCKET_SIZE) {
-                emit(type, bucket.empty());
+                drain(type, bucket);
             }
 
             bucket.pushData(data);
         }
     }
 
-    private void empty() {
+    private void drain() {
         synchronized (buckets) {
             buckets.forEach((name, bucket) -> {
-                emit(name, bucket.empty());
+                drain(name, bucket);
             });
         }
     }
 
+    private void drain(String type, Bucket bucket) {
+        String data = bucket.getNext();
+        while (data != null) {
+            emit(type, data);
+            data = bucket.getNext();
+        }
+    }
+    
     private void emit(String type, String data) {
         if (data != null) {
             receivers.forEach((receiver) -> {

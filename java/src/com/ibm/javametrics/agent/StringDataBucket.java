@@ -26,14 +26,19 @@ public class StringDataBucket implements Bucket {
     }
 
     @Override
-    public String empty() {
-        String data = bucket.toString();
+    public void empty() {
         bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
-        return data;
     }
 
     @Override
     public void pushData(String data) {
         bucket.append(data);
+    }
+
+    @Override
+    public String getNext() {
+        String data = bucket.toString();
+        bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+        return data;
     }
 }

@@ -51,7 +51,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
 
     private void initializeProviders() {
         /*
-         * Start the mbean data providers
+         * Start the data providers
          */
         providerManager = new DataProviderManager(COLLECTION_INTERVAL);
     }
@@ -63,6 +63,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
      * java.lang.String)
      */
     public void receiveData(String type, String data) {
+        System.err.println("received: " + type + " " + data);
         for (Iterator<JavametricsListener> iterator = javametricsListeners.iterator(); iterator.hasNext();) {
             JavametricsListener javametricsListener = iterator.next();
             javametricsListener.receive(type, data);
