@@ -8,7 +8,7 @@ Application Metrics for Java&trade; is composed of:
 
 ## Components 
 ### Agent
-An Agent that stores data added via the API and emits data to receivers.
+`com.ibm.javametrics.agent` package implements an Agent that stores data added via the API and emits data to receivers. 
 
 ### Javametrics API
 Javametrics provides a Java API to interface with the Agent. The interface in the `com.ibm.javametrics` package consists of: 
@@ -17,12 +17,15 @@ Javametrics provides a Java API to interface with the Agent. The interface in th
 * `Topic` - API to send data to the agent for a named topic.
 
 ### Data Providers
-
-#### MBean providers
-`com.ibm.javametrics.dataproviders.MBeanDataProvider` is initialized statically in `com.ibm.javametrics.Javametrics` class. It gathers data from the MBean providers every 2 seconds and sends the data to the agent using the Javametrics API. MBean providers in the `com.ibm.javametrics.dataproviders` package are:
+`com.ibm.javametrics.dataproviders.DataProviderManager` is instantiated by `com.ibm.javametrics.impl.JavametricsImpl`.
+It gathers data from the data providers every 2 seconds and sends the data to the agent using the Javametrics API.
+ 
+Data providers in the `com.ibm.javametrics.dataproviders` package are:
 * `CPUDataProvider` - system and process cpu usage data
 * `GCDataProvider` - garbage collection statistics
 * `MemoryPoolDataProvider` - heap and native memory usage data
+* `EnvironmentDataProvider` - runtime environment data
+
 
 #### Instrumentation providers
 Bytecode Instrumentation is used to gather HTTP data. Servlet and JSP classes are instrumented with callbacks to track and time the requests. The callbacks use the Javametrics API to send the data to the agent.
