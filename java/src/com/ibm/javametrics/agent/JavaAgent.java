@@ -51,10 +51,13 @@ public class JavaAgent implements Agent {
         synchronized (buckets) {
             Bucket bucket = buckets.get(type);
             if (bucket == null) {
-                bucket = new ArrayDataBucket(MAX_BUCKET_SIZE);
+                bucket = new StringDataBucket(MAX_BUCKET_SIZE);
                 buckets.put(type, bucket);
             }
-            bucket.addData(data);
+            if (!bucket.addData(data)) {
+                // System.err.println("Javametrics: data dropped. Bucket size="
+                // + bucket.getSize());
+            }
         }
     }
 
@@ -86,7 +89,7 @@ public class JavaAgent implements Agent {
             emit(type, sb.toString());
         }
     }
-  
+
     private void emit(String type, String data) {
         if (data != null) {
             receivers.forEach((receiver) -> {
