@@ -51,7 +51,7 @@ public class CPUDataProviderTest {
 	@Test
 	public void testGetSystemCpuLoad() {
 		double load = CPUDataProvider.getSystemCpuLoad();
-		int timeout = 6000;
+		int timeout = 3000;
 		long startTime = System.currentTimeMillis();
 		// may get -1 returned before MXBeans are initialized, allow time for a
 		// real value to be returned
@@ -67,7 +67,6 @@ public class CPUDataProviderTest {
 		}
 		assertTrue("CPU load should be greater than 0, was " + load, load >= 0.0d);
 		assertTrue("CPU load should be less than 1 (i.e. less than 100%), was " + load, load <= 1d);
-		assertTrue("System CPU load should greater than or equal to process load", load >= process);
 	}
 
 }
