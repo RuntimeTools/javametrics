@@ -20,6 +20,11 @@ limitations under the License.
     <property name="lib.dir" value="${basedir}/build/lib" />
     <property name="java.dir" value="${basedir}/src" />
     <property name="classes.dir" value="${basedir}/build/classes" />
+    <property name="test.dir" value="${basedir}/test" />
+    <property name="test.classes.dir" value="${basedir}/build/testclasses" />
+    <property name="report.dir" value="${basedir}/build/testreport" />
+    <property name="liberty.dir" value="../../wlp/dev/api" />
+    <property name="junit.dir" value="${basedir}/lib/junit" />
 
 
     <target name="compile.java">
@@ -55,6 +60,44 @@ limitations under the License.
         <zip destfile="${output.dir}/javametrics-lib.zip"
         basedir="${lib.dir}">
         </zip>
+    </target>
+
+    <target name="compile.java.tests" depends="compile.java" description="compile jUnit Test cases ">
+        <mkdir dir="${test.classes.dir}" />
+        <javac srcdir="${test.dir}" destdir="${test.classes.dir}" includeantruntime="false" debug="on">
+            <classpath>
+                <path location="${classes.dir}" />
+                <fileset dir="${liberty.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+                <fileset dir="${basedir}/lib/asm/">
+                    <include name="**/*.jar" />
+                </fileset>
+                <fileset dir="${junit.dir}">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="build.lib, compile.java.tests">
+        <junit printsummary="yes" haltonfailure="no" showoutput="yes" fork="yes" forkmode="once">
+            <jvmarg value="-javaagent:${lib.dir}/javametrics.jar" />
+            <classpath>
+                <fileset dir="${junit.dir}">
+                    <include name="*.jar" />
+                </fileset>
+                <fileset dir="${liberty.dir}">
+                    <include name="**/*.jar" />
+                </fileset>
+                <path location="${test.classes.dir}" />
+            </classpath>
+            <formatter type="plain" usefile="false" />
+            <formatter type="xml" />
+            <batchtest>
+                <fileset dir="${test.classes.dir}" includes="**/*Test.class" />
+            </batchtest>
+        </junit>
     </target>
 
     <target name="clean">
