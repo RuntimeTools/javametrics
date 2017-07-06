@@ -20,6 +20,12 @@ public class StringDataBucket implements Bucket {
     private static final int INITIAL_BUCKET_SIZE = 4 * 1024;
     private StringBuffer bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
 
+    private int maxBucketSize;
+
+    public StringDataBucket(int maxBucketSize) {
+        this.maxBucketSize = maxBucketSize;
+    }
+
     @Override
     public int getSize() {
         return bucket.length();
@@ -31,14 +37,21 @@ public class StringDataBucket implements Bucket {
     }
 
     @Override
-    public void pushData(String data) {
+    public boolean addData(String data) {
+        if ((getSize() + data.length()) > maxBucketSize) {
+            return false;
+        }
         bucket.append(data);
+        return true;
     }
 
     @Override
     public String getNext() {
-        String data = bucket.toString();
-        bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+        String data = null;
+        if (bucket.length() > 0) {
+            data = bucket.toString();
+            bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+        }
         return data;
     }
 }

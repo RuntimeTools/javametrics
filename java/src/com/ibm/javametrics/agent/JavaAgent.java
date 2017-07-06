@@ -27,7 +27,7 @@ import com.ibm.javametrics.impl.JavametricsImpl;
 
 public class JavaAgent implements Agent {
 
-    private static final int MAX_BUCKET_SIZE = 1024 * 1024;
+    private static final int MAX_BUCKET_SIZE = 2 * 1024 * 1024;
     private Map<String, Bucket> buckets = new HashMap<String, Bucket>();
     private Set<Receiver> receivers = new HashSet<Receiver>();
     private int collectionInterval = 2;
@@ -51,26 +51,22 @@ public class JavaAgent implements Agent {
         synchronized (buckets) {
             Bucket bucket = buckets.get(type);
             if (bucket == null) {
-                bucket = new JsonDataBucket();
+                bucket = new ArrayDataBucket(MAX_BUCKET_SIZE);
                 buckets.put(type, bucket);
             }
-
-            if ((bucket.getSize() + data.length()) > MAX_BUCKET_SIZE) {
-                drain(type, bucket);
-            }
-
-            bucket.pushData(data);
+            bucket.addData(data);
         }
     }
 
     private void drain() {
         synchronized (buckets) {
             buckets.forEach((name, bucket) -> {
-                drain(name, bucket);
+                drainBatched(name, bucket);
             });
         }
     }
 
+    @SuppressWarnings("unused")
     private void drain(String type, Bucket bucket) {
         String data = bucket.getNext();
         while (data != null) {
@@ -78,7 +74,19 @@ public class JavaAgent implements Agent {
             data = bucket.getNext();
         }
     }
-    
+
+    private void drainBatched(String type, Bucket bucket) {
+        StringBuffer sb = new StringBuffer();
+        String data = bucket.getNext();
+        while (data != null) {
+            sb.append(data);
+            data = bucket.getNext();
+        }
+        if (sb.length() > 0) {
+            emit(type, sb.toString());
+        }
+    }
+  
     private void emit(String type, String data) {
         if (data != null) {
             receivers.forEach((receiver) -> {

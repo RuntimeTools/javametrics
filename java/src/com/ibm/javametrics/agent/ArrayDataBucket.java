@@ -17,12 +17,17 @@ package com.ibm.javametrics.agent;
 
 import java.util.ArrayList;
 
-public class JsonDataBucket implements Bucket {
+public class ArrayDataBucket implements Bucket {
 
-    private static final int MAX_SIZE = 4 * 1024;
-    private ArrayList<String> bucket = new ArrayList<String>(100);
+    private ArrayList<String> bucket;
     int size = 0;
     int cursor = 0;
+    private int maxBucketSize;
+
+    public ArrayDataBucket(int maxBucketSize) {
+        this.maxBucketSize = maxBucketSize;
+        bucket = new ArrayList<>(100);
+    }
 
     @Override
     public int getSize() {
@@ -39,18 +44,26 @@ public class JsonDataBucket implements Bucket {
     }
 
     @Override
-    public void pushData(String data) {
+    public boolean addData(String data) {
         synchronized (bucket) {
-            bucket.add(data);
-            size += data.length();
 
-            System.err.println("pushed " + cursor + " " + bucket.size() + " " + size);
-            while (size > MAX_SIZE && cursor > 0) {
+            int newSize = size + data.length();
+            /*
+             * Spill data if necessary
+             */
+            while (newSize > maxBucketSize && cursor > 0) {
                 String removed = bucket.remove(0);
                 cursor--;
-                size -= removed.length();
-                System.err.println("trimmed " + cursor + " " + bucket.size() + " " + size);
+                newSize -= removed.length();
             }
+
+            if (newSize > maxBucketSize) {
+                return false;
+            }
+
+            bucket.add(data);
+            size = newSize;
+            return true;
         }
     }
 
@@ -61,7 +74,6 @@ public class JsonDataBucket implements Bucket {
             if (cursor < bucket.size()) {
                 data = bucket.get(cursor);
                 cursor++;
-                System.err.println("returned " + cursor + " " + bucket.size() + " " + size);
             }
         }
         return data;
