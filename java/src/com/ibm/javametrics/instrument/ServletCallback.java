@@ -37,6 +37,11 @@ public class ServletCallback {
     private static final String GET_ATTRIBUTE = "getAttribute";
     private static final String SET_ATTRIBUTE = "setAttribute";
     private static final Object TRACKER_ATTRIBUTE = "com.ibm.javametrics.tracker";
+    
+    /*
+     * Set to true to collect detailed Request/Response information
+     */
+    private static boolean detailed = false;
 
     /**
      * Called on method entry for HTTP/JSP requests public static void
@@ -129,37 +134,39 @@ public class ServletCallback {
             Method getRequestURL = reqClass.getMethod(GET_REQUEST_URL);
             data.setUrl(((StringBuffer) getRequestURL.invoke(request)).toString());
 
-            Method getMethod = reqClass.getMethod(GET_METHOD);
-            data.setMethod((String) getMethod.invoke(request));
+            if (detailed ) {
+                Method getMethod = reqClass.getMethod(GET_METHOD);
+                data.setMethod((String) getMethod.invoke(request));
 
-            Method getContentType = respClass.getMethod(GET_CONTENT_TYPE);
-            data.setContentType((String) getContentType.invoke(response));
+                Method getContentType = respClass.getMethod(GET_CONTENT_TYPE);
+                data.setContentType((String) getContentType.invoke(response));
 
-            Method getHeaders = respClass.getMethod(GET_HEADER_NAMES);
-            Method getHeader = respClass.getMethod(GET_HEADER, String.class);
-            Collection<String> headers = (Collection<String>) getHeaders.invoke(response);
-            if (headers != null) {
-                for (String headerName : headers) {
-                    String header = (String) getHeader.invoke(response, headerName);
-                    if (header != null) {
-                        data.addHeader(headerName, header);
+                Method getHeaders = respClass.getMethod(GET_HEADER_NAMES);
+                Method getHeader = respClass.getMethod(GET_HEADER, String.class);
+                Collection<String> headers = (Collection<String>) getHeaders.invoke(response);
+                if (headers != null) {
+                    for (String headerName : headers) {
+                        String header = (String) getHeader.invoke(response, headerName);
+                        if (header != null) {
+                            data.addHeader(headerName, header);
+                        }
+                    }
+                }
+
+                Method getReqHeaders = reqClass.getMethod(GET_HEADER_NAMES);
+                Method getReqHeader = reqClass.getMethod(GET_HEADER, String.class);
+                Enumeration<String> reqHeaders = (Enumeration<String>) getReqHeaders.invoke(request);
+                if (reqHeaders != null) {
+                    while (reqHeaders.hasMoreElements()) {
+                        String headerName = reqHeaders.nextElement();
+                        String header = (String) getReqHeader.invoke(request, headerName);
+                        if (header != null) {
+                            data.addRequestHeader(headerName, header);
+                        }
                     }
                 }
             }
-
-            Method getReqHeaders = reqClass.getMethod(GET_HEADER_NAMES);
-            Method getReqHeader = reqClass.getMethod(GET_HEADER, String.class);
-            Enumeration<String> reqHeaders = (Enumeration<String>) getReqHeaders.invoke(request);
-            if (reqHeaders != null) {
-                while (reqHeaders.hasMoreElements()) {
-                    String headerName = reqHeaders.nextElement();
-                    String header = (String) getReqHeader.invoke(request, headerName);
-                    if (header != null) {
-                        data.addRequestHeader(headerName, header);
-                    }
-                }
-            }
-
+            
             data.setDuration(System.currentTimeMillis() - tracker.getRequestTime());
 
             if (Agent.debug) {
