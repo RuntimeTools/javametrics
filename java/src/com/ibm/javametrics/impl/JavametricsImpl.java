@@ -51,7 +51,7 @@ public class JavametricsImpl implements Javametrics, Receiver {
 
     private void initializeProviders() {
         /*
-         * Start the mbean data providers
+         * Start the data providers
          */
         providerManager = new DataProviderManager(COLLECTION_INTERVAL);
     }
