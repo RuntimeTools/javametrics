@@ -51,9 +51,12 @@ Coming soon
 <a name="building"></a>
 ## Building the jar and war files from source
 
-Requirements: Apache Ant
+Requirements: Maven
 
-Two `build.xml` ant build scripts are provided, one for building the javametrics.jar file and the other for building the javametrics.war fie.
+To build javametrics, run `mvn install` from the root project.  This will build the javametrics.jar file, the javametrics.war file
+and also create the required asm.jar packages.
+
+The files will appear under java/target and web/target
  
 ## Source code
 The source code for Application Metrics for Java is available in the [Javametrics Github project](http://github.com/RuntimeTools/javametrics).

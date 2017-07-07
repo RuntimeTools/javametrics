@@ -10,3 +10,5 @@
 /TEST-com.ibm.javametrics.dataproviders.MBeanDataProviderTest.xml
 /TEST-com.ibm.javametrics.dataproviders.MemoryPoolDataProviderTest.xml
 /TEST-com.ibm.javametrics.instrument.InstrumentTest.xml
+/target
+.settings
