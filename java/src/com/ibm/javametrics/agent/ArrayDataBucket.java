@@ -15,42 +15,66 @@
  ******************************************************************************/
 package com.ibm.javametrics.agent;
 
-public class StringDataBucket implements Bucket {
+import java.util.ArrayList;
 
-    private static final int INITIAL_BUCKET_SIZE = 4 * 1024;
-    private StringBuffer bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+public class ArrayDataBucket implements Bucket {
 
+    private ArrayList<String> bucket;
+    int size = 0;
+    int cursor = 0;
     private int maxBucketSize;
 
-    public StringDataBucket(int maxBucketSize) {
+    public ArrayDataBucket(int maxBucketSize) {
         this.maxBucketSize = maxBucketSize;
+        bucket = new ArrayList<>(100);
     }
 
     @Override
     public int getSize() {
-        return bucket.length();
+        return size;
     }
 
     @Override
     public void empty() {
-        bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+        synchronized (bucket) {
+            bucket.clear();
+            cursor = 0;
+            size = 0;
+        }
     }
 
     @Override
     public boolean addData(String data) {
-        if ((getSize() + data.length()) > maxBucketSize) {
-            return false;
+        synchronized (bucket) {
+
+            int newSize = size + data.length();
+            /*
+             * Spill data if necessary
+             */
+            while (newSize > maxBucketSize && cursor > 0) {
+                String removed = bucket.remove(0);
+                cursor--;
+                newSize -= removed.length();
+            }
+
+            if (newSize > maxBucketSize) {
+                return false;
+            }
+
+            bucket.add(data);
+            size = newSize;
+            return true;
         }
-        bucket.append(data);
-        return true;
     }
 
     @Override
     public String getNext() {
         String data = null;
-        if (bucket.length() > 0) {
-            data = bucket.toString();
-            bucket = new StringBuffer(INITIAL_BUCKET_SIZE);
+        synchronized (bucket) {
+            if (cursor < bucket.size()) {
+                data = bucket.get(cursor);
+                cursor++;
+            }
         }
         return data;
     }

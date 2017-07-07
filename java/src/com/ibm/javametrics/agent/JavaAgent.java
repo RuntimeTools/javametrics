@@ -27,7 +27,7 @@ import com.ibm.javametrics.impl.JavametricsImpl;
 
 public class JavaAgent implements Agent {
 
-    private static final int MAX_BUCKET_SIZE = 1024 * 1024;
+    private static final int MAX_BUCKET_SIZE = 2 * 1024 * 1024;
     private Map<String, Bucket> buckets = new HashMap<String, Bucket>();
     private Set<Receiver> receivers = new HashSet<Receiver>();
     private int collectionInterval = 2;
@@ -44,30 +44,49 @@ public class JavaAgent implements Agent {
 
     private void init() {
         exec = Executors.newSingleThreadScheduledExecutor();
-        exec.scheduleAtFixedRate(this::empty, collectionInterval, collectionInterval, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(this::drain, collectionInterval, collectionInterval, TimeUnit.SECONDS);
     }
 
     public void pushData(String type, String data) {
         synchronized (buckets) {
             Bucket bucket = buckets.get(type);
             if (bucket == null) {
-                bucket = new StringDataBucket();
+                bucket = new StringDataBucket(MAX_BUCKET_SIZE);
                 buckets.put(type, bucket);
             }
-
-            if ((bucket.getSize() + data.length()) > MAX_BUCKET_SIZE) {
-                emit(type, bucket.empty());
+            if (!bucket.addData(data)) {
+                // System.err.println("Javametrics: data dropped. Bucket size="
+                // + bucket.getSize());
             }
-
-            bucket.pushData(data);
         }
     }
 
-    private void empty() {
+    private void drain() {
         synchronized (buckets) {
             buckets.forEach((name, bucket) -> {
-                emit(name, bucket.empty());
+                drainBatched(name, bucket);
             });
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void drain(String type, Bucket bucket) {
+        String data = bucket.getNext();
+        while (data != null) {
+            emit(type, data);
+            data = bucket.getNext();
+        }
+    }
+
+    private void drainBatched(String type, Bucket bucket) {
+        StringBuffer sb = new StringBuffer();
+        String data = bucket.getNext();
+        while (data != null) {
+            sb.append(data);
+            data = bucket.getNext();
+        }
+        if (sb.length() > 0) {
+            emit(type, sb.toString());
         }
     }
 
