@@ -32,7 +32,8 @@ public class Agent {
 
     private static final String CLASSTRANSFORMER_CLASS = "com.ibm.javametrics.instrument.ClassTransformer";
 
-    private static final String JAVAMETRICS_JAR_URL = "javametrics.jar!/";
+    private static final String JAR_URL = ".jar!/";
+    private static final String JAVAMETRICS = "javametrics";
 
     private static final String ASM_VERSION = "5.0.4";
     private static final String ASM_JAR_URL = "asm/asm-" + ASM_VERSION + ".jar!/";
@@ -58,15 +59,21 @@ public class Agent {
              * Determine the url to our jar lib folder
              */
             String jarUrl = (Agent.class.getResource("Agent.class").toString());
-            int jarIndex = jarUrl.indexOf(JAVAMETRICS_JAR_URL);
+
+            int jarIndex = jarUrl.indexOf(JAR_URL);
             if (jarIndex == -1) {
-                System.err
-                        .println("Javametrics: Unable to start javaagent: Agent class not loaded from javametrics.jar");
+                System.err.println("Javametrics: Unable to start javaagent: Agent class not loaded from jar: " +  jarUrl);
                 return;
             }
-            String libUrl = jarUrl.substring(0, jarUrl.indexOf(JAVAMETRICS_JAR_URL));
 
-            URL[] urls = { new URL(libUrl + JAVAMETRICS_JAR_URL), new URL(libUrl + ASM_JAR_URL),
+            /*
+             * Determine root url and name of our jar
+             */
+            String libUrl = jarUrl.substring(0, jarIndex);
+            int jmIndex = libUrl.lastIndexOf(JAVAMETRICS);
+            libUrl = jarUrl.substring(0, jmIndex);
+            String jarName = jarUrl.substring(jmIndex, jarIndex + JAR_URL.length());
+            URL[] urls = { new URL(libUrl + jarName ), new URL(libUrl + ASM_JAR_URL),
                     new URL(libUrl + ASM_COMMONS_JAR_URL) };
             URLClassLoader ucl = new URLClassLoader(urls) {
 

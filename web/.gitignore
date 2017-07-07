@@ -1,3 +1,7 @@
 /bin/
 /.apt_generated/
 /WebContent/WEB-INF/classes/
+/build
+/.settings
+/target/
+/.project
