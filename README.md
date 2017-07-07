@@ -56,10 +56,8 @@ Coming soon
 
 Requirements: Maven
 
-To build javametrics, run `mvn install` from the root project.  This will build the javametrics.jar file, the javametrics.war file
-and also create the required asm.jar packages.
-
-The files will appear under java/target and web/target
+To build javametrics, run `mvn clean package` from the root project.  This will build a zip file in the distribution directory containing 
+`javametrics-agent.jar`, `javametrics-web.war` and a `lib/` directory with the `asm*.jar` files.
  
 ## Source code
 The source code for Application Metrics for Java is available in the [Javametrics Github project](http://github.com/RuntimeTools/javametrics).

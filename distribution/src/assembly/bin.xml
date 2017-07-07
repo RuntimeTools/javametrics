@@ -24,6 +24,14 @@
         <unpack>false</unpack>
         <dependencySets>
           <dependencySet>
+            <excludes>
+              <exclude>org.ow2.asm:asm-tree*</exclude>
+              <exclude>javax.servlet.jsp:jsp-api*</exclude>
+              <exclude>javax.servlet:*</exclude>
+              <exclude>javax.websocket:javax.websocket-api*</exclude>
+              <exclude>javax.json:*</exclude>
+              <exclude>com.ibm.runtimetools:javametrics-agent*</exclude>
+            </excludes>        	
         	<outputDirectory>/lib</outputDirectory>
           </dependencySet>
         </dependencySets>
