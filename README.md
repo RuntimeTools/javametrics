@@ -19,6 +19,7 @@ The following data collection sources are built-in:
 The Application Metrics for Java agent requires Java version 8.
 
 <a name="install"></a>
+
 ### Installation
 
 Download the latest Application Metrics for Java release from [Github](http://github.com/runtimetools/javametrics/releases).
@@ -45,10 +46,12 @@ Coming soon
 Coming soon
 
 <a name="api-doc"></a>
+
 ## API Documentation
 - [API Documentation](API-DOCUMENTATION.md)
 
 <a name="building"></a>
+
 ## Building the jar and war files from source
 
 Requirements: Maven
