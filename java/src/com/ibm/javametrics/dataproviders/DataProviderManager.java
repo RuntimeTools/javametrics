@@ -33,6 +33,10 @@ public class DataProviderManager {
 
     private ScheduledExecutorService exec;
 
+    private static String escapeStringForJSON(String str) {
+        return str.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
     /**
      * Create a JavametricsMBeanConnector
      */
@@ -55,13 +59,16 @@ public class DataProviderManager {
     private void emitEnvironmentData() {
         String paramFormat = "{\"Parameter\":\"%s\",\"Value\":\"%s\"}";
         StringBuilder message = new StringBuilder("[");
-        message.append(String.format(paramFormat, "Hostname", EnvironmentDataProvider.getHostname()));
+        message.append(String.format(paramFormat, "Hostname",
+                escapeStringForJSON(EnvironmentDataProvider.getHostname())));
         message.append(',');
-        message.append(String.format(paramFormat, "OS Architecture", EnvironmentDataProvider.getArchitecture()));
+        message.append(String.format(paramFormat, "OS Architecture",
+                escapeStringForJSON(EnvironmentDataProvider.getArchitecture())));
         message.append(',');
         message.append(String.format(paramFormat, "Number of Processors", EnvironmentDataProvider.getCPUCount()));
         message.append(',');
-        message.append(String.format(paramFormat, "Command Line", EnvironmentDataProvider.getCommandLine()));
+        message.append(String.format(paramFormat, "Command Line",
+                escapeStringForJSON(EnvironmentDataProvider.getCommandLine())));
         message.append("]");
         Javametrics.getInstance().sendJSON(ENV_TOPIC, message.toString());
     }
