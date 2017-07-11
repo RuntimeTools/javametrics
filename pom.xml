@@ -4,12 +4,31 @@
   <artifactId>javametrics</artifactId>
   <packaging>pom</packaging>
   <version>0.1.0-SNAPSHOT</version>
+  <name>javametrics</name>
+  
   <modules>
-    <module>java</module>
-    <module>web</module>
-    <module>distribution</module>
+    <module>src/main/java</module>
+    <module>src/main/webapp</module>
+    <module>distribution</module>    
   </modules>
-  <build>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>      
+    </dependency>  
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>1.3</version>
+      <scope>test</scope>           
+    </dependency>  
+  </dependencies> 
+  
+  
+   <build>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -23,5 +42,5 @@
         </plugin>
       </plugins>
     </pluginManagement>
-  </build>  
+  </build>
 </project>
