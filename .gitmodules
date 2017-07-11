@@ -1,3 +1,3 @@
-[submodule "web/WebContent/graphmetrics"]
-	path = web/WebContent/graphmetrics
+[submodule "src/webapp/src/main/webapp/WebContent/graphmetrics"]
+	path = src/webapp/src/main/webapp/WebContent/graphmetrics
 	url = https://github.com/RuntimeTools/graphmetrics

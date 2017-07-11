@@ -1,25 +1,25 @@
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
   <id>bin</id>
   <formats>
     <format>zip</format>
   </formats>
-  
-  
+
+
   <includeBaseDirectory>false</includeBaseDirectory>
   <moduleSets>
     <moduleSet>
       <!-- Enable access to all projects in the current multimodule build! -->
       <useAllReactorProjects>true</useAllReactorProjects>
-      
+
       <!-- Now, select which projects to include in this module-set. -->
       <includes>
         <include>com.ibm.runtimetools:javametrics-agent</include>
         <include>com.ibm.runtimetools:javametrics-web</include>
       </includes>
       <binaries>
-      	<outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping>
+        <outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping>
         <outputDirectory></outputDirectory>
         <unpack>false</unpack>
         <dependencySets>
@@ -31,8 +31,8 @@
               <exclude>javax.websocket:javax.websocket-api*</exclude>
               <exclude>javax.json:*</exclude>
               <exclude>com.ibm.runtimetools:javametrics-agent*</exclude>
-            </excludes>        	
-        	<outputDirectory>/lib</outputDirectory>
+            </excludes>
+            <outputDirectory>/asm</outputDirectory>
           </dependencySet>
         </dependencySets>
       </binaries>
