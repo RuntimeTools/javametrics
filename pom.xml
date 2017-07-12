@@ -8,25 +8,7 @@
   <modules>
     <module>javaagent</module>
     <module>dashboard</module>
-    <module>distribution</module>
   </modules>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.0.0</version>
-          <configuration>
-            <descriptors>
-              <descriptor>distribution/src/assembly/bin.xml</descriptor>
-            </descriptors>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
 </project>
 
 
