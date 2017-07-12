@@ -6,8 +6,8 @@
   <packaging>pom</packaging>
   <version>1.0.0</version>
   <modules>
-    <module>src/java</module>
-    <module>src/webapp</module>
+    <module>javaagent</module>
+    <module>dashboard</module>
     <module>distribution</module>
   </modules>
 
