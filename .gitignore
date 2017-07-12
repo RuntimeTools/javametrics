@@ -1,5 +1,5 @@
 /web/.project
 /distribution/target
-src/webapp/target
-src/java/target
+dashboard/target
+javaagent/target
 
