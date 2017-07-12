@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ibm.runtimetools</groupId>
-  <version>0.1.0-SNAPSHOT</version>
-  <artifactId>javametrics-web</artifactId>
+  <version>1.0.0</version>
+  <artifactId>javametrics-dash</artifactId>
   <packaging>war</packaging>
-  <name>webapp</name>
+  <name>javametrics-dash</name>
   <description>Application Metrics for Java (web UI)</description>
 
   <distributionManagement>
@@ -13,6 +13,10 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
   </distributionManagement>
 
 
@@ -31,7 +35,7 @@
     <dependency>
       <groupId>com.ibm.runtimetools</groupId>
       <artifactId>javametrics-agent</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>javax.websocket</groupId>
@@ -54,11 +58,9 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <warSourceDirectory>WebContent</warSourceDirectory>
-        </configuration>
+        <version>3.1.0</version>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
