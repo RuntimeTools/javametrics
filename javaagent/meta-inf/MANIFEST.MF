@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.9.6
+Created-By: 1.8.0_66-b17 (Oracle Corporation)
+Premain-Class: com.ibm.javametrics.instrument.Agent
+Agent-Class: com.ibm.javametrics.instrument.Agent
+Implementation-Version: 659ce35
