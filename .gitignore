@@ -1,5 +1,5 @@
-/web/.project
-/distribution/target
-dashboard/target
-javaagent/target
-
+.classpath
+.settings/
+.project
+bin/
+target/
