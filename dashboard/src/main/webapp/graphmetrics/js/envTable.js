@@ -46,6 +46,48 @@ var paragraph = envSVG.append("g")
     .attr("transform",
         "translate(" + 20 + "," + (margin.top + 10) + ")");
 
+
+var envTableIsFullScreen = false;
+
+// Add the maximise button
+var envResize = envSVG.append("image")
+    .attr("x", envDivCanvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        envTableIsFullScreen = !envTableIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", envTableIsFullScreen);
+        d3.select("#envDiv").classed("fullscreen", envTableIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(envTableIsFullScreen) {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeEnvTable();
+        } else {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+            canvasHeight = 250;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(envTableIsFullScreen) {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(envTableIsFullScreen) {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".envData .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
+
 function populateEnvTable(envRequestData) {
         envData = JSON.parse(envRequestData);
         if (envData == null) return
@@ -83,7 +125,14 @@ function populateEnvTable(envRequestData) {
 }
 
 function resizeEnvTable() {
-    envDivCanvasWidth = $("#envDiv").width() - 8;
-    envSVG.attr("width", envDivCanvasWidth);
+	if(envTableIsFullScreen) {
+        envDivCanvasWidth = $("#envDiv").width() - 30; // -30 for margins and borders
+        canvasHeight = $("#envDiv").height() - 100;
+    } else {
+        envDivCanvasWidth = $("#envDiv").width() - 8;
+    }
+    envResize.attr("x", envDivCanvasWidth - 30).attr("y", 4);
+    envSVG.attr("width", envDivCanvasWidth)
+        .attr("height", canvasHeight);
     envTitleBox.attr("width", envDivCanvasWidth)
 }

@@ -150,16 +150,76 @@ function updateThroughPutData(httpThroughPutRequestData) {
         .call(httpTP_yAxis);
 }
 
-function resizeHttpThroughputChart() {
-    httpDiv2CanvasWidth = $("#httpDiv2").width() - 8;
-    httpDiv2GraphWidth = httpDiv2CanvasWidth - margin.left - margin.right;
+var httpTPChartIsFullScreen = false;
 
-    // only altering the horizontal for the moment
+// Add the maximise/minimise button
+var httpTPResize = httpThroughPutSVG.append("image")
+    .attr("x", httpDiv2CanvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        httpTPChartIsFullScreen = !httpTPChartIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", httpTPChartIsFullScreen);
+        d3.select("#httpDiv2").classed("fullscreen", httpTPChartIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(httpTPChartIsFullScreen) {
+            d3.select(".httpThroughPutChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeHttpThroughputChart();
+        } else {
+            canvasHeight = 250;
+            tallerGraphHeight = canvasHeight - margin.top - margin.shortBottom;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(httpTPChartIsFullScreen) {
+            d3.select(".httpThroughPutChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".httpThroughPutChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(httpTPChartIsFullScreen) {
+            d3.select(".httpThroughPutChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".httpThroughPutChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
+
+function resizeHttpThroughputChart() {
+    if(httpTPChartIsFullScreen) {
+        httpDiv2CanvasWidth = $("#httpDiv2").width() - 30; // -30 for margins and borders
+        httpDiv2GraphWidth = httpDiv2CanvasWidth - margin.left - margin.right;
+        canvasHeight = $("#httpDiv2").height() - 100;
+        tallerGraphHeight = canvasHeight - margin.top - margin.shortBottom;
+    } else {
+        httpDiv2CanvasWidth = $("#httpDiv2").width() - 8;
+        httpDiv2GraphWidth = httpDiv2CanvasWidth - margin.left - margin.right;
+    }
+    // Redraw placeholder
+    httpTPChartPlaceholder
+        .attr("x", httpGraphWidth / 2)
+        .attr("y", tallerGraphHeight / 2)
+
+    httpTPResize.attr("x", httpDiv2CanvasWidth - 30).attr("y", 4);
+
     var chart = d3.select(".httpThroughPutChart")
-    chart.attr("width", httpDiv2CanvasWidth);
+    chart.attr("width", httpDiv2CanvasWidth)
+        .attr("height", canvasHeight);
     httpTP_xScale = d3.time.scale().range([0, httpDiv2GraphWidth]);
     httpTP_xAxis = d3.svg.axis().scale(httpTP_xScale)
         .orient("bottom").ticks(3).tickFormat(getTimeFormat());
+        
+    httpTP_yScale = d3.scale.linear().range([tallerGraphHeight, 0]);
+    httpTP_yAxis = d3.svg.axis().scale(httpTP_yScale)
+    .orient("left").ticks(5).tickFormat(function(d) {
+        return d + " rps";
+    });
 
     httpThroughPutTitleBox.attr("width", httpDiv2CanvasWidth)
 
@@ -178,6 +238,7 @@ function resizeHttpThroughputChart() {
     selection.select(".httpline")
         .attr("d", httpThroughPutline(httpRate));
     selection.select(".xAxis")
+        .attr("transform", "translate(0," + tallerGraphHeight + ")")
         .call(httpTP_xAxis);
     selection.select(".yAxis")
         .call(httpTP_yAxis);

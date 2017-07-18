@@ -73,12 +73,12 @@ var memSVG = d3.select("#memDiv1")
     .append("svg")
     .attr("width", canvasWidth)
     .attr("height", canvasHeight)
-    .attr("class", "memChart")
+    .attr("class", "memChart");
 
 var memTitleBox = memSVG.append("rect")
     .attr("width", canvasWidth)
     .attr("height", 30)
-    .attr("class", "titlebox")
+    .attr("class", "titlebox");
 
 // Define the memory Chart
 var memChart = memSVG.append("g")
@@ -129,7 +129,7 @@ memChart.append("rect")
     .attr("y", graphHeight + margin.bottom - 15)
     .attr("class", "colourbox1")
     .attr("width", 10)
-    .attr("height", 10)
+    .attr("height", 10);
 
 // Add the SYSTEM label
 var memSystemLabel = memChart.append("text")
@@ -145,7 +145,7 @@ memChart.append("rect")
     .attr("y", graphHeight + margin.bottom - 15)
     .attr("width", 10)
     .attr("height", 10)
-    .attr("class", "colourbox2")
+    .attr("class", "colourbox2");
 
 // Add the PROCESS label
 memChart.append("text")
@@ -154,25 +154,108 @@ memChart.append("text")
     .attr("class", "lineLabel2")
     .text("Application Process");
 
+var memChartIsFullScreen = false;
+
+// Add the maximise button
+var memResize = memSVG.append("image")
+    .attr("x", canvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        memChartIsFullScreen = !memChartIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", memChartIsFullScreen);
+        d3.select("#memDiv1").classed("fullscreen", memChartIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(memChartIsFullScreen) {
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeMemChart();
+        } else {
+            canvasWidth = $("#memDiv1").width() - 8; // -8 for margins and borders
+            graphWidth = canvasWidth - margin.left - margin.right;
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+            canvasHeight = 250;
+            graphHeight = canvasHeight - margin.top - margin.bottom;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(memChartIsFullScreen) {
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(memChartIsFullScreen) {
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".memChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
+
 function resizeMemChart() {
-    var chart = d3.select(".memChart")
-    chart.attr("width", canvasWidth);
+    if(memChartIsFullScreen) {
+        canvasWidth = $("#memDiv1").width() - 30; // -30 for margins and borders
+        graphWidth = canvasWidth - margin.left - margin.right;
+        canvasHeight = $("#memDiv1").height() - 100;
+        graphHeight = canvasHeight - margin.top - margin.bottom;
+    }
+
+    // Redraw placeholder
+    memChartPlaceholder
+        .attr("x", graphWidth / 2)
+        .attr("y", graphHeight / 2)
+
+    var chart = d3.select(".memChart");
+    chart.attr("width", canvasWidth)
+        .attr("height", canvasHeight);
     mem_xScale = d3.time.scale().range([0, graphWidth]);
     mem_xAxis = d3.svg.axis().scale(mem_xScale)
         .orient("bottom").ticks(3).tickFormat(getTimeFormat());
 
-    memTitleBox.attr("width", canvasWidth)
+    memTitleBox.attr("width", canvasWidth);
+    memResize.attr("x", canvasWidth - 30).attr("y", 4);
 
     // Redraw lines and axes
     mem_xScale.domain(d3.extent(memData, function(d) {
         return d.date;
     }));
+    
+    mem_yScale = d3.scale.linear().range([graphHeight, 0]);
+    mem_yAxis = d3.svg.axis()
+        .scale(mem_yScale)
+        .orient("left")
+        .ticks(8)
+        .tickFormat(function(d) {
+            return d3.format(".2s")(d * 1024 * 1024);
+        });
+    mem_yScale.domain([0, Math.ceil(d3.extent(memData, function(d) {
+        return d.system;
+    })[1] / 100) * 100]);
+
     chart.select(".systemLine")
         .attr("d", mem_systemLine(memData));
     chart.select(".processLine")
         .attr("d", mem_processLine(memData));
-    chart.select(".xAxis").call(mem_xAxis);
+    chart.select(".xAxis")
+        .attr("transform", "translate(0," + graphHeight + ")")
+        .call(mem_xAxis);
     chart.select(".yAxis").call(mem_yAxis);
+
+    // Move labels
+    chart.select(".colourbox1")
+        .attr("y", graphHeight + margin.bottom - 15);
+    chart.select(".lineLabel")
+        .attr("y", graphHeight + margin.bottom - 5);
+    chart.select(".colourbox2")
+        .attr("y", graphHeight + margin.bottom - 15);
+    chart.select(".lineLabel2")
+        .attr("y", graphHeight + margin.bottom - 5);
 }
 
 function updateMemData(memRequest) {
