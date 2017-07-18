@@ -210,13 +210,79 @@ mempoolsChart.append("text")
     .attr("class", "lineLabel")
     .text("Used Heap After GC");
 
+var mempoolsChartIsFullScreen = false;
+
+// Add the maximise button
+var mempoolsResize = mempoolsSVG.append("image")
+    .attr("x", memPoolsCanvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        mempoolsChartIsFullScreen = !mempoolsChartIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", mempoolsChartIsFullScreen);
+        d3.select("#memPoolsDiv").classed("fullscreen", mempoolsChartIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(mempoolsChartIsFullScreen) {
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeMemPoolsChart();
+        } else {
+            memPoolsCanvasWidth = $("#memPoolsDiv").width() - 8; // -8 for margins and borders
+            memPoolsGraphWidth = memPoolsCanvasWidth - margin.left - margin.right;
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+            canvasHeight = 250;
+            graphHeight = canvasHeight - margin.top - margin.bottom;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(mempoolsChartIsFullScreen) {
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(mempoolsChartIsFullScreen) {
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".mempoolsChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
 
 function resizeMemPoolsChart() {
+    if(mempoolsChartIsFullScreen) {
+        memPoolsCanvasWidth = $("#memPoolsDiv").width() - 30; // -30 for margins and borders
+        memPoolsGraphWidth = memPoolsCanvasWidth - margin.left - margin.right;
+        canvasHeight = $("#memPoolsDiv").height() - 100;
+        graphHeight = canvasHeight - margin.top - margin.bottom;
+    }
+    
+    // Redraw placeholder
+    mempoolsChartPlaceholder
+        .attr("x", memPoolsGraphWidth / 2)
+        .attr("y", memPoolsGraphWidth / 2);
+    
+    mempoolsResize.attr("x", memPoolsCanvasWidth - 30)
+        .attr("y", 4);
+    
     var chart = d3.select(".mempoolsChart")
-    chart.attr("width", memPoolsCanvasWidth);
+    chart.attr("width", memPoolsCanvasWidth).attr("height", canvasHeight);
     mempools_xScale = d3.time.scale().range([0, memPoolsGraphWidth]);
+    mempools_yScale = d3.scale.linear().range([graphHeight, 0]);
     mempools_xAxis = d3.svg.axis().scale(mempools_xScale)
         .orient("bottom").ticks(3).tickFormat(getTimeFormat());
+    mempools_yAxis = d3.svg.axis()
+        .scale(mempools_yScale)
+        .orient("left")
+        .ticks(8)
+        .tickFormat(function(d) {
+            return d3.format(".2s")(d * 1024 *1024);
+        });
 
     mempoolsTitleBox.attr("width", memPoolsCanvasWidth)
 
@@ -224,74 +290,91 @@ function resizeMemPoolsChart() {
     mempools_xScale.domain(d3.extent(mempoolsData, function(d) {
         return d.date;
     }));
+    mempools_yScale.domain([0, Math.ceil(d3.extent(mempoolsData, function(d) {
+        return d.system;
+    })[1] / 100) * 100]);
+
     chart.select(".usedHeapLine")
         .attr("d", mempools_usedHeapLine(mempoolsData));
     chart.select(".usedNonHeapLine")
         .attr("d", mempools_usedNonHeapLine(mempoolsData));    
     chart.select(".totalUsedLine")
-    	.attr("d", mempools_totalUsedLine(mempoolsData));
+        .attr("d", mempools_totalUsedLine(mempoolsData));
     chart.select(".usedHeapAfterGCLine")
-		.attr("d", mempools_usedHeapAfterGCLine(mempoolsData));
-    chart.select(".xAxis").call(mempools_xAxis);
+        .attr("d", mempools_usedHeapAfterGCLine(mempoolsData));
+    chart.select(".xAxis").call(mempools_xAxis)
+        .attr("transform", "translate(0," + graphHeight + ")");
     chart.select(".yAxis").call(mempools_yAxis);
+    
+        // Move labels
+    chart.select(".colourbox1")
+        .attr("y", graphHeight + margin.bottom - 15);
+    chart.selectAll(".lineLabel")
+        .attr("y", graphHeight + margin.bottom - 5);
+    chart.select(".colourbox2")
+        .attr("y", graphHeight + margin.bottom - 15);
+    chart.select(".colourbox3")
+        .attr("y", graphHeight + margin.bottom - 15);
+    chart.select(".colourbox4")
+        .attr("y", graphHeight + margin.bottom - 15);
 }
 
 function updateMemPoolsData(mempoolsRequest) {
-	// Get the data again
-	    data = JSON.parse(mempoolsRequest);  // parses the data into a JSON array
-      	if (!data)
-	        return
+    // Get the data again
+    data = JSON.parse(mempoolsRequest);  // parses the data into a JSON array
+    if (!data)
+        return;
 
-        var d = data;
-        d.date = new Date(+d.time);
-        d.used  = +d.usedHeap  / (1024 * 1024);
-        d.native  = +d.usedNative  / (1024 * 1024);
-        d.aftergc = +d.usedHeapAfterGC  / (1024 * 1024);
-        d.total = d.used + d.native;
+    var d = data;
+    d.date = new Date(+d.time);
+    d.used  = +d.usedHeap  / (1024 * 1024);
+    d.native  = +d.usedNative  / (1024 * 1024);
+    d.aftergc = +d.usedHeapAfterGC  / (1024 * 1024);
+    d.total = d.used + d.native;
 
-        mempoolsData.push(d)
+    mempoolsData.push(d);
 
-        if(mempoolsData.length === 2) {
-            // second data point - remove "No Data Available" label
-            mempoolsChartPlaceholder.attr("visibility", "hidden");
-        }
+    if(mempoolsData.length === 2) {
+        // second data point - remove "No Data Available" label
+        mempoolsChartPlaceholder.attr("visibility", "hidden");
+    }
 
-	    // Only keep 30 minutes of data
-	    var currentTime = Date.now()
-	    var d = mempoolsData[0]
-	    if (d === null)
-		    return;
+    // Only keep 30 minutes of data
+    var currentTime = Date.now()
+    var d = mempoolsData[0]
+    if (d === null)
+        return;
 
-        while (d.hasOwnProperty('date') && d.date.valueOf() + maxTimeWindow < currentTime) {
-            mempoolsData.shift()
-            d = mempoolsData[0]
-        }
+    while (d.hasOwnProperty('date') && d.date.valueOf() + maxTimeWindow < currentTime) {
+        mempoolsData.shift()
+        d = mempoolsData[0]
+    }
 
-        // Set the input domain for the axes
-        mempools_xScale.domain(d3.extent(mempoolsData, function(d) {
-            return d.date;
-        }));
-        mempools_yScale.domain([0, Math.ceil(d3.extent(mempoolsData, function(d) {
-            return d.total;
-        })[1] / 100) * 100]);
+    // Set the input domain for the axes
+    mempools_xScale.domain(d3.extent(mempoolsData, function(d) {
+        return d.date;
+    }));
+    mempools_yScale.domain([0, Math.ceil(d3.extent(mempoolsData, function(d) {
+        return d.total;
+    })[1] / 100) * 100]);
 
-        mempools_xAxis.tickFormat(getTimeFormat());
+    mempools_xAxis.tickFormat(getTimeFormat());
 
-        // Select the section we want to apply our changes to
-        var selection = d3.select(".mempoolsChart");
+    // Select the section we want to apply our changes to
+    var selection = d3.select(".mempoolsChart");
 
-        // Make the changes
-        selection.select(".usedHeapLine")
-        	.attr("d", mempools_usedHeapLine(mempoolsData));
-        selection.select(".usedNonHeapLine")
-        	.attr("d", mempools_usedNonHeapLine(mempoolsData));    
-        selection.select(".totalUsedLine")
-    		.attr("d", mempools_totalUsedLine(mempoolsData));
-        selection.select(".usedHeapAfterGCLine")
-        	.attr("d", mempools_usedHeapAfterGCLine(mempoolsData));
-        selection.select(".xAxis")
-            .call(mempools_xAxis);
-        selection.select(".yAxis")
-            .call(mempools_yAxis);
+    // Make the changes
+    selection.select(".usedHeapLine")
+        .attr("d", mempools_usedHeapLine(mempoolsData));
+    selection.select(".usedNonHeapLine")
+        .attr("d", mempools_usedNonHeapLine(mempoolsData));    
+    selection.select(".totalUsedLine")
+        .attr("d", mempools_totalUsedLine(mempoolsData));
+    selection.select(".usedHeapAfterGCLine")
+        .attr("d", mempools_usedHeapAfterGCLine(mempoolsData));
+    selection.select(".xAxis")
+        .call(mempools_xAxis);
+    selection.select(".yAxis")
+        .call(mempools_yAxis);
 
 }

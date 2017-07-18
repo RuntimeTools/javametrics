@@ -56,12 +56,12 @@ var httpSVG = d3.select("#httpDiv1")
     })
     .on("mouseout", function() {
         mouseOverHttpGraph = false;
-    })
+    });
 
 var httpTitleBox = httpSVG.append("rect")
     .attr("width", httpCanvasWidth)
     .attr("height", 30)
-    .attr("class", "titlebox")
+    .attr("class", "titlebox");
 
 var httpChart = httpSVG.append("g")
     .attr("transform",
@@ -181,7 +181,7 @@ function updateHttpData(httpRequest) {
                 .attr("cy", function(d) { return http_yScale(d.longest); })
                 .append("svg:title").text(function(d) { // tooltip
                     if(d.total === 1) {
-                        return d.url
+                        return d.url;
                     } else {
                         return d.total
                          + " requests\n average duration = "
@@ -194,9 +194,67 @@ function updateHttpData(httpRequest) {
         }
 }
 
+var httpChartIsFullScreen = false;
+
+// Add the maximise/minimise button
+var httpResize = httpSVG.append("image")
+    .attr("x", httpCanvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        httpChartIsFullScreen = !httpChartIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", httpChartIsFullScreen);
+        d3.select("#httpDiv1").classed("fullscreen", httpChartIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(httpChartIsFullScreen) {
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeHttpChart();
+        } else {
+            httpCanvasWidth = $("#httpDiv1").width() - 8; // -8 for margins and borders
+            httpGraphWidth = httpCanvasWidth - margin.left - margin.right;
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+            canvasHeight = 250;
+            tallerGraphHeight = canvasHeight - margin.top - margin.shortBottom;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(httpChartIsFullScreen) {
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(httpChartIsFullScreen) {
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".httpChart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
+
 function resizeHttpChart() {
-    var chart = d3.select(".httpChart")
-    chart.attr("width", httpCanvasWidth);
+    if(httpChartIsFullScreen) {
+        httpCanvasWidth = $("#httpDiv1").width() - 30; // -30 for margins and borders
+        httpGraphWidth = httpCanvasWidth - margin.left - margin.right;
+        canvasHeight = $("#httpDiv1").height() - 100;
+        tallerGraphHeight = canvasHeight - margin.top - margin.shortBottom;
+    }
+    // Redraw placeholder
+    httpChartPlaceholder
+        .attr("x", httpGraphWidth / 2)
+        .attr("y", tallerGraphHeight / 2)
+
+    httpResize.attr("x", httpCanvasWidth - 30).attr("y", 4);
+
+    var chart = d3.select(".httpChart");
+    chart.attr("width", httpCanvasWidth)
+      .attr("height", canvasHeight);
     http_xScale = d3.time.scale()
         .range([0, httpGraphWidth]);
     http_xAxis = d3.svg.axis()
@@ -204,6 +262,14 @@ function resizeHttpChart() {
         .orient("bottom")
         .ticks(3)
         .tickFormat(getTimeFormat());
+    http_yScale = d3.scale.linear().range([tallerGraphHeight, 0]);
+    http_yAxis = d3.svg.axis()
+        .scale(http_yScale)
+        .orient("left")
+        .ticks(5)
+        .tickFormat(function(d) {
+          return d + "ms";
+        });
 
     httpTitleBox.attr("width", httpCanvasWidth);
 
@@ -214,12 +280,16 @@ function resizeHttpChart() {
     }
 
     http_xScale.domain([startTime, currentTime]);
+    http_yScale.domain([0, d3.max(httpData, function(d) {
+        return d.longest;
+    })]);
 
     chart.selectAll("circle").remove();
 
     chart.select(".httpline")
         .attr("d", httpline(httpData));
     chart.select(".xAxis")
+        .attr("transform", "translate(0," + tallerGraphHeight + ")")
         .call(http_xAxis);
     chart.select(".yAxis")
         .call(http_yAxis);

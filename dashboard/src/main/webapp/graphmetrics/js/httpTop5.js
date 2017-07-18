@@ -71,6 +71,51 @@ function convertURL(url, httpDiv3GraphWidth) {
     return stringToDisplay;
 }
 
+var httpTop5ChartIsFullScreen = false;
+
+// Add the maximise button
+var httpTop5Resize = httpTop5SVG.append("image")
+    .attr("x", httpDiv3CanvasWidth - 30)
+    .attr("y", 4)
+    .attr("width", 24)
+    .attr("height", 24)
+    .attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+    .attr("class", "maximize")
+    .on("click", function(){
+        httpTop5ChartIsFullScreen = !httpTop5ChartIsFullScreen
+        d3.selectAll(".hideable").classed("invisible", httpTop5ChartIsFullScreen);
+        d3.select("#httpDiv3").classed("fullscreen", httpTop5ChartIsFullScreen)
+            .classed("invisible", false); // remove invisible from this chart
+        if(httpTop5ChartIsFullScreen) {
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+            // Redraw this chart only
+            resizeHttpTop5Chart();
+        } else {
+            httpDiv3CanvasWidth = $("#httpDiv3").width() - 8; // -8 for margins and borders
+            httpDiv3GraphWidth = httpDiv3CanvasWidth - margin.left - margin.right;
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+            canvasHeight = 250;
+            graphHeight = canvasHeight - margin.top - margin.bottom;
+            // Redraw all
+            resize();
+        }
+    })
+    .on("mouseover", function() {
+        if(httpTop5ChartIsFullScreen) {
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/minimize_24.png")
+        } else {
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/maximize_24.png")
+        }
+    })
+    .on("mouseout", function() {
+        if(httpTop5ChartIsFullScreen) {
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/minimize_24_grey.png")
+        } else {
+            d3.select(".httpTop5Chart .maximize").attr("xlink:href","graphmetrics/images/maximize_24_grey.png")
+        }
+    });
+
+
 function updateChart() {
 
     httpTop5_xScale.domain([0, d3.max(httpTop5Data, function(d) {
@@ -155,11 +200,17 @@ function updateURLData(data) {
 }
 
 function resizeHttpTop5Chart() {
-    httpDiv3CanvasWidth = $("#httpDiv3").width() - 8;
+    if(httpTop5ChartIsFullScreen) {
+        httpDiv3CanvasWidth = $("#httpDiv3").width() - 30;
+        canvasHeight= $("#httpDiv3").height() - 100;
+    } else {
+        httpDiv3CanvasWidth = $("#httpDiv3").width() - 8;
+    }
+    httpTop5Resize.attr("x", httpDiv3CanvasWidth - 30).attr("y", 4);
     httpDiv3GraphWidth = httpDiv3CanvasWidth - margin.left - margin.right;
     httpTop5_xScale = d3.scale.linear().range([0, httpDiv3GraphWidth]);
     var chart = d3.select(".httpTop5Chart")
-    chart.attr("width", httpDiv3CanvasWidth);
+    chart.attr("width", httpDiv3CanvasWidth).attr("height", canvasHeight);
     httpTop5TitleBox.attr("width", httpDiv3CanvasWidth)
     updateChart();
 }
