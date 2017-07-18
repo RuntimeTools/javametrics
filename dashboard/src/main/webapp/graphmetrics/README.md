@@ -1,1 +1,0 @@
-Common repository of various graphs to be used in the web deployment of appmetrics-dash, javametrics and swiftmetrics.
