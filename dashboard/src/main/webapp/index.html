@@ -44,10 +44,13 @@
         <div class="row">
             <div class="col-md-4" id="cpuDiv1"></div>
             <div class="col-md-4" id="gcDiv1"></div>
-            <div class="col-md-4" id="envDiv"></div>        
+            <div class="col-md-4" id="envDiv"></div>
         </div>
         <div class="row">
             <div class="col-md-6" id="memPoolsDiv"></div>
+        </div>
+        <div class="row">
+           <div id="apiDiv"></div>
         </div>
     </div>
 
@@ -99,6 +102,7 @@
 <script type="text/javascript" src="graphmetrics/js/httpTop5.js"></script>
 <script type="text/javascript" src="graphmetrics/js/gcTimeChart.js"></script>
 <script type="text/javascript" src="graphmetrics/js/memPoolsChart.js"></script>
+<script type="text/javascript" src="graphmetrics/js/userEventsChart.js"></script>
 <script>
     let hostname = location.host;
     let pathname = location.pathname
@@ -110,36 +114,97 @@
 
     let client = new WebSocket(webSocketProtocol + hostname + pathname,"javametrics-dash")
 
-    client.onmessage = function(message) {
-        received = JSON.parse(message.data);
-        topic = received.topic;
-        payload = JSON.stringify(received.payload);
-
-        switch (topic) {
-            case 'cpu':
-                updateCPUData(payload);
-                break;
-            case 'gc':
-                updateGCData(payload);
-                break;
-            case 'env':
-                populateEnvTable(payload);
-                break;
-            case 'http':
-                updateHttpData(payload);
-                break;
-            case 'httpURLs':
-                updateURLData(payload);
-                break;
-            case 'title' :
-                updateHeader(payload);
-                break;
-            case 'memoryPools':
-                updateMemPoolsData(payload);
-                break;
-
-        }
+    let topicHandlers = {
+      'cpu' : updateCPUData,
+      'gc': updateGCData,
+      'env': populateEnvTable,
+      'http': updateHttpData,
+      'httpURLs': updateURLData,
+      'title': updateHeader,
+      'memoryPools': updateMemPoolsData,
     }
+
+    let resizeFunctions = [
+      resizeCPUChart,
+      resizeHttpChart,
+      resizeHttpThroughputChart,
+      resizeHttpTop5Chart,
+      resizeGCChart,
+      resizeMemPoolsChart,
+      resizeEnvTable
+    ];
+
+    let userEventsChart = undefined;
+
+    client.onmessage = onmessage;
+
+function onmessage(message) {
+    // console.log("Got message:");
+    // console.dir(message);
+
+    received = JSON.parse(message.data);
+    topic = received.topic;
+    payload = JSON.stringify(received.payload);
+
+    // TODO - Do we want a notificaiton on a new topic *or* just to assume
+    // that the data we've got is representative of all the other messages
+    // that topic will send.
+    if( topicHandlers[topic]) {
+      topicHandlers[topic](payload);
+    } else {
+      console.log(`Unhandled topic: ${topic}`);
+      if(!userEventsChart) {
+        // We may want more than one if we get a lot of
+        // user data types.
+        // TODO - pass the location we should attach
+        // this chart to.
+        userEventsChart = new UserEventsChart(topic, window.d3.select("#apiDiv"));
+      }
+      //addNewTopicHandler(topic, payload);
+      topicHandlers[topic] = userEventsChart.addDataHandler(topic);
+      // If there was an exception adding the handler, this
+      // won't be called.
+      topicHandlers[topic](payload);
+    }
+}
+
+function addNewTopicHandler(topic, pl) {
+  console.log(`Adding topic handler for ${topic}`);
+
+  // Create text space for user events, this will move into the graphing code.
+  let apiMessages = window.d3.select("#apiDiv")
+    .append("svg")
+    .attr("width", canvasWidth)
+    .attr("height", 120);
+
+    // Create a text box for this topic to use.
+  let topicEventsBox = apiMessages.append("text")
+    .attr("width", canvasWidth)
+    .attr("dominant-baseline", "central")
+    .style("font-size", "18px");
+
+  // Store the last few messages.
+  let messages = [];
+
+  let newTopicHandler = function(payload) {
+    console.log(`topic handler for ${topic} called`)
+    messages.push(payload);
+    if (messages.length > 5) {
+      messages.shift();
+    }
+    topicEventsBox.selectAll("tspan").remove();
+    messages.forEach((m) => {
+    topicEventsBox.append("tspan")
+      .attr("x", 0)
+      .attr("dy", 20) // TODO - Set this to the text height.
+      .text(`${topic} (${m})`);
+    });
+  }
+
+  console.log(`topic handler for ${topic} added`);
+  topicHandlers[topic] = newTopicHandler;
+  console.dir(topicHandlers);
+}
 </script>
 <script>
     window.addEventListener('resize', resize);
@@ -151,13 +216,15 @@
     	graphWidth = canvasWidth - margin.left - margin.right,
     	httpGraphWidth = httpCanvasWidth - margin.left - margin.right,
     	memPoolsGraphWidth = memPoolsCanvasWidth - margin.left - margin.right,
-        resizeCPUChart();
-        resizeHttpChart();
-        resizeHttpThroughputChart();
-        resizeHttpTop5Chart();
-        resizeGCChart();
-        resizeMemPoolsChart();
-        resizeEnvTable();
+      // TODO - Have a list of resize functions to call.
+      resizeFunctions.forEach((fn)=>fn());
+        // resizeCPUChart();
+        // resizeHttpChart();
+        // resizeHttpThroughputChart();
+        // resizeHttpTop5Chart();
+        // resizeGCChart();
+        // resizeMemPoolsChart();
+        // resizeEnvTable();
     }
 
 </script>

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.ibm.javametrics;
 
+import java.util.Collection;
+
 import com.ibm.javametrics.impl.JavametricsImpl;
 
 /**
@@ -72,5 +74,7 @@ public interface Javametrics {
      * @return true if the listener was registered
      */
     public boolean removeListener(JavametricsListener jml);
+
+    public Collection<Topic> getTopics();
 
 }

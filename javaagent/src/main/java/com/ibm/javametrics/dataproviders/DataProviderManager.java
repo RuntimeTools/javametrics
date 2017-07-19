@@ -30,6 +30,7 @@ public class DataProviderManager {
     private static final String CPU_TOPIC = "cpu";
     private static final String MEMORYPOOLS_TOPIC = "memoryPools";
 	private static final String ENV_TOPIC = "env";
+	private static final String TOPICS_TOPIC = "topics";
 
     private ScheduledExecutorService exec;
 
@@ -54,6 +55,7 @@ public class DataProviderManager {
         // Persistent data provides, env, profiling status etc...
         // Schedule it so it doesn't delay this thread.
         exec.execute(this::emitEnvironmentData);
+        exec.execute(this::emitTopicData);
     }
 
     private void emitEnvironmentData() {
@@ -73,6 +75,19 @@ public class DataProviderManager {
         Javametrics.getInstance().sendJSON(ENV_TOPIC, message.toString());
     }
 
+    private void emitTopicData() {
+        String paramFormat = "{\"topic\":\"%s\"} ";
+        StringBuilder message = new StringBuilder("[");
+        String[] sep = {" "};
+        Javametrics.getInstance().getTopics().forEach( (topic) -> {
+            message.append(sep[0]);
+            sep[0]= ", ";
+            message.append(String.format(paramFormat, topic.getName()));
+        });
+        message.append("]");
+        Javametrics.getInstance().sendJSON(TOPICS_TOPIC, message.toString());
+    }
+    
     private void emitGCData() {
         long timeStamp = System.currentTimeMillis();
         double gcTime = GCDataProvider.getGCCollectionTime();

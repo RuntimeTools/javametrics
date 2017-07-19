@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.ibm.javametrics.impl;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,6 +89,12 @@ public class JavametricsImpl implements Javametrics, Receiver {
         }
     }
 
+
+    @Override
+    public Collection<Topic> getTopics() {
+      return Collections.unmodifiableCollection(topics.values());
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -157,4 +165,5 @@ public class JavametricsImpl implements Javametrics, Receiver {
     public void sendCommand(String command) {
         agent.command(command);
     }
+
 }

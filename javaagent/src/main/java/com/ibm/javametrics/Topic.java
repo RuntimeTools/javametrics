@@ -45,6 +45,19 @@ public interface Topic
 	public void send(long startTime, long endTime);
 	
 	/**
+     * Send a message with an event (sends if enabled)
+     * @param eventTime the time this event occured (see System.currentTimeMillis for definition)
+     * @param message the message to be emitted
+     */
+	public void send(long eventTime, String message);
+
+	/**
+     * Send an event (sends if enabled)
+     * @param eventTime the time this event occured (see System.currentTimeMillis for definition)
+     */
+	public void send(long eventTime);
+	
+	/**
 	 * Send a JSON formatted String
 	 * @param payload A JSON object formatted as a String
 	 */
@@ -65,5 +78,10 @@ public interface Topic
 	 * @return true if this topic is enabled
 	 */
 	public boolean isEnabled();
+	
+	/**
+     * @return the name of this topic
+     */
+	public String getName();
 
 }

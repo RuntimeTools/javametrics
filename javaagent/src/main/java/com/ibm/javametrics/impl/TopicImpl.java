@@ -22,9 +22,11 @@ public class TopicImpl implements Topic {
 
     private String topicName;
     private boolean enabled = true;
+    private JavametricsImpl jm;
 
     protected TopicImpl(String topicName) {
         this.topicName = topicName;
+        this.jm = (JavametricsImpl)Javametrics.getInstance();
     }
 
     @Override
@@ -33,10 +35,10 @@ public class TopicImpl implements Topic {
             StringBuilder json = new StringBuilder();
             json.append("{\"topic\": \"");
             json.append(topicName);
-            json.append("\", \"payload\": {\"message\":\"");
+            json.append("\", \"payload\": {");
             json.append(message);
-            json.append("\"}}");
-            ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
+            json.append("}}");
+            jm.sendData(json.toString());
         }
     }
 
@@ -51,9 +53,12 @@ public class TopicImpl implements Topic {
             json.append(startTime);
             json.append("\", \"duration\": \"");
             json.append(duration);
-            json.append("\", \"message\": \"");
-            json.append(message);
-            json.append("\"}}");
+            if( message !=null ) {
+                json.append("\", \"message\": \"");
+                json.append(message);
+                json.append("\"");
+            }
+            json.append("}}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
         }
     }
@@ -61,19 +66,31 @@ public class TopicImpl implements Topic {
     @Override
     public void send(long startTime, long endTime) {
         if (enabled) {
-            long duration = endTime - startTime;
+            send(startTime, endTime, null);
+        }
+    }
+
+    public void send(long eventTime, String message) {
+        if (enabled) {
             StringBuilder json = new StringBuilder();
             json.append("{\"topic\": \"");
             json.append(topicName);
             json.append("\", \"payload\": {\"time\":\"");
-            json.append(startTime);
-            json.append("\", \"duration\": \"");
-            json.append(duration);
-            json.append("\"}}");
+            json.append(eventTime);
+            if( message !=null ) {
+                json.append("\", \"message\": \"");
+                json.append(message);
+                json.append("\"");
+            }
+            json.append("}}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
         }
     }
-
+    
+    public void send(long eventTime) {
+        send(eventTime, null);
+    }
+    
     @Override
     public void sendJSON(String payload) {
         if (enabled) {
@@ -100,6 +117,11 @@ public class TopicImpl implements Topic {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public String getName() {
+        return topicName;
     }
 
 }
