@@ -157,7 +157,7 @@
             </manifest>
             <manifestEntries>
               <Premain-Class>com.ibm.javametrics.instrument.Agent</Premain-Class>
-              <Export-package>com.ibm.javametrics,com.ibm.javametrics.instrument</Export-package>
+              <Export-Package>com.ibm.javametrics,com.ibm.javametrics.instrument</Export-Package>
             </manifestEntries>
           </archive>
         </configuration>
