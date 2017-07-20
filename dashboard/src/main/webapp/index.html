@@ -108,7 +108,7 @@
       webSocketProtocol = "wss://"
     }
 
-    let client = new WebSocket(webSocketProtocol + hostname + pathname,"javametrics-dash")
+    let client = new WebSocket(webSocketProtocol + hostname + pathname + "javametrics-socket")
 
     client.onmessage = function(message) {
         received = JSON.parse(message.data);
