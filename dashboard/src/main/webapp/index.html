@@ -122,6 +122,7 @@
       'httpURLs': updateURLData,
       'title': updateHeader,
       'memoryPools': updateMemPoolsData,
+      'topics': (payload) => {}, // We don't want to display this topic, it's a list of topics.
     }
 
     let resizeFunctions = [
@@ -158,7 +159,7 @@ function onmessage(message) {
         // user data types.
         // TODO - pass the location we should attach
         // this chart to.
-        userEventsChart = new UserEventsChart(topic, window.d3.select("#apiDiv"));
+        userEventsChart = new UserEventsChart("User data", window.d3.select("#apiDiv"));
       }
       //addNewTopicHandler(topic, payload);
       topicHandlers[topic] = userEventsChart.addDataHandler(topic);
