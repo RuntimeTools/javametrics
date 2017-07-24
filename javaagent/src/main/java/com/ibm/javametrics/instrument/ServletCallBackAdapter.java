@@ -45,6 +45,9 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
 
     @Override
     protected void onMethodExit(int opcode) {
+        if (opcode == ATHROW) {
+            return;
+        }
         injectServletCallback(SERVLET_CALLBACK_AFTER);
     }
 
