@@ -1,3 +1,0 @@
-[submodule "dashboard/src/main/webapp/graphmetrics"]
-	path = dashboard/src/main/webapp/graphmetrics
-	url = https://github.com/RuntimeTools/graphmetrics
