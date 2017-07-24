@@ -11,7 +11,7 @@ The following data collection sources are built-in:
  GC                 | Percentage time spent in garbage collection
  Memory             | Java native and non-native memory usage
  HTTP               | HTTP request information
- 
+
 
 ## Getting Started
 ### Prerequisites
@@ -24,8 +24,33 @@ The Application Metrics for Java agent requires Java version 8.
 
 Download the latest Application Metrics for Java release from [Github](http://github.com/runtimetools/javametrics/releases).
 This contains:
-* `javametrics.war` - Javametrics Web Application
-* `javametrics.jar` - Javametrics agent
+* `javametrics-dash-x.x.x.war` - Javametrics Web Application
+* `javametrics-agent-x.x.x.jar` - Javametrics agent
+
+### Building with Maven
+
+To build with maven
+
+```
+git clone https://github.com/RuntimeTools/javametrics
+cd javametrics
+mvn install
+```
+
+Javametrics is also released on Maven Central with the following artifacts
+
+
+```
+javametrics-agent
+
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-agent</artifactId>
+
+javametrics-dash
+
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-dash</artifactId>
+```
 
 #### Websphere Liberty
 Unpack the `.zip` or `.tar.gz` archive that you downloaded in the previous step.  Copy the `javametrics.war` file into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
@@ -56,9 +81,9 @@ Coming soon
 
 Requirements: Maven
 
-To build javametrics, run `mvn clean package` from the root project.  This will build a zip file in the distribution directory containing 
+To build javametrics, run `mvn clean package` from the root project.  This will build a zip file in the distribution directory containing
 `javametrics-agent.jar`, `javametrics-web.war` and a `lib/` directory with the `asm*.jar` files.
- 
+
 ## Source code
 The source code for Application Metrics for Java is available in the [Javametrics Github project](http://github.com/RuntimeTools/javametrics).
 
@@ -69,4 +94,4 @@ This project is released under an Apache 2.0 open source license.
 This project uses a semver-parsable X.0.Z version number for releases, where X is incremented for breaking changes to the public API described in this document and Z is incremented for bug fixes **and** for non-breaking changes to the public API that provide new function.
 
 ## Version
-0.0.0
+1.0.1

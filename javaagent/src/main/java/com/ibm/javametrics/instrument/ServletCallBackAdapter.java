@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.ibm.javametrics.instrument;
 
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
@@ -29,6 +30,7 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
     private static final String SERVLET_CALLBACK_BEFORE = "void before(java.lang.Object, java.lang.Object)";
     private static final String SERVLET_CALLBACK_AFTER = "void after(java.lang.Object, java.lang.Object)";
 
+   
     protected ServletCallBackAdapter(String className, MethodVisitor mv, int access, String name, String desc) {
         super(className, mv, access, name, desc);
         if (Agent.debug) {
@@ -52,8 +54,20 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
      * @param method
      */
     private void injectServletCallback(String method) {
+        Label tryStart = new Label();
+        Label tryEnd = new Label();
+        Label catchStart = new Label();
+        Label catchEnd = new Label();
+     
+        visitTryCatchBlock(tryStart, tryEnd, catchStart, "java/lang/NoClassDefFoundError");
+        visitLabel(tryStart);
         loadArgs();
         invokeStatic(Type.getType(SERVLET_CALLBACK_TYPE), Method.getMethod(method));
+        visitLabel(tryEnd);
+        visitJumpInsn(GOTO, catchEnd);
+        visitLabel(catchStart);
+        pop();
+        visitLabel(catchEnd);
     }
 
 }
