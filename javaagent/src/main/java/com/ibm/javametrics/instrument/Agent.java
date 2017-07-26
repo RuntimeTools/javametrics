@@ -38,8 +38,12 @@ public class Agent {
     private static final String ASM_VERSION = "5.0.4";
     private static final String ASM_JAR_URL = "asm/asm-" + ASM_VERSION + ".jar!/";
     private static final String ASM_COMMONS_JAR_URL = "asm/asm-commons-" + ASM_VERSION + ".jar!/";
+    
+    private static final String DEBUG_PROPERTY = "com.ibm.javametrics.javaagent.debug";
+    private static final String OSGI_BOOTDELEGATION_PROPERTY = "org.osgi.framework.bootdelegation";
+    private static final String BOOTDELEGATION_PACKAGES = "com.ibm.javametrics.instrument";
 
-    public static boolean debug = (System.getProperty("com.ibm.javametrics.javaagent.debug", "false").equals("true"));
+    public static final boolean debug = System.getProperty(DEBUG_PROPERTY, "false").equals("true");
 
     /**
      * Entry point for the agent via -javaagent command line parameter
@@ -48,7 +52,20 @@ public class Agent {
      * @param inst
      */
     public static void premain(String agentArgs, Instrumentation inst) {
-
+        /*
+         * To work in OSGI environment we need to expose our packages to the
+         * boot ClassLoader
+         */
+        try {
+            String bootDelegation = System.getProperty(OSGI_BOOTDELEGATION_PROPERTY, "");
+            if (!bootDelegation.equals("")) {
+                bootDelegation += ",";
+            }
+            bootDelegation += BOOTDELEGATION_PACKAGES;
+            System.setProperty(OSGI_BOOTDELEGATION_PROPERTY, bootDelegation);
+        } catch (Exception e) {
+        }
+        
         /*
          * We need to keep the ASM jars off the bootclasspath so we will load
          * our ClassTransformer with our own classloader so that subsequent load
@@ -62,7 +79,8 @@ public class Agent {
 
             int jarIndex = jarUrl.indexOf(JAR_URL);
             if (jarIndex == -1) {
-                System.err.println("Javametrics: Unable to start javaagent: Agent class not loaded from jar: " +  jarUrl);
+                System.err
+                        .println("Javametrics: Unable to start javaagent: Agent class not loaded from jar: " + jarUrl);
                 return;
             }
 
@@ -73,7 +91,7 @@ public class Agent {
             int jmIndex = libUrl.lastIndexOf(JAVAMETRICS);
             libUrl = jarUrl.substring(0, jmIndex);
             String jarName = jarUrl.substring(jmIndex, jarIndex + JAR_URL.length());
-            URL[] urls = { new URL(libUrl + jarName ), new URL(libUrl + ASM_JAR_URL),
+            URL[] urls = { new URL(libUrl + jarName), new URL(libUrl + ASM_JAR_URL),
                     new URL(libUrl + ASM_COMMONS_JAR_URL) };
             URLClassLoader ucl = new URLClassLoader(urls) {
 

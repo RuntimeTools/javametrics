@@ -30,7 +30,6 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
     private static final String SERVLET_CALLBACK_BEFORE = "void before(java.lang.Object, java.lang.Object)";
     private static final String SERVLET_CALLBACK_AFTER = "void after(java.lang.Object, java.lang.Object)";
 
-   
     protected ServletCallBackAdapter(String className, MethodVisitor mv, int access, String name, String desc) {
         super(className, mv, access, name, desc);
         if (Agent.debug) {
@@ -45,7 +44,17 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
 
     @Override
     protected void onMethodExit(int opcode) {
-        injectServletCallback(SERVLET_CALLBACK_AFTER);
+        if (opcode == ATHROW) {
+            /*
+             * Save and reload the throwable around the callback
+             */
+            int throwable = newLocal(Type.getType(Throwable.class));
+            storeLocal(throwable);
+            injectServletCallback(SERVLET_CALLBACK_AFTER);
+            loadLocal(throwable);
+        } else {
+            injectServletCallback(SERVLET_CALLBACK_AFTER);
+        }
     }
 
     /**
@@ -58,16 +67,16 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
         Label tryEnd = new Label();
         Label catchStart = new Label();
         Label catchEnd = new Label();
-     
+
         visitTryCatchBlock(tryStart, tryEnd, catchStart, "java/lang/NoClassDefFoundError");
-        visitLabel(tryStart);
+        mark(tryStart); // try {
         loadArgs();
         invokeStatic(Type.getType(SERVLET_CALLBACK_TYPE), Method.getMethod(method));
-        visitLabel(tryEnd);
+        mark(tryEnd); // }
         visitJumpInsn(GOTO, catchEnd);
-        visitLabel(catchStart);
+        mark(catchStart); // catch() {
         pop();
-        visitLabel(catchEnd);
+        mark(catchEnd); // }
     }
 
 }
