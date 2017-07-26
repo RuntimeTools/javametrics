@@ -45,6 +45,9 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
     @Override
     protected void onMethodExit(int opcode) {
         if (opcode == ATHROW) {
+            /*
+             * Save and reload the throwable around the callback
+             */
             int throwable = newLocal(Type.getType(Throwable.class));
             storeLocal(throwable);
             injectServletCallback(SERVLET_CALLBACK_AFTER);
@@ -66,14 +69,14 @@ public class ServletCallBackAdapter extends BaseAdviceAdapter {
         Label catchEnd = new Label();
 
         visitTryCatchBlock(tryStart, tryEnd, catchStart, "java/lang/NoClassDefFoundError");
-        visitLabel(tryStart);
+        mark(tryStart); // try {
         loadArgs();
         invokeStatic(Type.getType(SERVLET_CALLBACK_TYPE), Method.getMethod(method));
-        visitLabel(tryEnd);
+        mark(tryEnd); // }
         visitJumpInsn(GOTO, catchEnd);
-        visitLabel(catchStart);
+        mark(catchStart); // catch() {
         pop();
-        visitLabel(catchEnd);
+        mark(catchEnd); // }
     }
 
 }
