@@ -7,4 +7,5 @@ Authors ordered by first contribution
  - Matt Colegate (colegatem@uk.ibm.com)
  - Howard Hellyer (hhellyer@uk.ibm.com)
  - Richard Chamberlain (richard_chamberlain@uk.ibm.com)
+ - James Wallis (james.wallis1@ibm.com)
  
