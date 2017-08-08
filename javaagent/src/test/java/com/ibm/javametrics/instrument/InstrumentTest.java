@@ -75,7 +75,7 @@ public class InstrumentTest {
     public void setUp() throws Exception {
     }
 
-    @Test
+//    @Test
     public void testInstrumentHttpJspPage() {
 
         try {
@@ -102,7 +102,7 @@ public class InstrumentTest {
         assertTrue("Should be emitting Http data", foundHttp);
     }
 
-    @Test
+//    @Test
     public void testInstrumentServlet() {
         try {
             MockServlet servlet = new MockServlet();
