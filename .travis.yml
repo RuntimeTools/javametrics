@@ -1,4 +1,6 @@
 language: java
+jdk:
+  - openjdk7
 script: "mvn cobertura:cobertura"
 after_success:
-- find . -name *coverage* && bash <(curl -s https://codecov.io/bash) -s dashboard -s javaagent
+- bash <(curl -s https://codecov.io/bash)
