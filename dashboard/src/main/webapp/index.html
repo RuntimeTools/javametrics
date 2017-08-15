@@ -55,6 +55,7 @@
     // Global variables
     var monitoringStartTime = new Date();
     var maxTimeWindow = 900000; // 15 minutes
+    let localizedStrings = {};
 
     // Initialise graph and canvas dimensions
     var margin = {
@@ -74,7 +75,7 @@
     tallerGraphHeight = canvasHeight - margin.top - margin.shortBottom,
     graphHeight = canvasHeight - margin.top - margin.bottom;
 
-    var myurl = location.host;
+    let myurl = location.host;
 
     // set up http variables to hold data for top 5 and averages.
     var httpRate = [];
@@ -89,6 +90,11 @@
             return d3.time.format("%H:%M:%S");
         }
     }
+</script>
+
+<script type="text/javascript" src="graphmetrics/js/i18n.js"></script>
+<script>
+    populateLocalizedStrings();
 </script>
 
 <script type="text/javascript" src="graphmetrics/js/header.js"></script>
