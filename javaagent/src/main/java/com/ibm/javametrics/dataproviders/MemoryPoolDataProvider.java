@@ -29,12 +29,12 @@ public class MemoryPoolDataProvider {
 
     // lambda interface
     private interface MemoryValue {
-        private long getValue(MemoryPoolMXBean bean);
+        long getValue(MemoryPoolMXBean bean);
     }
 
     // lambda functions
-    private MemoryValue afterGCCollection = (MemoryPoolMXBean mb) -> {return mb.getCollectionUsage().getUsed();};
-    private MemoryValue liveMemory = (MemoryPoolMXBean mb) -> {return mb.getUsage().getUsed();};
+    private static MemoryValue afterGCCollection = (MemoryPoolMXBean mb) -> {return mb.getCollectionUsage().getUsed();};
+    private static MemoryValue liveMemory = (MemoryPoolMXBean mb) -> {return mb.getUsage().getUsed();};
 
     /**
      * Get the current heap size in bytes Returns -1 if no data is available

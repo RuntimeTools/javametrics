@@ -142,7 +142,7 @@ public class HttpDataAggregator {
             }
             // delete the trailing comma - we've definitly added something, otherwise
             // would have fallen out at responseTimes.isEmpty()
-            sb.deleteCharAt(sb.length - 1);
+            sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("]}");
         return sb.toString();

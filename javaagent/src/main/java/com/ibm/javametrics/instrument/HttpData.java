@@ -110,7 +110,7 @@ public class HttpData {
             }
             // delete the trailing comma - we've definitly added something, otherwise
             // would have fallen out at headerMap.isEmpty()
-            sb.deleteCharAt(sb.length - 1);
+            sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("}");
         return sb.toString();
