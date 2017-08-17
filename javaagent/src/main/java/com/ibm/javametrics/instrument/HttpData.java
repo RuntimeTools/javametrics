@@ -95,24 +95,24 @@ public class HttpData {
      * @return JSON string repreesenting headers
      */
     private String headersToJSON(HashMap<String, String> headerMap, String headerType) {
-        StringBuilder sb = new StringBuilder('\"');
+        StringBuilder sb = new StringBuilder("\"");
         sb.append(headerType);
-        sb.append('\":{');
+        sb.append("\":{");
         if (!headerMap.isEmpty()) {
             Iterator<Entry<String, String>> it = headerMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-                sb.append('\"');
+                sb.append("\"");
                 sb.append(pair.getKey());
                 sb.append("\":\"");
                 sb.append(pair.getValue().replace("\"", "\\\""));
-                sb.append('\",');
+                sb.append("\",");
             }
             // delete the trailing comma - we've definitly added something, otherwise
             // would have fallen out at headerMap.isEmpty()
             sb.deleteCharAt(sb.length - 1);
         }
-        sb.append('}');
+        sb.append("}");
         return sb.toString();
     }
 
@@ -130,16 +130,15 @@ public class HttpData {
         sb.append(duration);
         sb.append(",\"url\":\"");
         sb.append(url);
-        sb.append('\",\"method\":\"');
+        sb.append("\",\"method\":\"");
         sb.append(method);
-        sb.append('\",\"contentType\":\"');
+        sb.append("\",\"contentType\":\"");
         sb.append(contentType);
-        sb.append('\",');
+        sb.append("\",");
         sb.append(getHeaders());
-        sb.append(',');
+        sb.append(",");
         sb.append(getRequestHeaders());
-        sb.append('}');
-
+        sb.append("}");
         return sb.toString();
     }
 
