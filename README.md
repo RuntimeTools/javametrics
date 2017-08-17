@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/RuntimeTools/javametrics.svg?branch=master)](https://travis-ci.org/RuntimeTools/javametrics)
+[![codebeat badge](https://codebeat.co/badges/02e01f80-46ee-4a25-a409-ff1c65cb1421)](https://codebeat.co/projects/github-com-runtimetools-javametrics-master)
+[![codecov](https://codecov.io/gh/RuntimeTools/javametrics/branch/master/graph/badge.svg)](https://codecov.io/gh/RuntimeTools/javametrics)
+![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
+[![Homepage](https://img.shields.io/badge/homepage-Application%20Metrics%20for%20Java-blue.svg)](https://developer.ibm.com/javasdk/application-metrics-java/)
+
 # Application Metrics for Java&trade;
 
 Application Metrics for Java&trade; instruments the Java runtime for performance monitoring, providing the monitoring data visually with its built in dashboard
