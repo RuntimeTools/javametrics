@@ -97,7 +97,7 @@ public class HttpData {
     private String headersToJSON(HashMap<String, String> headerMap, String headerType) {
         StringBuilder sb = new StringBuilder('\"');
         sb.append(headerType);
-        sb.append('\":{')
+        sb.append('\":{');
         if (!headerMap.isEmpty()) {
             Iterator<Entry<String, String>> it = headerMap.entrySet().iterator();
             while (it.hasNext()) {
