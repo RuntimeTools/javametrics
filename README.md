@@ -43,6 +43,9 @@ cd javametrics
 mvn install
 ```
 
+To use the agent built locally, you will need to reference the your local javametrics directory when setting the javaagent parameter later in the instructions.
+
+
 Javametrics is also released on Maven Central with the following artifacts
 
 
@@ -65,7 +68,13 @@ Javametrics requires a Java option to be set in order to load the agent.  A [jvm
 
 ```
 # Load Javametrics Java agent
--javaagent:"/path_to_install_dir/javametrics.jar"
+-javaagent:"/path_to_install_dir/javametrics-agent-1.0.1.jar"
+```
+If you have built the agent locally, your path_to_install_dir will need to point to your clone of javametrics.
+e.g.
+```
+# Load Javametrics Java agent
+-javaagent:"/home/git/javametrics/javaagent/target/javametrics-agent-1.0.1.jar"
 ```
 
 The URL for the dashboard consists of the server's default HTTP endpoint plus '/javametrics-dash'.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
