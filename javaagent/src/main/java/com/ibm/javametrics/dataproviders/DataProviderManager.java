@@ -82,7 +82,7 @@ public class DataProviderManager {
             message.append(timeStamp);
             message.append("\", \"gcTime\": \"");
             message.append(gcTime);
-            message.append("\"}}");
+            message.append("\"}");
             Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
         }
     }
@@ -99,7 +99,7 @@ public class DataProviderManager {
             message.append(system);
             message.append("\", \"process\": \"");
             message.append(process);
-            message.append("\"}}");
+            message.append("\"}");
             Javametrics.getInstance().sendJSON(CPU_TOPIC, message.toString());
         }
     }
@@ -119,7 +119,7 @@ public class DataProviderManager {
             message.append(usedHeap);
             message.append("\", \"usedNative\": \"");
             message.append(usedNative);
-            message.append("\"}}");
+            message.append("\"}");
             Javametrics.getInstance().sendJSON(MEMORYPOOLS_TOPIC, message.toString());
         }
     }
