@@ -8,5 +8,6 @@
   <modules>
     <module>javaagent</module>
     <module>dashboard</module>
+    <module>prometheus</module>
   </modules>
 </project>

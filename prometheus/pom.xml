@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>javametrics-prometheus</artifactId>
   <packaging>war</packaging>
-  <name>metrics</name>
+  <name>prometheus</name>
   <description>Application Metrics for Java on a prometheus /metrics endpoint.</description>
   <url>https://github.com/RuntimeTools/javametrics</url>
 
