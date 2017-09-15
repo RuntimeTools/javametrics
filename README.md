@@ -76,6 +76,7 @@ e.g.
 # Load Javametrics Java agent
 -javaagent:"/home/git/javametrics/javaagent/target/javametrics-agent-1.0.1.jar"
 ```
+* NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
 
 The URL for the dashboard consists of the server's default HTTP endpoint plus '/javametrics-dash'.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
