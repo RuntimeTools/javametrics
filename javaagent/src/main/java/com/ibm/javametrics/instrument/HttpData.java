@@ -30,8 +30,8 @@ public class HttpData {
     String url = null;
     String method = null;
     String contentType = null;
-    HashMap<String, String> headers = null;
-    HashMap<String, String> requestHeaders = null;
+    HashMap<String, String> headers = new HashMap<String, String>();
+    HashMap<String, String> requestHeaders = new HashMap<String, String>();
 
     public long getRequestTime() {
         return requestTime;
@@ -73,71 +73,50 @@ public class HttpData {
         this.contentType = contentType;
     }
 
+    public void addHeader(String headerName, String header) {
+        headers.put(headerName, header);
+    }
+
     /**
      * @return JSON string representing response headers
      */
     private String getHeaders() {
-
-        StringBuilder sb = new StringBuilder("\"header\":{");
-        if (headers != null) {
-            boolean first = true;
-            Iterator<Entry<String, String>> it = headers.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-                if (!first) {
-                    sb.append(',');
-                }
-                sb.append('\"');
-                sb.append(pair.getKey());
-                sb.append("\":\"");
-                sb.append(pair.getValue().replace("\"", "\\\""));
-                sb.append('\"');
-                first = false;
-            }
-        }
-
-        sb.append('}');
-        return sb.toString();
-    }
-
-    public void addHeader(String headerName, String header) {
-        if (headers == null) {
-            headers = new HashMap<String, String>();
-        }
-        headers.put(headerName, header);
+        return headersToJSON(headers, "header");
     }
 
     /**
      * @return JSON string repreesenting request headers
      */
     public String getRequestHeaders() {
-        StringBuilder sb = new StringBuilder("\"requestHeader\":{");
-        if (requestHeaders != null) {
-            boolean first = true;
-            Iterator<Entry<String, String>> it = requestHeaders.entrySet().iterator();
+        return headersToJSON(requestHeaders, "requestHeader");
+    }
+
+    /**
+     * @return JSON string repreesenting headers
+     */
+    private String headersToJSON(HashMap<String, String> headerMap, String headerType) {
+        StringBuilder sb = new StringBuilder("\"");
+        sb.append(headerType);
+        sb.append("\":{");
+        if (!headerMap.isEmpty()) {
+            Iterator<Entry<String, String>> it = headerMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-                if (!first) {
-                    sb.append(',');
-                }
-                sb.append('\"');
+                sb.append("\"");
                 sb.append(pair.getKey());
                 sb.append("\":\"");
                 sb.append(pair.getValue().replace("\"", "\\\""));
-                sb.append('\"');
-                first = false;
+                sb.append("\",");
             }
+            // delete the trailing comma - we've definitly added something, otherwise
+            // would have fallen out at headerMap.isEmpty()
+            sb.deleteCharAt(sb.length() - 1);
         }
-
-        sb.append('}');
-
+        sb.append("}");
         return sb.toString();
     }
 
     public void addRequestHeader(String headerName, String header) {
-        if (requestHeaders == null) {
-            requestHeaders = new HashMap<String, String>();
-        }
         requestHeaders.put(headerName, header);
     }
 
@@ -151,19 +130,15 @@ public class HttpData {
         sb.append(duration);
         sb.append(",\"url\":\"");
         sb.append(url);
-        sb.append('\"');
-        sb.append(",\"method\":\"");
+        sb.append("\",\"method\":\"");
         sb.append(method);
-        sb.append('\"');
-        sb.append(",\"contentType\":\"");
+        sb.append("\",\"contentType\":\"");
         sb.append(contentType);
-        sb.append('\"');
-        sb.append(',');
+        sb.append("\",");
         sb.append(getHeaders());
-        sb.append(',');
+        sb.append(",");
         sb.append(getRequestHeaders());
-        sb.append('}');
-
+        sb.append("}");
         return sb.toString();
     }
 

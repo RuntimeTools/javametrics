@@ -27,22 +27,20 @@ import java.util.List;
  */
 public class MemoryPoolDataProvider {
 
+    // lambda interface
+    private interface MemoryValue {
+        long getValue(MemoryPoolMXBean bean);
+    }
+
+    // lambda functions
+    private static MemoryValue afterGCCollection = (MemoryPoolMXBean mb) -> {return mb.getCollectionUsage().getUsed();};
+    private static MemoryValue liveMemory = (MemoryPoolMXBean mb) -> {return mb.getUsage().getUsed();};
+
     /**
      * Get the current heap size in bytes Returns -1 if no data is available
      */
     public static long getHeapMemory() {
-        long total = 0;
-        List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
-        if (memoryPoolBeans.isEmpty()) {
-            return -1;
-        }
-        for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
-            MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-            if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
-                total += memoryPoolMXBean.getUsage().getUsed();
-            }
-        }
-        return total;
+        return getMemory(MemoryType.HEAP, liveMemory);
     }
 
     /**
@@ -50,18 +48,7 @@ public class MemoryPoolDataProvider {
      * if no data is available
      */
     public static long getUsedHeapAfterGC() {
-        long total = 0;
-        List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
-        if (memoryPoolBeans.isEmpty()) {
-            return -1;
-        }
-        for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
-            MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-            if (memoryPoolMXBean.getType().equals(MemoryType.HEAP)) {
-                total += memoryPoolMXBean.getCollectionUsage().getUsed();
-            }
-        }
-        return total;
+        return getMemory(MemoryType.HEAP, afterGCCollection);
     }
 
     /**
@@ -69,6 +56,10 @@ public class MemoryPoolDataProvider {
      * data is available
      */
     public static long getNativeMemory() {
+        return getMemory(MemoryType.NON_HEAP, liveMemory);
+    }
+
+    private static long getMemory(MemoryType type, MemoryValue memval) {
         long total = 0;
         List<MemoryPoolMXBean> memoryPoolBeans = ManagementFactory.getMemoryPoolMXBeans();
         if (memoryPoolBeans.isEmpty()) {
@@ -76,8 +67,8 @@ public class MemoryPoolDataProvider {
         }
         for (Iterator<MemoryPoolMXBean> iterator = memoryPoolBeans.iterator(); iterator.hasNext();) {
             MemoryPoolMXBean memoryPoolMXBean = iterator.next();
-            if (memoryPoolMXBean.getType().equals(MemoryType.NON_HEAP)) {
-                total += memoryPoolMXBean.getUsage().getUsed();
+            if (memoryPoolMXBean.getType().equals(type)) {
+                total += memval.getValue(memoryPoolMXBean);
             }
         }
         return total;

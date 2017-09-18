@@ -24,7 +24,7 @@ import javax.json.JsonObject;
 
 /**
  * Aggregate HTTP request data
- * 
+ *
  */
 public class HttpDataAggregator {
     int total;
@@ -74,23 +74,19 @@ public class HttpDataAggregator {
         long requestDuration = jsonObject.getJsonNumber("duration").longValue();
         String requestUrl = jsonObject.getString("url", "");
         // Emd of Json processing
-
-        if (total == 0) {
-            time = requestTime;
-        }
-
         total += 1;
-
-        if (requestDuration > longest || total == 1) {
+        if (total == 1) {
+            // first time this method has been called - populate time
+            time = requestTime;
+            longest = 0; // so next if statement executes
+        }
+        if (requestDuration > longest) {
             longest = requestDuration;
             url = requestUrl;
         }
         average = ((average * (total - 1)) + requestDuration) / total;
 
-        HttpUrlData urlData = responseTimes.get(requestUrl);
-        if (urlData == null) {
-            urlData = new HttpUrlData();
-        }
+        HttpUrlData urlData = responseTimes.getOrDefault(requestUrl, new HttpUrlData());
 
         urlData.hits += 1;
         urlData.averageResponseTime = ((urlData.averageResponseTime * (urlData.hits - 1)) + requestDuration)
@@ -133,22 +129,21 @@ public class HttpDataAggregator {
      */
     public String urlDatatoJsonString() {
         StringBuilder sb = new StringBuilder("{\"topic\":\"httpURLs\",\"payload\":[");
-
-        Iterator<Entry<String, HttpUrlData>> it = responseTimes.entrySet().iterator();
-        boolean first = true;
-        while (it.hasNext()) {
-            Entry<String, HttpUrlData> pair = it.next();
-            if (!first) {
+        if (!responseTimes.isEmpty()) {
+            Iterator<Entry<String, HttpUrlData>> it = responseTimes.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<String, HttpUrlData> pair = it.next();
+                sb.append("{\"url\":\"");
+                sb.append(pair.getKey());
+                sb.append("\",\"averageResponseTime\":");
+                sb.append(pair.getValue().averageResponseTime);
+                sb.append('}');
                 sb.append(',');
             }
-            first = false;
-            sb.append("{\"url\":\"");
-            sb.append(pair.getKey());
-            sb.append("\",\"averageResponseTime\":");
-            sb.append(pair.getValue().averageResponseTime);
-            sb.append('}');
+            // delete the trailing comma - we've definitly added something, otherwise
+            // would have fallen out at responseTimes.isEmpty()
+            sb.deleteCharAt(sb.length() - 1);
         }
-
         sb.append("]}");
         return sb.toString();
     }
