@@ -31,6 +31,7 @@ The Application Metrics for Java agent requires Java version 8.
 Download the latest Application Metrics for Java release from [Github](http://github.com/runtimetools/javametrics/releases).
 This contains:
 * `javametrics-dash-x.x.x.war` - Javametrics Web Application
+* `javametrics-prometheus-x.x.x.war` - Javametrics Prometheus Endpoint
 * `javametrics-agent-x.x.x.jar` - Javametrics agent
 
 ### Building with Maven
@@ -59,10 +60,16 @@ javametrics-dash
 
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-dash</artifactId>
+
+javametrics-prometheus
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-prometheus</artifactId>
 ```
 
 #### Websphere Liberty
-Unpack the `.zip` or `.tar.gz` archive that you downloaded in the previous step.  Copy the `javametrics.war` file into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
+Unpack the `.zip` or `.tar.gz` archive that you downloaded in the previous step.  Copy the `javametrics-dash-x.x.x.war` and the `javametrics-prometheus-x.x.x.war` files into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
+
+If you only want the dashboard or prometheus support you can just copy the appropriate war file to the 'dropins' directory. Both require the agent to be loaded following the instructions below.
 
 Javametrics requires a Java option to be set in order to load the agent.  A [jvm.options](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_admin_customvars.html) file is the best way to configure this for Websphere Liberty. It should contain the following entry, where `path_to_install_dir` is replaced with the actual path containing the javametrics file:
 
@@ -80,6 +87,8 @@ e.g.
 
 The URL for the dashboard consists of the server's default HTTP endpoint plus '/javametrics-dash'.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
+The URL for the prometheus endpoint consists of the server's default HTTP endpoint plus the default prometheus metrics path `/metrics`.  E.g. Running locally it might be: http://localhost:9080/metrics/
+
 #### Spring
 Coming soon
 
@@ -92,13 +101,6 @@ Coming soon
 - [API Documentation](API-DOCUMENTATION.md)
 
 <a name="building"></a>
-
-## Building the jar and war files from source
-
-Requirements: Maven
-
-To build javametrics, run `mvn clean package` from the root project.  This will build a zip file in the distribution directory containing
-`javametrics-agent.jar`, `javametrics-web.war` and a `lib/` directory with the `asm*.jar` files.
 
 ## Source code
 The source code for Application Metrics for Java is available in the [Javametrics Github project](http://github.com/RuntimeTools/javametrics).

@@ -22,14 +22,13 @@ import io.prometheus.client.Summary;
 
 public class Metrics {
 
-    private Counter requests = Counter.build().name("incrementing_count").help("A test count.").register();
-
     // Gauges for cpu usage.
     private Gauge os_cpu_used_ratio = Gauge.build().name("os_cpu_used_ratio")
             .help("The ratio of the systems CPU that is currently used (values are 0-1)").register();
     private Gauge process_cpu_used_ratio = Gauge.build().name("process_cpu_used_ratio")
             .help("The ratio of the process CPU that is currently used (values are 0-1)").register();
 
+    // Summary for http request durations.
     private Summary http_request_duration_microseconds = Summary.build()
             .quantile(0.5, 0.05)
             .quantile(0.9, 0.01)
@@ -38,25 +37,13 @@ public class Metrics {
             .help("The HTTP request latencies in microseconds.")
             .labelNames("handler").register();
 
-    // Gauges for memory usage - TODO as native memory usage is not in
-    // JavaMetrics.
-    /*
-    static final Gauge os_resident_memory_bytes = Gauge.build().name("os_resident_memory_bytes")
-            .help("OS memory size in bytes.").register();
-    static final Gauge process_resident_memory_bytes = Gauge.build().name("process_resident_memory_bytes")
-            .help("Resident memory size in bytes.").register();
-    static final Gauge process_virtual_memory_bytes = Gauge.build().name("process_virtual_memory_bytes")
-            .help("Virtual memory size in bytes.").register();
-    */
-
-    // HTTP Counters
+    // Counter for http request counts.
     private Counter http_requests_total = Counter.build().labelNames("code", "handler", "method")
             .name("http_requests_total").help("Total number of HTTP requests made.").register();
 
     private JavametricsListener listener = this::parseData;
 
     public Metrics() {
-
         // Connect to javametrics
         Javametrics.getInstance().addListener(listener);
     }
@@ -91,7 +78,8 @@ public class Metrics {
                 } catch (JsonException je) {
                     // Skip this object, log the exception and keep trying with
                     // the rest of the list
-                    je.printStackTrace();
+                    // System.err.println("Error in json: \n" + jsonStr);
+                    // je.printStackTrace();
                 }
             }
         }
@@ -102,7 +90,7 @@ public class Metrics {
         String method = jsonObject.getJsonString("method").getString();
         String status = jsonObject.getJsonNumber("status").toString();
         long duration = jsonObject.getJsonNumber("duration").longValue();
-        // duration needs to be in microseconds.
+        // Duration needs to be in microseconds.
         duration *= 1000;
 
         try {

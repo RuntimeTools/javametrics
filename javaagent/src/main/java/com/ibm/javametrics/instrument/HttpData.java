@@ -144,7 +144,7 @@ public class HttpData {
         sb.append('\"');
         sb.append(",\"status\":");
         sb.append(status);
-        sb.append("\",\"contentType\":\"");
+        sb.append(",\"contentType\":\"");
         sb.append(contentType);
         sb.append("\",");
         sb.append(getHeaders());
