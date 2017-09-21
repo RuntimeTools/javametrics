@@ -27,6 +27,7 @@ public class HttpData {
 
     long requestTime = 0;
     long duration = 0;
+    int status = 0;
     String url = null;
     String method = null;
     String contentType = null;
@@ -47,6 +48,14 @@ public class HttpData {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    int getStatus() {
+        return status;
+    }
+
+    void setStatus(int status) {
+        this.status = status;
     }
 
     public String getUrl() {
@@ -132,7 +141,10 @@ public class HttpData {
         sb.append(url);
         sb.append("\",\"method\":\"");
         sb.append(method);
-        sb.append("\",\"contentType\":\"");
+        sb.append('\"');
+        sb.append(",\"status\":");
+        sb.append(status);
+        sb.append(",\"contentType\":\"");
         sb.append(contentType);
         sb.append("\",");
         sb.append(getHeaders());

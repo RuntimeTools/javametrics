@@ -31,6 +31,7 @@ public class ServletCallback {
     private static final String HTTP_TOPIC = "http";
     private static final String GET_REQUEST_URL = "getRequestURL";
     private static final String GET_METHOD = "getMethod";
+    private static final String GET_STATUS = "getStatus";
     private static final String GET_CONTENT_TYPE = "getContentType";
     private static final String GET_HEADER_NAMES = "getHeaderNames";
     private static final String GET_HEADER = "getHeader";
@@ -134,10 +135,13 @@ public class ServletCallback {
             Method getRequestURL = reqClass.getMethod(GET_REQUEST_URL);
             data.setUrl(((StringBuffer) getRequestURL.invoke(request)).toString());
 
-            if (detailed ) {
-                Method getMethod = reqClass.getMethod(GET_METHOD);
-                data.setMethod((String) getMethod.invoke(request));
+            Method getMethod = reqClass.getMethod(GET_METHOD);
+            data.setMethod((String) getMethod.invoke(request));
 
+            Method getStatus = respClass.getMethod(GET_STATUS);
+            data.setStatus((Integer) getStatus.invoke(response));
+
+            if (detailed) {
                 Method getContentType = respClass.getMethod(GET_CONTENT_TYPE);
                 data.setContentType((String) getContentType.invoke(response));
 
