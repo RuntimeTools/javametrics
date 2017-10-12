@@ -19,6 +19,7 @@ import com.ibm.javametrics.JavametricsListener;
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
 import io.prometheus.client.Summary;
+import io.prometheus.client.hotspot.DefaultExports;
 
 public class Metrics {
 
@@ -44,6 +45,8 @@ public class Metrics {
     private JavametricsListener listener = this::parseData;
 
     public Metrics() {
+        // Add the default Java collectors
+        DefaultExports.initialize();
         // Connect to javametrics
         Javametrics.getInstance().addListener(listener);
     }
