@@ -147,7 +147,7 @@
     let envTable = new TextTable('#envDiv', '#summary', localizedStrings.envTitle);
     let summaryTable = new TextTable('#summaryDiv', '#summary', "Summary"); // TODO move this to localizedStrings.
     let httpTop5 = new Top5('#top5Div', '#summary', localizedStrings.httpTop5Title);
-    httpTop5.settop5Options({host: hostname, filteredPath: dashboardRoot})
+    httpTop5.settop5Options({host: hostname, filteredPath: dashboardRoot});
 
     client.onmessage = function(message) {
         received = JSON.parse(message.data);
