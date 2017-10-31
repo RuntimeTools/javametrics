@@ -32,19 +32,16 @@ public class GCDataProvider {
     /**
      * Returns the time spent in GC as a proportion of the time elapsed since
      * this method was last called. If no data is available -1 is returned.
-     * 
+     *
+     * (Will always return -1 on first call.)
+     *
      * @return
      */
-    public static double getGCCollectionTime() {
+    public static double getLatestGCPercentage() {
         long now = System.currentTimeMillis();
-        List<GarbageCollectorMXBean> sunBeans = ManagementFactory.getGarbageCollectorMXBeans();
-        long totalCollectionTime = 0;
-        if (sunBeans.size() == 0) {
+        long totalCollectionTime = getTotalCollectionTime();
+        if( totalCollectionTime == -1) {
             return -1;
-        }
-        for (Iterator<GarbageCollectorMXBean> iterator = sunBeans.iterator(); iterator.hasNext();) {
-            GarbageCollectorMXBean garbageCollectorMXBean = iterator.next();
-            totalCollectionTime += garbageCollectorMXBean.getCollectionTime();
         }
         if (previousRequestTimeStamp == 0) {
             previousRequestTimeStamp = now;
@@ -61,6 +58,37 @@ public class GCDataProvider {
             previousRequestTimeStamp = now;
             return timeInGc;
         }
+    }
+
+    /**
+     * Returns the time spent in GC as a proportion of the time elapsed since
+     * the JVM was started. If no data is available returns -1.
+     *
+     * @return the percentage of uptime spent in gc or -1.0
+     */
+    public static double getTotalGCPercentage() {
+        long totalCollectionTime = getTotalCollectionTime();
+        if(totalCollectionTime == -1) {
+            return -1.0;
+        }
+        long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
+        return ((double) totalCollectionTime / (double) uptime);
+    }
+
+    private static long getTotalCollectionTime() {
+        List<GarbageCollectorMXBean> sunBeans = ManagementFactory.getGarbageCollectorMXBeans();
+        long totalCollectionTime = 0;
+        if (sunBeans.size() == 0) {
+            return -1;
+        }
+        for (Iterator<GarbageCollectorMXBean> iterator = sunBeans.iterator(); iterator.hasNext();) {
+            GarbageCollectorMXBean garbageCollectorMXBean = iterator.next();
+            long collectionTime = garbageCollectorMXBean.getCollectionTime();
+            if( collectionTime != -1) {
+                totalCollectionTime += collectionTime;
+            }
+        }
+        return totalCollectionTime;
     }
 
 }
