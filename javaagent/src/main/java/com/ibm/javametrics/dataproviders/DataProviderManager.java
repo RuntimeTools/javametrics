@@ -29,13 +29,23 @@ public class DataProviderManager {
     private static final String GC_TOPIC = "gc";
     private static final String CPU_TOPIC = "cpu";
     private static final String MEMORYPOOLS_TOPIC = "memoryPools";
-	private static final String ENV_TOPIC = "env";
+    private static final String ENV_TOPIC = "env";
 
     private ScheduledExecutorService exec;
 
     private static String escapeStringForJSON(String str) {
         return str.replace("\\", "\\\\").replace("\"", "\\\"");
     }
+
+    // So long as we get the CPU samples at a constant interval
+    // we can average them out. (Note: the total itself is
+    // not meaningful.)
+    private double totalSystemCPULoad = 0.0;
+    private double totalProcessCPULoad = 0.0;
+    private double cpuLoadSamples = 0.0;
+
+    private long usedHeapAfterGCMax = 0;
+    private long usedNativeMax = 0;
 
     /**
      * Create a JavametricsMBeanConnector
@@ -75,32 +85,48 @@ public class DataProviderManager {
 
     private void emitGCData() {
         long timeStamp = System.currentTimeMillis();
-        double gcTime = GCDataProvider.getGCCollectionTime();
-        if (gcTime >= 0) { // Don't send -1 'no data' values
+        double gcFraction = GCDataProvider.getLatestGCPercentage();
+        double gcFractionSummary = GCDataProvider.getTotalGCPercentage();
+
+        if (gcFraction >= 0) { // Don't send -1 'no data' values
             StringBuilder message = new StringBuilder();
             message.append("{\"time\":\"");
             message.append(timeStamp);
             message.append("\", \"gcTime\": \"");
-            message.append(gcTime);
+            message.append(gcFraction);
+            message.append("\", \"gcTimeSummary\": \"");
+            message.append(gcFractionSummary);
             message.append("\"}");
             Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
         }
     }
 
     private void emitCPUUsage() {
-        long timeStamp = System.currentTimeMillis();
-        double process = CPUDataProvider.getProcessCpuLoad();
-        double system = CPUDataProvider.getSystemCpuLoad();
-        if (system >= 0 && process >= 0) {
-            StringBuilder message = new StringBuilder();
-            message.append("{\"time\":\"");
-            message.append(timeStamp);
-            message.append("\", \"system\": \"");
-            message.append(system);
-            message.append("\", \"process\": \"");
-            message.append(process);
-            message.append("\"}");
-            Javametrics.getInstance().sendJSON(CPU_TOPIC, message.toString());
+        try{
+            long timeStamp = System.currentTimeMillis();
+            double process = CPUDataProvider.getProcessCpuLoad();
+            double system = CPUDataProvider.getSystemCpuLoad();
+            cpuLoadSamples++;
+            if (system >= 0 && process >= 0) {
+                totalProcessCPULoad += process;
+                totalSystemCPULoad += system;
+
+                StringBuilder message = new StringBuilder();
+                message.append("{\"time\":\"");
+                message.append(timeStamp);
+                message.append("\", \"system\": \"");
+                message.append(system);
+                message.append("\", \"process\": \"");
+                message.append(process);
+                message.append("\", \"processMean\": \"");
+                message.append(totalProcessCPULoad/cpuLoadSamples);
+                message.append("\", \"systemMean\": \"");
+                message.append(totalSystemCPULoad/cpuLoadSamples);
+                message.append("\"}");
+                Javametrics.getInstance().sendJSON(CPU_TOPIC, message.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -110,17 +136,32 @@ public class DataProviderManager {
         long usedNative = MemoryPoolDataProvider.getNativeMemory();
         long usedHeap = MemoryPoolDataProvider.getHeapMemory();
         if (usedHeapAfterGC >= 0) { // check that some data is available
+            String usedHeapAfterGCStr = Long.toString(usedHeapAfterGC, 10);
+            usedHeapAfterGCMax = Math.max(usedHeapAfterGCMax, usedHeapAfterGC);
+
+            String usedNativeStr = Long.toString(usedNative, 10);
+            usedNativeMax = Math.max(usedNativeMax, usedNative);
+
+            String usedHeapStr = Long.toString(usedHeap, 10);
+
             StringBuilder message = new StringBuilder();
             message.append("{\"time\":\"");
             message.append(timeStamp);
             message.append("\", \"usedHeapAfterGC\": \"");
-            message.append(usedHeapAfterGC);
+            message.append(usedHeapAfterGCStr);
             message.append("\", \"usedHeap\": \"");
-            message.append(usedHeap);
+            message.append(usedHeapStr);
             message.append("\", \"usedNative\": \"");
-            message.append(usedNative);
+            message.append(usedNativeStr);
+
+            // Used heap max is not actually that interesting, it ought to get to 100% just before a GC.
+            message.append("\", \"usedHeapAfterGCMax\": \"");
+            message.append(usedHeapAfterGCMax);
+            message.append("\", \"usedNativeMax\": \"");
+            message.append(usedNativeMax);
             message.append("\"}");
             Javametrics.getInstance().sendJSON(MEMORYPOOLS_TOPIC, message.toString());
         }
     }
+
 }

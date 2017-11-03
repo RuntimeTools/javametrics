@@ -26,11 +26,11 @@ import org.junit.Test;
 public class GCDataProviderTest {
 
 	/**
-	 * Test method for {@link com.ibm.javametrics.dataproviders.GCDataProvider#getGCCollectionTime()}.
+	 * Test method for {@link com.ibm.javametrics.dataproviders.GCDataProvider#getLatestGCPercentage()}.
 	 */
 	@Test
 	public void testGetGCCollectionTime() {
-		double gctime = GCDataProvider.getGCCollectionTime();
+		double gctime = GCDataProvider.getLatestGCPercentage();
 		int timeout = 3000;
 		long startTime = System.currentTimeMillis();
 		// may get -1 returned before MXBeans are initialized, allow time for a
@@ -42,7 +42,7 @@ public class GCDataProviderTest {
 				// Do nothing
 				e.printStackTrace();
 			}
-			gctime = GCDataProvider.getGCCollectionTime();
+			gctime = GCDataProvider.getLatestGCPercentage();
 		}
 		assertTrue("GC time should be greater than or equal to 0, was " + gctime, gctime >= 0.0d);
 		assertTrue("GC time should be less than 1 (i.e. less than 100%), was " + gctime, gctime <= 1d);
