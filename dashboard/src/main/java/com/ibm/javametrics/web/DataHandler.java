@@ -16,10 +16,10 @@
 package com.ibm.javametrics.web;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.json.Json;
@@ -28,14 +28,16 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import com.ibm.javametrics.Javametrics;
-import com.ibm.javametrics.JavametricsListener;
+import com.ibm.javametrics.analysis.ApiDataListener;
+import com.ibm.javametrics.analysis.HttpDataAggregator;
+import com.ibm.javametrics.analysis.HttpDataAggregator.HttpUrlData;
 
 /**
  * Registers as a JavametricsListener to receive metrics data, processes the
  * data and sends the output to any registered emitters
  *
  */
-public class DataHandler implements JavametricsListener {
+public class DataHandler extends ApiDataListener {
 
     private static DataHandler instance = null;
     private Set<Emitter> emitters = new HashSet<Emitter>();
@@ -57,7 +59,7 @@ public class DataHandler implements JavametricsListener {
         emitters.add(emitter);
         /*
          * adding as listener has the side effect of sending history which is
-         * required for any newly registered emitter to see the Environment daya
+         * required for any newly registered emitter to see the Environment data
          */
         Javametrics.getInstance().addListener(this);
     }
@@ -84,90 +86,94 @@ public class DataHandler implements JavametricsListener {
     }
 
     @Override
-    public void receive(String pluginName, String data) {
-        if (pluginName.equals("api")) {
-            List<String> split = splitIntoJSONObjects(data);
-            for (Iterator<String> iterator = split.iterator(); iterator.hasNext();) {
-                String jsonStr = iterator.next();
-                JsonReader jsonReader = Json.createReader(new StringReader(jsonStr));
-                try {
-                    JsonObject jsonObject = jsonReader.readObject();
-                    String topicName = jsonObject.getString("topic", null);
-                    if (topicName != null) {
-                        if (topicName.equals("http")) {
-                            synchronized (aggregateHttpData) {
-                                aggregateHttpData.aggregate(jsonObject.getJsonObject("payload"));
-                            }
-                        } else {
-                            emit(jsonObject.toString());
+    public void processData(List<String> jsonData) {
+        for (Iterator<String> iterator = jsonData.iterator(); iterator.hasNext();) {
+            String jsonStr = iterator.next();
+            JsonReader jsonReader = Json.createReader(new StringReader(jsonStr));
+            try {
+                JsonObject jsonObject = jsonReader.readObject();
+                String topicName = jsonObject.getString("topic", null);
+                if (topicName != null) {
+                    if (topicName.equals("http")) {
+                        JsonObject payload = jsonObject.getJsonObject("payload");
+                        long requestTime = payload.getJsonNumber("time").longValue();
+                        long requestDuration = payload.getJsonNumber("duration").longValue();
+                        String requestUrl = payload.getString("url", "");
+
+                        synchronized (aggregateHttpData) {
+                            aggregateHttpData.aggregate(requestTime, requestDuration, requestUrl);
                         }
+                    } else {
+                        emit(jsonObject.toString());
                     }
-                } catch (JsonException je) {
-                    // Skip this object, log the exception and keep trying with
-                    // the rest of the list
-                    je.printStackTrace();
                 }
+            } catch (JsonException je) {
+                // Skip this object, log the exception and keep trying with
+                // the rest of the list
+                je.printStackTrace();
             }
-            emitHttp();
         }
+        emitHttp();
     }
 
     private void emitHttp() {
-        HttpDataAggregator httpData;
-        String httpUrlData;
-        synchronized (aggregateHttpData) {
-            httpData = aggregateHttpData.getCurrent();
-            if (aggregateHttpData.total == 0) {
-                httpData.time = System.currentTimeMillis();
-            }
-            httpUrlData = aggregateHttpData.urlDatatoJsonString();
-            aggregateHttpData.clear();
-        }
-        emit(httpData.toJsonString());
-        emit(httpUrlData);
-    }
+        long time;
+        long total;
+        long longest;
+        long average;
+        String url;
+        StringBuilder httpUrlData;
+        StringBuilder httpData;
 
-    /**
-     * Split a string of JSON objects into multiple strings
-     * 
-     * @param data
-     * @return
-     */
-    private List<String> splitIntoJSONObjects(String data) {
-        List<String> strings = new ArrayList<String>();
-        int index = 0;
-        // Find first opening bracket
-        while (index < data.length() && data.charAt(index) != '{') {
-            index++;
-        }
-        int closingBracket = index + 1;
-        int bracketCounter = 1;
-        while (index < data.length() - 1 && closingBracket < data.length()) {
-            // Find the matching bracket for the bracket at location 'index'
-            boolean found = false;
-            if (data.charAt(closingBracket) == '{') {
-                bracketCounter++;
-            } else if (data.charAt(closingBracket) == '}') {
-                bracketCounter--;
-                if (bracketCounter == 0) {
-                    // found matching bracket
-                    found = true;
+        synchronized (aggregateHttpData) {
+            time = aggregateHttpData.getTime();
+            total = aggregateHttpData.getTotal();
+            longest = aggregateHttpData.getLongest();
+            average = aggregateHttpData.getAverage();
+            url = aggregateHttpData.getUrl();
+
+            if (total == 0) {
+                time = System.currentTimeMillis();
+            }
+
+            // emit JSON String representing HTTP request data in the
+            // format expected by the javascript
+            httpData = new StringBuilder("{\"topic\":\"http\",\"payload\":{\"time\":");
+            httpData.append(time);
+            httpData.append(",\"total\":");
+            httpData.append(total);
+            httpData.append(",\"longest\":");
+            httpData.append(longest);
+            httpData.append(",\"average\":");
+            httpData.append(average);
+            httpData.append(",\"url\":\"");
+            httpData.append(url);
+            httpData.append("\"}}");
+
+            // emit JSON String representing HTTP request data by URL in the
+            // format expected by the javascript
+            httpUrlData = new StringBuilder("{\"topic\":\"httpURLs\",\"payload\":[");
+            Iterator<Entry<String, HttpUrlData>> it = aggregateHttpData.getUrlData().entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<String, HttpUrlData> pair = it.next();
+                httpUrlData.append("{\"url\":\"");
+                httpUrlData.append(pair.getKey());
+                httpUrlData.append("\",\"hits\":");
+                httpUrlData.append(pair.getValue().getHits());
+                httpUrlData.append(",\"averageResponseTime\":");
+                httpUrlData.append(pair.getValue().getAverageResponseTime());
+                httpUrlData.append('}');
+                if (it.hasNext()) {
+                    httpUrlData.append(',');
                 }
             }
-            if (found) {
-                strings.add(data.substring(index, closingBracket + 1));
-                index = closingBracket + 1;
-                // Find next opening bracket and reset counters
-                while (index < data.length() && data.charAt(index) != '{') {
-                    index++;
-                }
-                closingBracket = index + 1;
-                bracketCounter = 1;
-            } else {
-                closingBracket++;
-            }
+            httpUrlData.append("]}");
+
+            aggregateHttpData.resetSummaryData();
         }
-        return strings;
+
+        emit(httpData.toString());
+        emit(httpUrlData.toString());
     }
 
 }

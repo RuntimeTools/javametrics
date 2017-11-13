@@ -65,7 +65,12 @@ public class JavametricsImpl implements Javametrics, Receiver {
     public void receiveData(String type, String data) {
         for (Iterator<JavametricsListener> iterator = javametricsListeners.iterator(); iterator.hasNext();) {
             JavametricsListener javametricsListener = iterator.next();
-            javametricsListener.receive(type, data);
+            try {
+                javametricsListener.receive(type, data);
+            } catch (Throwable t) {
+                System.err.println("javametrics: Exception in listener: " + t);
+                javametricsListeners.remove(javametricsListener);
+            }
         }
     }
 

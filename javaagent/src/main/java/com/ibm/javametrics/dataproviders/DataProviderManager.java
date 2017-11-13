@@ -42,7 +42,7 @@ public class DataProviderManager {
     // not meaningful.)
     private double totalSystemCPULoad = 0.0;
     private double totalProcessCPULoad = 0.0;
-    private double cpuLoadSamples = 0.0;
+    private long cpuLoadSamples = 0;
 
     private long usedHeapAfterGCMax = 0;
     private long usedNativeMax = 0;
@@ -90,13 +90,13 @@ public class DataProviderManager {
 
         if (gcFraction >= 0) { // Don't send -1 'no data' values
             StringBuilder message = new StringBuilder();
-            message.append("{\"time\":\"");
+            message.append("{\"time\":");
             message.append(timeStamp);
-            message.append("\", \"gcTime\": \"");
+            message.append(",\"gcTime\":");
             message.append(gcFraction);
-            message.append("\", \"gcTimeSummary\": \"");
+            message.append(",\"gcTimeSummary\":");
             message.append(gcFractionSummary);
-            message.append("\"}");
+            message.append("}");
             Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
         }
     }
@@ -112,17 +112,17 @@ public class DataProviderManager {
                 totalSystemCPULoad += system;
 
                 StringBuilder message = new StringBuilder();
-                message.append("{\"time\":\"");
+                message.append("{\"time\":");
                 message.append(timeStamp);
-                message.append("\", \"system\": \"");
+                message.append(",\"system\":");
                 message.append(system);
-                message.append("\", \"process\": \"");
+                message.append(",\"process\":");
                 message.append(process);
-                message.append("\", \"processMean\": \"");
+                message.append(",\"processMean\":");
                 message.append(totalProcessCPULoad/cpuLoadSamples);
-                message.append("\", \"systemMean\": \"");
+                message.append(",\"systemMean\":");
                 message.append(totalSystemCPULoad/cpuLoadSamples);
-                message.append("\"}");
+                message.append("}");
                 Javametrics.getInstance().sendJSON(CPU_TOPIC, message.toString());
             }
         } catch (Exception e) {
@@ -145,21 +145,21 @@ public class DataProviderManager {
             String usedHeapStr = Long.toString(usedHeap, 10);
 
             StringBuilder message = new StringBuilder();
-            message.append("{\"time\":\"");
+            message.append("{\"time\":");
             message.append(timeStamp);
-            message.append("\", \"usedHeapAfterGC\": \"");
+            message.append(",\"usedHeapAfterGC\":");
             message.append(usedHeapAfterGCStr);
-            message.append("\", \"usedHeap\": \"");
+            message.append(",\"usedHeap\":");
             message.append(usedHeapStr);
-            message.append("\", \"usedNative\": \"");
+            message.append(",\"usedNative\":");
             message.append(usedNativeStr);
 
             // Used heap max is not actually that interesting, it ought to get to 100% just before a GC.
-            message.append("\", \"usedHeapAfterGCMax\": \"");
+            message.append(",\"usedHeapAfterGCMax\":");
             message.append(usedHeapAfterGCMax);
-            message.append("\", \"usedNativeMax\": \"");
+            message.append(",\"usedNativeMax\":");
             message.append(usedNativeMax);
-            message.append("\"}");
+            message.append("}");
             Javametrics.getInstance().sendJSON(MEMORYPOOLS_TOPIC, message.toString());
         }
     }
