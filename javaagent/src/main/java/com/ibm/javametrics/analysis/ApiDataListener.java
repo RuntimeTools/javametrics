@@ -27,7 +27,7 @@ public abstract class ApiDataListener implements JavametricsListener {
         if (pluginName.equals("api")) {
             List<String> split = splitIntoJSONObjects(data);
             processData(split);
-        }     
+        }
     }
 
     public abstract void processData(List<String> jsonData);
