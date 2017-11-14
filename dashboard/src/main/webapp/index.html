@@ -71,12 +71,12 @@
               <div class="col-md-4 hideable" id="envDiv"></div>
               <div class="col-md-4 hideable" id="summaryDiv"></div>
               <div class="col-md-4 hideable" id="top5Div"></div>
+              <div class="col-md-4 hideable" id="httpSummaryDiv"></div>
           </div>
           </div>
         </div>
       </div>
     </div>
-
 <script>
     // Global variables
     var monitoringStartTime = new Date();
@@ -128,6 +128,7 @@
 <script type="text/javascript" src="graphmetrics/js/cpuChart.js"></script>
 <script type="text/javascript" src="graphmetrics/js/httpThroughPutChart.js"></script>
 <script type="text/javascript" src="graphmetrics/js/httpRequestsChart.js"></script>
+<script type="text/javascript" src="graphmetrics/js/httpSummary.js"></script>
 <script type="text/javascript" src="graphmetrics/js/top5.js"></script>
 <script type="text/javascript" src="graphmetrics/js/gcTimeChart.js"></script>
 <script type="text/javascript" src="graphmetrics/js/memPoolsChart.js"></script>
@@ -147,7 +148,9 @@
     let envTable = new TextTable('#envDiv', '#summary', localizedStrings.envTitle);
     let summaryTable = new TextTable('#summaryDiv', '#summary', "Summary"); // TODO move this to localizedStrings.
     let httpTop5 = new Top5('#top5Div', '#summary', localizedStrings.httpTop5Title);
+    let httpSummary = new HttpSummary('#httpSummaryDiv', '#summary', localizedStrings.httpSummaryTitle);
     httpTop5.settop5Options({host: hostname, filteredPath: dashboardRoot});
+    httpSummary.settop5Options({host: hostname, filteredPath: dashboardRoot});
 
     client.onmessage = function(message) {
         received = JSON.parse(message.data);
@@ -171,6 +174,8 @@
                 updateHttpData(payload);
                 break;
             case 'httpURLs':
+                console.log(topic);
+                console.log(payload);
                 httpTop5.updateURLData(payload);
                 break;
             case 'title' :
