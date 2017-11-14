@@ -82,13 +82,13 @@ public class MBeanDataProviderTest {
 		boolean foundCPU = false;
 		for (Iterator<String> iterator = received.iterator(); iterator.hasNext();) {
 			String message = iterator.next();
-			if (message.startsWith("{\"topic\": \"gc")) {
+			if (message.startsWith("{\"topic\":\"gc")) {
 				foundGC = true;
 			}
-			if (message.startsWith("{\"topic\": \"memoryPools")) {
+			if (message.startsWith("{\"topic\":\"memoryPools")) {
 				foundMemPools = true;
 			}
-			if (message.startsWith("{\"topic\": \"cpu")) {
+			if (message.startsWith("{\"topic\":\"cpu")) {
 				foundCPU = true;
 			}
 		}

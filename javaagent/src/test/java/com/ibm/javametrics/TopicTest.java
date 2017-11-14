@@ -49,7 +49,7 @@ public class TopicTest {
 				for (Iterator<String> iterator = events.iterator(); iterator.hasNext();) {
 					String oneEvent = iterator.next();
 					// Only store data we sent from this test case
-					if (oneEvent.startsWith("{\"topic\": \"testTopic\",")) {
+					if (oneEvent.startsWith("{\"topic\":\"testTopic\",")) {
 						received.add(oneEvent);
 					}
 				}
@@ -73,7 +73,7 @@ public class TopicTest {
 	@Test
 	public void testSendString() {
 		testTopic.send("hello from test topic");
-		checkForResult("{\"topic\": \"testTopic\", \"payload\": {\"message\":\"hello from test topic\"}}");
+		checkForResult("{\"topic\":\"testTopic\",\"payload\":{\"message\":\"hello from test topic\"}}");
 	}
 
 	private void checkForResult(String message) {
@@ -90,7 +90,7 @@ public class TopicTest {
 		for (Iterator<String> iterator = received.iterator(); iterator.hasNext();) {
 			String data = iterator.next();
 			boolean foundMyData = false;
-			if (data.startsWith("{\"topic\": \"testTopic\",")) {
+			if (data.startsWith("{\"topic\":\"testTopic\",")) {
 				assertEquals(message, data);
 				foundMyData = true;
 			}
@@ -107,7 +107,7 @@ public class TopicTest {
 		long endTime = System.currentTimeMillis();
 		long startTime = endTime - 3000;
 		testTopic.send(startTime, endTime, "hello from test topic");
-		checkForResult("{\"topic\": \"testTopic\", \"payload\": {\"time\":\"" + startTime + "\", \"duration\": \"3000\", \"message\": \"hello from test topic\"}}");
+		checkForResult("{\"topic\":\"testTopic\",\"payload\":{\"time\":" + startTime + ",\"duration\":3000,\"message\":\"hello from test topic\"}}");
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class TopicTest {
 		long endTime = System.currentTimeMillis();
 		long startTime = endTime - 3000;
 		testTopic.send(startTime, endTime);
-		checkForResult("{\"topic\": \"testTopic\", \"payload\": {\"time\":\"" + startTime + "\", \"duration\": \"3000\"}}");
+		checkForResult("{\"topic\":\"testTopic\",\"payload\":{\"time\":" + startTime + ",\"duration\":3000}}");
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class TopicTest {
 	@Test
 	public void testSendJSON() {
 		testTopic.sendJSON("{\"personalizedMessage\":\"hello from test topic\"}");
-		checkForResult("{\"topic\": \"testTopic\", \"payload\":{\"personalizedMessage\":\"hello from test topic\"}}");
+		checkForResult("{\"topic\":\"testTopic\",\"payload\":{\"personalizedMessage\":\"hello from test topic\"}}");
 	}
 
 	/**
