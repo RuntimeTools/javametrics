@@ -174,9 +174,8 @@
                 updateHttpData(payload);
                 break;
             case 'httpURLs':
-                console.log(topic);
-                console.log(payload);
                 httpTop5.updateURLData(payload);
+                httpSummary.updateURLData(payload);
                 break;
             case 'title' :
                 updateHeader(payload);
@@ -215,7 +214,6 @@
 <script>
 
     let selected_tab = "dashboard-tab"
-
     window.addEventListener('resize', resize);
 
     // Also re-size when we change tabs in case we re-sized
@@ -242,6 +240,7 @@
             envTable.resizeTable();
             summaryTable.resizeTable();
             httpTop5.resizeTop5Chart();
+            httpSummary.resizeTable();
         }
     }
 
