@@ -127,7 +127,7 @@ public class DataHandler extends ApiDataListener {
 
         synchronized (aggregateHttpData) {
             time = aggregateHttpData.getTime();
-            total = aggregateHttpData.getTotal();
+            total = aggregateHttpData.getTotalHits();
             longest = aggregateHttpData.getLongest();
             average = aggregateHttpData.getAverage();
             url = aggregateHttpData.getUrl();
