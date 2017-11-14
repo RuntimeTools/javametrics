@@ -22,8 +22,8 @@ import java.util.HashMap;
  *
  */
 public class HttpDataAggregator {
-    int total;
-    long average;
+    int totalHits;
+    long total;
     long longest;
     long time;
     String url;
@@ -35,8 +35,8 @@ public class HttpDataAggregator {
     }
 
     public void resetSummaryData() {
+        totalHits = 0;
         total = 0;
-        average = 0;
         longest = 0;
         time = 0;
         url = "";
@@ -53,13 +53,14 @@ public class HttpDataAggregator {
      * @throws JsonException
      */
     public void aggregate(long requestTime, long requestDuration, String requestUrl) {
-        total += 1;
-        if ((total == 1) || (requestDuration > longest)) {
+        totalHits += 1;
+        total += requestDuration;
+        
+        if ((totalHits == 1) || (requestDuration > longest)) {
             time = requestTime;
             longest = requestDuration;
             url = requestUrl;
         }
-        average = ((average * (total - 1)) + requestDuration) / total;
 
         HttpUrlData urlData = responseTimes.getOrDefault(requestUrl, new HttpUrlData());
 
@@ -89,6 +90,10 @@ public class HttpDataAggregator {
     }
 
     public long getAverage() {
+        long average = 0;
+        if (totalHits > 0) {
+            average = total/totalHits; 
+        }
         return average;
     }
 
@@ -104,8 +109,8 @@ public class HttpDataAggregator {
         return url;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalHits() {
+        return totalHits;
     }
 
     public void setTime(long timeStamp) {
