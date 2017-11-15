@@ -100,7 +100,7 @@ public class JavametricsTest {
 					for (Iterator<String> iterator = events.iterator(); iterator.hasNext();) {
 						String oneEvent = iterator.next();
 						// Only store data we sent from this test case
-						if (oneEvent.startsWith("{\"topic\": \"myTopic\",")) {
+						if (oneEvent.startsWith("{\"topic\":\"myTopic\",")) {
 							received.add(oneEvent);
 						}
 					}
@@ -122,8 +122,8 @@ public class JavametricsTest {
 		for (Iterator<String> iterator = received.iterator(); iterator.hasNext();) {
 			String data = iterator.next();
 			boolean foundMyData = false;
-			if (data.startsWith("{\"topic\": \"myTopic\",")) {
-				assertEquals(data, "{\"topic\": \"myTopic\", \"payload\":{\"message\": \"hello\"}}");
+			if (data.startsWith("{\"topic\":\"myTopic\",")) {
+				assertEquals(data, "{\"topic\":\"myTopic\",\"payload\":{\"message\": \"hello\"}}");
 				foundMyData = true;
 			}
 			assertTrue("Should have received the data we sent", foundMyData);

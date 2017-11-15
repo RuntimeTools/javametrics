@@ -31,9 +31,9 @@ public class TopicImpl implements Topic {
     public void send(String message) {
         if (enabled) {
             StringBuilder json = new StringBuilder();
-            json.append("{\"topic\": \"");
+            json.append("{\"topic\":\"");
             json.append(topicName);
-            json.append("\", \"payload\": {\"message\":\"");
+            json.append("\",\"payload\":{\"message\":\"");
             json.append(message);
             json.append("\"}}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
@@ -45,13 +45,13 @@ public class TopicImpl implements Topic {
         if (enabled) {
             long duration = endTime - startTime;
             StringBuilder json = new StringBuilder();
-            json.append("{\"topic\": \"");
+            json.append("{\"topic\":\"");
             json.append(topicName);
-            json.append("\", \"payload\": {\"time\":\"");
+            json.append("\",\"payload\":{\"time\":");
             json.append(startTime);
-            json.append("\", \"duration\": \"");
+            json.append(",\"duration\":");
             json.append(duration);
-            json.append("\", \"message\": \"");
+            json.append(",\"message\":\"");
             json.append(message);
             json.append("\"}}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
@@ -63,13 +63,13 @@ public class TopicImpl implements Topic {
         if (enabled) {
             long duration = endTime - startTime;
             StringBuilder json = new StringBuilder();
-            json.append("{\"topic\": \"");
+            json.append("{\"topic\":\"");
             json.append(topicName);
-            json.append("\", \"payload\": {\"time\":\"");
+            json.append("\",\"payload\":{\"time\":");
             json.append(startTime);
-            json.append("\", \"duration\": \"");
+            json.append(",\"duration\":");
             json.append(duration);
-            json.append("\"}}");
+            json.append("}}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());
         }
     }
@@ -78,9 +78,9 @@ public class TopicImpl implements Topic {
     public void sendJSON(String payload) {
         if (enabled) {
             StringBuilder json = new StringBuilder();
-            json.append("{\"topic\": \"");
+            json.append("{\"topic\":\"");
             json.append(topicName);
-            json.append("\", \"payload\":");
+            json.append("\",\"payload\":");
             json.append(payload);
             json.append("}");
             ((JavametricsImpl) (Javametrics.getInstance())).sendData(json.toString());

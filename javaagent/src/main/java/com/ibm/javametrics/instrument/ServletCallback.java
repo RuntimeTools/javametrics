@@ -174,7 +174,7 @@ public class ServletCallback {
             data.setDuration(System.currentTimeMillis() - tracker.getRequestTime());
 
             if (Agent.debug) {
-                System.err.println("Javametrics: Sending {\"http\" : " + data.toJsonString() + "}");
+                System.err.println("Javametrics: Sending {\"http\":" + data.toJsonString() + "}");
             }
 
             /*
