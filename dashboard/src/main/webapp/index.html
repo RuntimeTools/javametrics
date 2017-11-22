@@ -49,18 +49,16 @@
         <div class="tab-pane active" id="dashboard">
           <div class="container-fluid">
           <div class="row">
+              <div class="col-md-6 hideable" id="cpuDiv1"></div>
               <div class="col-md-6 hideable" id="httpDiv1"></div>
-              <div class="col-md-3 hideable" id="httpDiv2"></div>
-              <div class="col-md-3 hideable" id="httpDiv3"></div>
-          </div>
-
-          <div class="row">
-              <div class="col-md-4 hideable" id="cpuDiv1"></div>
-              <div class="col-md-4 hideable" id="gcDiv1"></div>
-              <!-- <div class="col-md-4 hideable" id="envDiv"></div> -->
           </div>
           <div class="row">
-              <div class="col-md-6 hideable" id="memPoolsDiv"></div>
+            <div class="col-md-6 hideable" id="memPoolsDiv"></div>
+            <div class="col-md-6 hideable" id="httpDiv2"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 hideable" id="gcDiv1"></div>
+            <div class="col-md-6 hideable" id="httpDiv3"></div>
           </div>
           </div>
         </div>
@@ -68,10 +66,13 @@
         <div class="tab-pane" id="summary">
           <div class="container-fluid">
           <div class="row">
-              <div class="col-md-4 hideable" id="envDiv"></div>
-              <div class="col-md-4 hideable" id="summaryDiv"></div>
-              <div class="col-md-4 hideable" id="top5Div"></div>
-              <div class="col-md-4 hideable" id="httpSummaryDiv"></div>
+            <div class="col-md-5">
+              <div class="col-md-12 hideable" id="envDiv"></div>
+              <div class="col-md-12 hideable" id="summaryDiv"></div>
+            </div>
+            <div class="col-md-7">
+              <div class="col-md-12 hideable" id="httpSummaryDiv"></div>
+            </div>
           </div>
           </div>
         </div>
@@ -150,7 +151,7 @@
     let httpTop5 = new Top5('#top5Div', '#summary', localizedStrings.httpTop5Title);
     let httpSummary = new HttpSummary('#httpSummaryDiv', '#summary', localizedStrings.httpSummaryTitle);
     httpTop5.settop5Options({host: hostname, filteredPath: dashboardRoot});
-    httpSummary.settop5Options({host: hostname, filteredPath: dashboardRoot});
+    httpSummary.setHttpSummaryOptions({host: hostname, filteredPath: dashboardRoot});
 
     client.onmessage = function(message) {
         received = JSON.parse(message.data);
