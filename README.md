@@ -39,7 +39,7 @@ This contains:
 To build with maven
 
 ```
-git clone https://github.com/RuntimeTools/javametrics
+git clone --recursive https://github.com/RuntimeTools/javametrics
 cd javametrics
 mvn install
 ```
