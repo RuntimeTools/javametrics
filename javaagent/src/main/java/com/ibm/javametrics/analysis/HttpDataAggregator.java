@@ -41,7 +41,7 @@ public class HttpDataAggregator {
         time = 0;
         url = "";
     }
-    
+
     public void clear() {
         resetSummaryData();
         responseTimes.clear();
@@ -55,7 +55,7 @@ public class HttpDataAggregator {
     public void aggregate(long requestTime, long requestDuration, String requestUrl) {
         totalHits += 1;
         total += requestDuration;
-        
+
         if ((totalHits == 1) || (requestDuration > longest)) {
             time = requestTime;
             longest = requestDuration;
@@ -92,7 +92,7 @@ public class HttpDataAggregator {
     public long getAverage() {
         long average = 0;
         if (totalHits > 0) {
-            average = total/totalHits; 
+            average = total/totalHits;
         }
         return average;
     }
@@ -116,7 +116,7 @@ public class HttpDataAggregator {
     public void setTime(long timeStamp) {
         time = timeStamp;
     }
-    
+
     public HashMap<String, HttpUrlData> getUrlData() {
         return responseTimes;
     }
