@@ -102,6 +102,7 @@ public class MBeanDataProviderTest {
 		Javametrics.getInstance().getTopic("gc").disable();
 		Javametrics.getInstance().getTopic("memoryPools").disable();
 		Javametrics.getInstance().getTopic("cpu").disable();
+        Javametrics.getInstance().getTopic("env").disable();
 		// Wait 3 seconds to make sure all events already sent have come through.
 		try {
 			TimeUnit.SECONDS.sleep(3);

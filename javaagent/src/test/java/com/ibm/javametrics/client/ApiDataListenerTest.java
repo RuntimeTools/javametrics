@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-package com.ibm.javametrics.analysis;
+package com.ibm.javametrics.client;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.ibm.javametrics.Javametrics;
+import com.ibm.javametrics.client.ApiDataListener;
 
 /**
  * Tests for com.ibm.javametrics.Javametrics
