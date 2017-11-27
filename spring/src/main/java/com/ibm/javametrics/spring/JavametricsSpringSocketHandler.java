@@ -37,17 +37,7 @@ public class JavametricsSpringSocketHandler extends TextWebSocketHandler impleme
 	}
 
 	@Override
-	public void handleTextMessage(WebSocketSession session, TextMessage message)
-			throws InterruptedException, IOException {
-
-//		for (WebSocketSession webSocketSession : openSessions) {
-//		}
-	}
-
-	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("JS opened a session");
-		// the messages will be broadcasted to all users.
 		openSessions.add(session);
 		emit("{\"topic\": \"title\", \"payload\": {\"title\":\"Application Metrics for Java\", \"docs\": \"http://github.com/RuntimeTools/javametrics\"}}");
 		DataHandler.registerEmitter(this);

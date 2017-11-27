@@ -64,6 +64,6 @@ public class JavametricsHTTPDataCollector extends OncePerRequestFilter {
         }
         data.setDuration(duration);
         Javametrics.getInstance().sendJSON(HTTP_TOPIC, data.toJsonString());
-    	System.out.println("request: " + request.getRequestURL().toString() + " took " + duration + " milliseconds");
+    	//System.out.println("request: " + request.getRequestURL().toString() + " took " + duration + " milliseconds");
     } 
 }
