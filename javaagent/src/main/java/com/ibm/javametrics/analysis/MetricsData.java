@@ -21,8 +21,6 @@ import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
 public class MetricsData {
 
-    int contextId;
-
     long startTime;
     long endTime;
 
@@ -40,10 +38,6 @@ public class MetricsData {
 
     public double getGcTime() {
         return gcTime;
-    }
-
-    public void setGcTime(double gcTime) {
-        this.gcTime = gcTime;
     }
 
     public long getStartTime() {
@@ -82,7 +76,4 @@ public class MetricsData {
         return urlData;
     }
 
-    public Object getContextId() {
-        return contextId;
-    }
 }

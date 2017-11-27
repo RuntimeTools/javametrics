@@ -96,26 +96,26 @@ public class MetricsContext {
     }
 
     public MetricsData getMetricsData() {
-        MetricsData summary = new MetricsData();
-        summary.startTime = startTime;
-        summary.endTime = System.currentTimeMillis();
+        MetricsData metricsData = new MetricsData();
+        metricsData.startTime = startTime;
+        metricsData.endTime = System.currentTimeMillis();
 
         if (cpuEvents > 0) {
-            summary.cpuSystemMean = cpuSystem / cpuEvents;
-            summary.cpuProcessMean = cpuProcess / cpuEvents;
-            summary.cpuSystemPeak = cpuSystemPeak;
-            summary.cpuProcessPeak = cpuProcessPeak;
+            metricsData.cpuSystemMean = cpuSystem / cpuEvents;
+            metricsData.cpuProcessMean = cpuProcess / cpuEvents;
+            metricsData.cpuSystemPeak = cpuSystemPeak;
+            metricsData.cpuProcessPeak = cpuProcessPeak;
         }
 
         if (gcEvents > 0) {
-            summary.gcTime = gcTime / gcEvents;
+            metricsData.gcTime = gcTime / gcEvents;
         }
 
-        summary.usedHeapAfterGCPeak = usedHeapAfterGCPeak;
-        summary.usedNativePeak = usedNativePeak;
+        metricsData.usedHeapAfterGCPeak = usedHeapAfterGCPeak;
+        metricsData.usedNativePeak = usedNativePeak;
 
-        summary.urlData = httpData.getUrlData();
-        return summary;
+        metricsData.urlData = httpData.getUrlData();
+        return metricsData;
     }
 
 }
