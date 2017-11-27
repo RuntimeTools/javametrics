@@ -160,6 +160,8 @@ public class DataHandler extends ApiDataListener {
                 httpUrlData.append(pair.getKey());
                 httpUrlData.append("\",\"hits\":");
                 httpUrlData.append(pair.getValue().getHits());
+                httpUrlData.append(",\"longestResponseTime\":");
+                httpUrlData.append(pair.getValue().getLongestResponseTime());
                 httpUrlData.append(",\"averageResponseTime\":");
                 httpUrlData.append(pair.getValue().getAverageResponseTime());
                 httpUrlData.append('}');
