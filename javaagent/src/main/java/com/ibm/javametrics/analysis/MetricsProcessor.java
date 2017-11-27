@@ -57,7 +57,7 @@ public class MetricsProcessor extends ApiDataListener {
     // gc payload:
     // "gcTime":0.123,"gcTimeMetrics":0.037585808468701146
     final static private Pattern gcPayload = Pattern
-            .compile(",\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"gcTimeMetrics\":.*");
+            .compile(",\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"gcTimeSummary\":.*");
 
     // memoryPools paylood:
     // "usedHeapAfterGC":40533936,"usedHeap":86093152,"usedNative":86955016,"usedHeapAfterGCMax":40533936,"usedNativeMax":86955016
@@ -99,7 +99,7 @@ public class MetricsProcessor extends ApiDataListener {
                         aggregateMemoryPoolsData(timeStamp, payload);
                         break;
                     case "env":
-                        aggregateMemoryEnvData(timeStamp, payload);
+                        aggregateEnvData(timeStamp, payload);
                         break;
                     default:
                         break;
@@ -112,7 +112,7 @@ public class MetricsProcessor extends ApiDataListener {
 
     }
 
-    private void aggregateMemoryEnvData(long timeStamp, String payload) {
+    private void aggregateEnvData(long timeStamp, String payload) {
         // TODO Auto-generated method stub
 
     }
