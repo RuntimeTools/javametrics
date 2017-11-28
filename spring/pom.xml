@@ -83,7 +83,7 @@
 				<excludes>
 		          <exclude>**/WEB-INF/**</exclude>
           		</excludes>
-				<targetPath>/static/javametrics-dash</targetPath>
+				<targetPath>static/javametrics-dash</targetPath>
 			</resource>
 		</resources>
 		<plugins>
