@@ -28,15 +28,16 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import com.ibm.javametrics.Javametrics;
-import com.ibm.javametrics.analysis.ApiDataListener;
-import com.ibm.javametrics.analysis.HttpDataAggregator;
-import com.ibm.javametrics.analysis.HttpDataAggregator.HttpUrlData;
+import com.ibm.javametrics.client.ApiDataListener;
+import com.ibm.javametrics.client.HttpDataAggregator;
+import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
 /**
  * Registers as a JavametricsListener to receive metrics data, processes the
  * data and sends the output to any registered emitters
  *
  */
+// TODO: This is currently copied from dashboard version, we should find a better solution.
 public class DataHandler extends ApiDataListener {
 
     private static DataHandler instance = null;
@@ -120,7 +121,7 @@ public class DataHandler extends ApiDataListener {
         long time;
         long total;
         long longest;
-        long average;
+        double average;
         String url;
         StringBuilder httpUrlData;
         StringBuilder httpData;
@@ -160,6 +161,8 @@ public class DataHandler extends ApiDataListener {
                 httpUrlData.append(pair.getKey());
                 httpUrlData.append("\",\"hits\":");
                 httpUrlData.append(pair.getValue().getHits());
+                httpUrlData.append(",\"longestResponseTime\":");
+                httpUrlData.append(pair.getValue().getLongestResponseTime());
                 httpUrlData.append(",\"averageResponseTime\":");
                 httpUrlData.append(pair.getValue().getAverageResponseTime());
                 httpUrlData.append('}');
