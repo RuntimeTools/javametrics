@@ -9,5 +9,6 @@
     <module>javaagent</module>
     <module>dashboard</module>
     <module>prometheus</module>
+    <module>spring</module>
   </modules>
 </project>

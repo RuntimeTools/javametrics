@@ -80,7 +80,10 @@
 		<resources>
 			<resource>
 				<directory>../dashboard/src/main/webapp</directory>
-				<targetPath>/static/javametrics-dash</targetPath>
+				<excludes>
+		          <exclude>**/WEB-INF/**</exclude>
+          		</excludes>
+				<targetPath>static/javametrics-dash</targetPath>
 			</resource>
 		</resources>
 		<plugins>
