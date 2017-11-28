@@ -28,6 +28,7 @@ import com.ibm.javametrics.client.ApiDataListener;
 public class MetricsProcessor extends ApiDataListener {
 
     private Map<Integer, MetricsContext> metricsContexts = new HashMap<Integer, MetricsContext>();
+    private String environment = "[]";
     static int contextCount = 0;
 
     private MetricsProcessor() {
@@ -46,28 +47,30 @@ public class MetricsProcessor extends ApiDataListener {
     }
 
     // {"topic":"topicname","payload":{"time":1510316403108....}}
-    final static Pattern topicPayload = Pattern
+    final static Pattern topicPayload = Pattern.compile("\\{\"topic\":\"([a-zA-Z]*)\",\"payload\":(.*)}");
+
+    final static Pattern timePattern = Pattern
             .compile("\\{\"topic\":\"([a-zA-Z]*)\",\"payload\":\\{\"time\":([0-9]*)(.*)}}");
 
     // cpu payload:
     // "system":0.10776942355889724,"process":0.008531817167556292....}}
-    final static private Pattern cpuPayload = Pattern
-            .compile(",\"system\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"process\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),.*");
+    final static private Pattern cpuPayload = Pattern.compile(
+            "\\{\"time\":([0-9]*),\"system\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"process\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),.*");
 
     // gc payload:
     // "gcTime":0.123,"gcTimeMetrics":0.037585808468701146
     final static private Pattern gcPayload = Pattern
-            .compile(",\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"gcTimeSummary\":.*");
+            .compile("\\{\"time\":([0-9]*),\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"gcTimeSummary\":.*");
 
     // memoryPools paylood:
     // "usedHeapAfterGC":40533936,"usedHeap":86093152,"usedNative":86955016,"usedHeapAfterGCMax":40533936,"usedNativeMax":86955016
     final static private Pattern memoryPoolsPayload = Pattern.compile(
-            ",\"usedHeapAfterGC\":([0-9]*),\"usedHeap\":([0-9]*),\"usedNative\":([0-9]*),\"usedHeapAfterGCMax\":([0-9]*),\"usedNativeMax\":([0-9]*).*");
+            "\\{\"time\":([0-9]*),\"usedHeapAfterGC\":([0-9]*),\"usedHeap\":([0-9]*),\"usedNative\":([0-9]*),\"usedHeapAfterGCMax\":([0-9]*),\"usedNativeMax\":([0-9]*).*");
 
     // HTTP payload:
     // "duration":150,"url":"http://blah/example","method":"GET","status":200,"contentType":"null","header":{},"requestHeader":{}
     final static private Pattern httpPayload = Pattern
-            .compile(",\"duration\":([0-9]*),\"url\":\"(.*)\",\"method\":\".*");
+            .compile("\\{\"time\":([0-9]*),\"duration\":([0-9]*),\"url\":\"(.*)\",\"method\":\".*");
 
     @Override
     public void processData(List<String> jsonData) {
@@ -76,30 +79,28 @@ public class MetricsProcessor extends ApiDataListener {
             String jsonStr = iterator.next();
 
             String topic;
-            long timeStamp = 0;
             String payload;
 
             Matcher matcher = topicPayload.matcher(jsonStr);
             if (matcher.find()) {
-                if (matcher.groupCount() == 3) {
+                if (matcher.groupCount() == 2) {
                     topic = matcher.group(1);
-                    timeStamp = Long.parseLong(matcher.group(2));
-                    payload = matcher.group(3);
+                    payload = matcher.group(2);
                     switch (topic) {
                     case "http":
-                        aggregateHttpData(timeStamp, payload);
+                        aggregateHttpData(payload);
                         break;
                     case "gc":
-                        aggregateGCData(timeStamp, payload);
+                        aggregateGCData(payload);
                         break;
                     case "cpu":
-                        aggregateCPUData(timeStamp, payload);
+                        aggregateCPUData(payload);
                         break;
                     case "memoryPools":
-                        aggregateMemoryPoolsData(timeStamp, payload);
+                        aggregateMemoryPoolsData(payload);
                         break;
                     case "env":
-                        aggregateEnvData(timeStamp, payload);
+                        aggregateEnvData(payload);
                         break;
                     default:
                         break;
@@ -112,19 +113,21 @@ public class MetricsProcessor extends ApiDataListener {
 
     }
 
-    private void aggregateEnvData(long timeStamp, String payload) {
-        // TODO Auto-generated method stub
-
+    private void aggregateEnvData(String payload) {
+        environment = payload;
     }
 
-    private void aggregateCPUData(long timeStamp, String payload) {
+    private void aggregateCPUData(String payload) {
+
         Matcher matcher = cpuPayload.matcher(payload);
+        long timeStamp;
         double system;
         double process;
         if (matcher.find()) {
-            if (matcher.groupCount() == 4) {
-                system = Double.parseDouble(matcher.group(1));
-                process = Double.parseDouble(matcher.group(3));
+            if (matcher.groupCount() == 5) {
+                timeStamp = Long.parseLong(matcher.group(1));
+                system = Double.parseDouble(matcher.group(2));
+                process = Double.parseDouble(matcher.group(4));
                 Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
                 while (it.hasNext()) {
                     Entry<Integer, MetricsContext> pair = it.next();
@@ -134,14 +137,16 @@ public class MetricsProcessor extends ApiDataListener {
         }
     }
 
-    private void aggregateGCData(long timeStamp, String payload) {
+    private void aggregateGCData(String payload) {
         Matcher matcher = gcPayload.matcher(payload);
+        long timeStamp = 0;
         double gcTime;
         // double gcTimeMetrics;
         if (matcher.find()) {
-            if (matcher.groupCount() == 2) {
-                gcTime = Double.parseDouble(matcher.group(1));
-                // gcTimeMetrics = Double.parseDouble(matcher.group(3));
+            if (matcher.groupCount() == 3) {
+                timeStamp = Long.parseLong(matcher.group(1));
+                gcTime = Double.parseDouble(matcher.group(2));
+                // gcTimeMetrics = Double.parseDouble(matcher.group(4);
                 Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
                 while (it.hasNext()) {
                     Entry<Integer, MetricsContext> pair = it.next();
@@ -151,16 +156,18 @@ public class MetricsProcessor extends ApiDataListener {
         }
     }
 
-    private void aggregateMemoryPoolsData(long timeStamp, String payload) {
+    private void aggregateMemoryPoolsData(String payload) {
         Matcher matcher = memoryPoolsPayload.matcher(payload);
+        long timeStamp = 0;
         long usedHeapAfterGC;
         long usedHeap;
         long usedNative;
         if (matcher.find()) {
-            if (matcher.groupCount() == 5) {
-                usedHeapAfterGC = Long.parseLong(matcher.group(1));
-                usedHeap = Long.parseLong(matcher.group(2));
-                usedNative = Long.parseLong(matcher.group(3));
+            if (matcher.groupCount() == 6) {
+                timeStamp = Long.parseLong(matcher.group(1));
+                usedHeapAfterGC = Long.parseLong(matcher.group(2));
+                usedHeap = Long.parseLong(matcher.group(3));
+                usedNative = Long.parseLong(matcher.group(4));
                 Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
                 while (it.hasNext()) {
                     Entry<Integer, MetricsContext> pair = it.next();
@@ -170,14 +177,16 @@ public class MetricsProcessor extends ApiDataListener {
         }
     }
 
-    private void aggregateHttpData(long timeStamp, String payload) {
+    private void aggregateHttpData(String payload) {
         Matcher matcher = httpPayload.matcher(payload);
+        long timeStamp = 0;
         long duration;
         String url;
         if (matcher.find()) {
-            if (matcher.groupCount() == 2) {
-                duration = Long.parseLong(matcher.group(1));
-                url = matcher.group(2);
+            if (matcher.groupCount() == 3) {
+                timeStamp = Long.parseLong(matcher.group(1));
+                duration = Long.parseLong(matcher.group(2));
+                url = matcher.group(3);
                 Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
                 while (it.hasNext()) {
                     Entry<Integer, MetricsContext> pair = it.next();
@@ -207,6 +216,14 @@ public class MetricsProcessor extends ApiDataListener {
             return md;
         }
         return null;
+    }
+
+    public Integer[] getContextIds() {
+        return metricsContexts.keySet().toArray(new Integer[0]);
+    }
+
+    public String getEnvironment() {
+        return environment;
     }
 
 }
