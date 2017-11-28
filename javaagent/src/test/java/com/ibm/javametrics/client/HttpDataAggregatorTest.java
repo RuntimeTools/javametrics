@@ -14,17 +14,18 @@
  * the License.
  ******************************************************************************/
 
-package com.ibm.javametrics.analysis;
+package com.ibm.javametrics.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
-import com.ibm.javametrics.analysis.HttpDataAggregator.HttpUrlData;
+import com.ibm.javametrics.client.HttpDataAggregator;
+import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
 /**
  * Tests for com.ibm.javametrics.Javametrics
@@ -47,14 +48,14 @@ public class HttpDataAggregatorTest {
         aggregator.aggregate(time-222, 100, "myurl-1");
         
         checkValues(time, 340, 5, 600, "myurl-2");     
-        checkUrlData("myurl-1", 3, 300);
-        checkUrlData("myurl-2", 2, 400);
+        checkUrlData("myurl-1", 3, 300, 500);
+        checkUrlData("myurl-2", 2, 400, 600);
    
         // resetSummaryData should only clear summary and not urlData
         aggregator.resetSummaryData();
         checkValues(0, 0, 0, 0, "");
-        checkUrlData("myurl-1", 3, 300);
-        checkUrlData("myurl-2", 2, 400);
+        checkUrlData("myurl-1", 3, 300, 500);
+        checkUrlData("myurl-2", 2, 400, 600);
         
         aggregator.aggregate(time-300, 500, "myurl-1");  
         aggregator.aggregate(time-400, 200, "myurl-2");  
@@ -68,20 +69,21 @@ public class HttpDataAggregatorTest {
         assertTrue("UrlData should be empty", aggregator.getUrlData().isEmpty());     
     }
 
-    private void checkValues(long time, long average, long total, long longest, String url) {
+    private void checkValues(long time, double average, long total, long longest, String url) {
 
         assertEquals("time value incorrect", time, aggregator.getTime());
         assertEquals("totalHits value incorrect", total, aggregator.getTotalHits());
-        assertEquals("average value incorrect", average, aggregator.getAverage());
+        assertEquals("average value incorrect", average, aggregator.getAverage(), 0);
         assertEquals("longest value incorrect", longest, aggregator.getLongest());
         assertEquals("url value incorrect", url, aggregator.getUrl());
     }
     
-    private void checkUrlData(String url, int hits, long average) {
-        HashMap<String, HttpUrlData> urlData = aggregator.getUrlData();
+    private void checkUrlData(String url, int hits, long average, long longest) {
+        Map<String, HttpUrlData> urlData = aggregator.getUrlData();
         HttpUrlData httpData = urlData.get(url);
         assertNotNull("Expecting http data for url: " +  url, httpData);
         assertEquals("Incorrect number of hits for url: " +  url, hits, httpData.getHits());
-        assertEquals("Incorrect average response time for url: " +  url, average, httpData.getAverageResponseTime());
+        assertEquals("Incorrect average response time for url: " +  url, average, httpData.getAverageResponseTime(), 0);
+        assertEquals("Incorrect longest response time for url: " +  url, longest, httpData.getLongestResponseTime());
     }
 }

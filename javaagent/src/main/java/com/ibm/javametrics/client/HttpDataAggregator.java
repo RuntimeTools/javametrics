@@ -13,9 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.ibm.javametrics.analysis;
+package com.ibm.javametrics.client;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Aggregate HTTP request data
@@ -23,11 +24,35 @@ import java.util.HashMap;
  */
 public class HttpDataAggregator {
     int totalHits;
-    long total;
+    double total;
     long longest;
     long time;
     String url;
 
+    public class HttpUrlData {
+        private int hits;
+        private double totalResponseTime;
+        private long longestResponseTime;
+
+        public int getHits() {
+            return hits;
+        }
+
+        public double getAverageResponseTime() {
+            return totalResponseTime / hits;
+        }
+
+        public long getLongestResponseTime() {
+            return longestResponseTime;
+        }
+
+        public HttpUrlData() {
+            hits = 0;
+            totalResponseTime = 0;
+            longestResponseTime = 0;
+        }
+    }
+    
     private HashMap<String, HttpUrlData> responseTimes = new HashMap<String, HttpUrlData>();
 
     public HttpDataAggregator() {
@@ -63,36 +88,18 @@ public class HttpDataAggregator {
         }
 
         HttpUrlData urlData = responseTimes.getOrDefault(requestUrl, new HttpUrlData());
-
         urlData.hits += 1;
-        urlData.averageResponseTime = ((urlData.averageResponseTime * (urlData.hits - 1)) + requestDuration)
-                / urlData.hits;
+        urlData.totalResponseTime += requestDuration;
+        if (requestDuration > urlData.longestResponseTime) {
+            urlData.longestResponseTime = requestDuration;
+        }
         responseTimes.put(requestUrl, urlData);
     }
 
-
-    public class HttpUrlData {
-        int hits;
-        long averageResponseTime;
-
-        public int getHits() {
-            return hits;
-        }
-
-        public long getAverageResponseTime() {
-            return averageResponseTime;
-        }
-
-        public HttpUrlData() {
-            hits = 0;
-            averageResponseTime = 0;
-        }
-    }
-
-    public long getAverage() {
-        long average = 0;
+    public double getAverage() {
+        double average = 0;
         if (totalHits > 0) {
-            average = total/totalHits;
+            average = total / totalHits;
         }
         return average;
     }
@@ -117,7 +124,9 @@ public class HttpDataAggregator {
         time = timeStamp;
     }
 
-    public HashMap<String, HttpUrlData> getUrlData() {
-        return responseTimes;
+    public Map<String, HttpUrlData> getUrlData() {
+        return new HashMap<String, HttpUrlData>(responseTimes);
     }
+
+
 }

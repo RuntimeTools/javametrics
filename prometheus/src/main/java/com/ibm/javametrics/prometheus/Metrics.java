@@ -13,7 +13,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import com.ibm.javametrics.Javametrics;
-import com.ibm.javametrics.analysis.ApiDataListener;
+import com.ibm.javametrics.client.ApiDataListener;
 
 import io.prometheus.client.Counter;
 import io.prometheus.client.Gauge;
