@@ -28,9 +28,9 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 
 import com.ibm.javametrics.Javametrics;
-import com.ibm.javametrics.analysis.ApiDataListener;
-import com.ibm.javametrics.analysis.HttpDataAggregator;
-import com.ibm.javametrics.analysis.HttpDataAggregator.HttpUrlData;
+import com.ibm.javametrics.client.ApiDataListener;
+import com.ibm.javametrics.client.HttpDataAggregator;
+import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
 /**
  * Registers as a JavametricsListener to receive metrics data, processes the
@@ -120,7 +120,7 @@ public class DataHandler extends ApiDataListener {
         long time;
         long total;
         long longest;
-        long average;
+        double average;
         String url;
         StringBuilder httpUrlData;
         StringBuilder httpData;
@@ -160,6 +160,8 @@ public class DataHandler extends ApiDataListener {
                 httpUrlData.append(pair.getKey());
                 httpUrlData.append("\",\"hits\":");
                 httpUrlData.append(pair.getValue().getHits());
+                httpUrlData.append(",\"longestResponseTime\":");
+                httpUrlData.append(pair.getValue().getLongestResponseTime());
                 httpUrlData.append(",\"averageResponseTime\":");
                 httpUrlData.append(pair.getValue().getAverageResponseTime());
                 httpUrlData.append('}');
