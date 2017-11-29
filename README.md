@@ -85,12 +85,38 @@ e.g.
 ```
 * NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
 
-The URL for the dashboard consists of the server's default HTTP endpoint plus '/javametrics-dash'.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
+The URL for the dashboard consists of the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
 The URL for the prometheus endpoint consists of the server's default HTTP endpoint plus the default prometheus metrics path `/metrics`.  E.g. Running locally it might be: http://localhost:9080/metrics/
 
-#### Spring
-Coming soon
+#### Spring Boot
+To enable Javametrics in a Spring Boot application you need to add an extra annotation to your main application class:
+```
+@ComponentScan(basePackages = {"com.ibm.javametrics.spring", "mypackage"})
+```
+In a Spring Boot starter project this goes above or below the `@SpringBootApplication` annotation and you will need to add the package that that class is in to the list of `basePackages` (in place of __mypackage__ above).
+
+You also need to add the following dependencies to your pom.xml:
+
+```
+<dependency>
+    <groupId>com.ibm.runtimetools</groupId>
+    <artifactId>javametrics-spring</artifactId>
+    <version>1.0.2</version>
+</dependency>
+<dependency>
+    <groupId>com.ibm.runtimetools</groupId>
+    <artifactId>javametrics-agent</artifactId>
+    <version>1.0.2</version>
+</dependency>
+<dependency>
+    <groupId>org.glassfish</groupId>
+    <artifactId>javax.json</artifactId>
+    <version>1.0.4</version>
+</dependency>
+ ```
+
+Once you have launched your application you will find the dashboard at the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. running locally with Spring Boot it might be: http://localhost:8080/javametrics-dash/
 
 #### Apache Tomcat
 Coming soon
