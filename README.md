@@ -116,7 +116,7 @@ You also need to add the following dependencies to your pom.xml:
 </dependency>
  ```
 
-Once you have launched your application you will find the dashboard at the server's default HTTP endpoint plus '/javametrics-dash/'.  E.g. running locally with Spring Boot it might be: http://localhost:8080/javametrics-dash/
+Once you have launched your application you will find the dashboard at the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. running locally with Spring Boot it might be: http://localhost:8080/javametrics-dash/
 
 #### Apache Tomcat
 Coming soon
