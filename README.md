@@ -85,7 +85,7 @@ e.g.
 ```
 * NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
 
-The URL for the dashboard consists of the server's default HTTP endpoint plus '/javametrics-dash/'.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
+The URL for the dashboard consists of the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
 The URL for the prometheus endpoint consists of the server's default HTTP endpoint plus the default prometheus metrics path `/metrics`.  E.g. Running locally it might be: http://localhost:9080/metrics/
 
