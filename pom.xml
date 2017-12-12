@@ -22,41 +22,7 @@
             <phase>install</phase>
             <configuration>
               <target>
-                <echo>"Packaging javametrics-${project.version}" </echo>
-                <property name="dist.dir" value="target/dist" />
-                <property name="javametrics.dir" value="${dist.dir}/javametrics" />
-                <property name="agent.dir" value="${javametrics.dir}/agent" />
-                <property name="asm.dir" value="${agent.dir}/asm" />
-                <property name="webapp.dir" value="${javametrics.dir}/webapp" />
-                <property name="dashboard.dir" value="${webapp.dir}/dashboard" />
-                <property name="prometheus.dir" value="${webapp.dir}/prometheus" />
-                <property name="spring.dir" value="${javametrics.dir}/spring" />
-
-                <mkdir dir="${agent.dir}" />
-                <mkdir dir="${asm.dir}" />
-                <mkdir dir="${webapp.dir}" />
-                <mkdir dir="${dashboard.dir}/" />
-                <mkdir dir="${prometheus.dir}/" />
-
-                <copy todir="${agent.dir}">
-                  <fileset dir="javaagent/target">
-                    <include name="javametrics-agent-${project.version}.jar" />
-                    <include name="asm/**" />
-                  </fileset>
-                </copy>
-                <copy
-                  file="dashboard/target/javametrics-dash-${project.version}.war"
-                  todir="${dashboard.dir}" />
-                <copy
-                  file="prometheus/target/javametrics-prometheus-${project.version}.war"
-                  todir="${prometheus.dir}" />
-                <copy
-                  file="spring/target/javametrics-spring-${project.version}.jar"
-                  todir="${spring.dir}" />
-
-                <zip
-                  destfile="${dist.dir}/javametrics-${project.version}.zip"
-                  basedir="${javametrics.dir}" includes="**/**" />
+                <ant antfile="${basedir}/packageRelease.xml" target="package" />
               </target>
             </configuration>
             <goals>
