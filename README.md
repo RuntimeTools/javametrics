@@ -75,13 +75,13 @@ Javametrics requires a Java option to be set in order to load the agent.  A [jvm
 
 ```
 # Load Javametrics Java agent
--javaagent:"/path_to_install_dir/javametrics-agent-1.0.1.jar"
+-javaagent:<path_to_javametrics_agent_dir>/javametrics-agent-1.0.1.jar
 ```
 If you have built the agent locally, your path_to_install_dir will need to point to your clone of javametrics.
 e.g.
 ```
 # Load Javametrics Java agent
--javaagent:"/home/git/javametrics/javaagent/target/javametrics-agent-1.0.1.jar"
+-javaagent:<path_to_git_home>/javametrics/javaagent/target/javametrics-agent-1.0.1.jar
 ```
 * NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
 
