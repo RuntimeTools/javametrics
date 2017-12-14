@@ -77,7 +77,7 @@ Javametrics requires a Java option to be set in order to load the agent.  A [jvm
 # Load Javametrics Java agent
 -javaagent:<path_to_javametrics_agent_dir>/javametrics-agent-1.0.1.jar
 ```
-If you have built the agent locally, your path_to_install_dir will need to point to your clone of javametrics.
+If you have built the agent locally, your path_to_javametrics_agent_dir will need to point to your clone of javametrics.
 e.g.
 ```
 # Load Javametrics Java agent
