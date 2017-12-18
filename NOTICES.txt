@@ -8,8 +8,8 @@ Section C - Other Trademark and Copyright Acknowledgements
 ================================================
 Section A. SUMMARY
 
-A.1 - omr-agentcore
-A.2 - ASM
+A.1 - ASM
+A.2 - Prometheus
 
 ================================================
 
@@ -21,27 +21,9 @@ Section B. NOTICES AND INFORMATION SECTION
 
 ================================================
 
-B.1 - omr-agentcore
+B.1 - ASM
 
-Copyright 2016 omr-agent contributors listed here: https://github.com/RuntimeTools/omr-agentcore/graphs/contributors
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-  ""
-
-END OF omr-agentcore NOTICES AND INFORMATION
-
-
-================================================
-
-B.2 - ASM
-
-Copyright (c) 2012 France Télécom
+Copyright (c) 2012 France Tï¿½lï¿½com
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -68,6 +50,96 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
+
+B.2 - Prometheus
+
+The Prometheus systems and service monitoring server
+Copyright 2012-2015 The Prometheus Authors
+
+This product includes software developed at
+SoundCloud Ltd. (http://soundcloud.com/).
+
+
+The following components are included in this product:
+
+Bootstrap
+http://getbootstrap.com
+Copyright 2011-2014 Twitter, Inc.
+Licensed under the MIT License
+
+bootstrap3-typeahead.js
+https://github.com/bassjobsen/Bootstrap-3-Typeahead
+Original written by @mdo and @fat
+Copyright 2014 Bass Jobsen @bassjobsen
+Licensed under the Apache License, Version 2.0
+
+fuzzy
+https://github.com/mattyork/fuzzy
+Original written by @mattyork
+Copyright 2012 Matt York
+Licensed under the MIT License
+
+bootstrap-datetimepicker.js
+https://github.com/Eonasdan/bootstrap-datetimepicker
+Copyright 2015 Jonathan Peterson (@Eonasdan)
+Licensed under the MIT License
+
+moment.js
+https://github.com/moment/moment/
+Copyright JS Foundation and other contributors
+Licensed under the MIT License
+
+Rickshaw
+https://github.com/shutterstock/rickshaw
+Copyright 2011-2014 by Shutterstock Images, LLC
+See https://github.com/shutterstock/rickshaw/blob/master/LICENSE for license details
+
+mustache.js
+https://github.com/janl/mustache.js
+Copyright 2009 Chris Wanstrath (Ruby)
+Copyright 2010-2014 Jan Lehnardt (JavaScript)
+Copyright 2010-2015 The mustache.js community
+Licensed under the MIT License
+
+jQuery
+https://jquery.org
+Copyright jQuery Foundation and other contributors
+Licensed under the MIT License
+
+Protocol Buffers for Go with Gadgets
+http://github.com/gogo/protobuf/
+Copyright (c) 2013, The GoGo Authors.
+See source code for license details.
+
+Go support for leveled logs, analogous to
+https://code.google.com/p/google-glog/
+Copyright 2013 Google Inc.
+Licensed under the Apache License, Version 2.0
+
+Support for streaming Protocol Buffer messages for the Go language (golang).
+https://github.com/matttproud/golang_protobuf_extensions
+Copyright 2013 Matt T. Proud
+Licensed under the Apache License, Version 2.0
+
+DNS library in Go
+http://miek.nl/posts/2014/Aug/16/go-dns-package/
+Copyright 2009 The Go Authors, 2011 Miek Gieben
+See https://github.com/miekg/dns/blob/master/LICENSE for license details.
+
+LevelDB key/value database in Go
+https://github.com/syndtr/goleveldb
+Copyright 2012 Suryandaru Triandana
+See https://github.com/syndtr/goleveldb/blob/master/LICENSE for license details.
+
+gosnappy - a fork of code.google.com/p/snappy-go
+https://github.com/syndtr/gosnappy
+Copyright 2011 The Snappy-Go Authors
+See https://github.com/syndtr/gosnappy/blob/master/LICENSE for license details.
+
+go-zookeeper - Native ZooKeeper client for Go
+https://github.com/samuel/go-zookeeper
+Copyright (c) 2013, Samuel Stauffer <samuel@descolada.com>
+See https://github.com/samuel/go-zookeeper/blob/master/LICENSE for license details.
 
 ================================================
 END OF Section B. NOTICES AND INFORMATION SECTION
