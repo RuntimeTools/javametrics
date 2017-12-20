@@ -26,13 +26,14 @@ The Application Metrics for Java agent requires Java version 8.
 
 <a name="install"></a>
 
-### Installation
+### Releases
 
-Download the latest Application Metrics for Java release from [Github](http://github.com/runtimetools/javametrics/releases).
+Download the latest Application Metrics for Java release zip from [Github](http://github.com/runtimetools/javametrics/releases).
 This contains:
-* `javametrics-dash-x.x.x.war` - Javametrics Web Application
-* `javametrics-prometheus-x.x.x.war` - Javametrics Prometheus Endpoint
-* `javametrics-agent-x.x.x.jar` - Javametrics agent
+* `webapp/dashboard/javametrics-dash-x.x.x.war` - Javametrics Web Application
+* `webapp/prometheus/javametrics-prometheus-x.x.x.war` - Javametrics Prometheus Endpoint
+* `agent/javametrics-agent-x.x.x.jar` - Javametrics agent and required ASM libraries
+* `spring/javametrics-spring-x.x.x.jar` - Javametrics spring
 
 ### Building with Maven
 
@@ -67,7 +68,7 @@ javametrics-prometheus
 ```
 
 #### Websphere Liberty
-Unpack the `.zip` or `.tar.gz` archive that you downloaded in the previous step.  Copy the `javametrics-dash-x.x.x.war` and the `javametrics-prometheus-x.x.x.war` files into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
+Unpack the release `.zip` archive that you downloaded in the previous step.  Copy the `javametrics-dash-x.x.x.war` and the `javametrics-prometheus-x.x.x.war` files into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
 
 If you only want the dashboard or prometheus support you can just copy the appropriate war file to the 'dropins' directory. Both require the agent to be loaded following the instructions below.
 
@@ -138,4 +139,4 @@ This project is released under an Apache 2.0 open source license.
 This project uses a semver-parsable X.0.Z version number for releases, where X is incremented for breaking changes to the public API described in this document and Z is incremented for bug fixes **and** for non-breaking changes to the public API that provide new function.
 
 ## Version
-1.0.2
+1.1.0
