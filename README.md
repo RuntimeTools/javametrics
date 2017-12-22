@@ -76,13 +76,13 @@ Javametrics requires a Java option to be set in order to load the agent.  A [jvm
 
 ```
 # Load Javametrics Java agent
--javaagent:<path_to_javametrics_agent_dir>/javametrics-agent-1.0.1.jar
+-javaagent:<path_to_javametrics_agent_dir>/javametrics-agent-1.1.0.jar
 ```
 If you have built the agent locally, your path_to_javametrics_agent_dir will need to point to your clone of javametrics.
 e.g.
 ```
 # Load Javametrics Java agent
--javaagent:<path_to_git_home>/javametrics/javaagent/target/javametrics-agent-1.0.1.jar
+-javaagent:<path_to_git_home>/javametrics/javaagent/target/javametrics-agent-1.1.0.jar
 ```
 * NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
 
@@ -103,12 +103,12 @@ You also need to add the following dependencies to your pom.xml:
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-spring</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 </dependency>
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-agent</artifactId>
-    <version>1.0.2</version>
+    <version>1.1.0</version>
 </dependency>
 <dependency>
     <groupId>org.glassfish</groupId>
