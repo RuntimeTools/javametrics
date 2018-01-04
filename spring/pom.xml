@@ -28,6 +28,15 @@
 		<url>http://github.com/runtimetools/javametrics.git/tree/master</url>
 	</scm>
 
+	<developers>
+    <developer>
+      <name>Sian January</name>
+      <email>sjanuary@uk.ibm.com</email>
+      <organization>IBM</organization>
+      <organizationUrl>http://www.ibm.com</organizationUrl>
+    </developer>
+  </developers>
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
