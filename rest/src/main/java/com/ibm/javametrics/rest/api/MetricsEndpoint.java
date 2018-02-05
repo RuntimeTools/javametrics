@@ -16,8 +16,6 @@
 package com.ibm.javametrics.rest.api;
 
 import java.net.URI;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -35,9 +33,8 @@ import javax.ws.rs.core.UriInfo;
 
 import com.ibm.javametrics.analysis.MetricsData;
 import com.ibm.javametrics.analysis.MetricsProcessor;
-import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
-@Path("contexts")
+@Path("collections")
 public class MetricsEndpoint {
 
     MetricsProcessor mp = MetricsProcessor.getInstance();
@@ -47,7 +44,7 @@ public class MetricsEndpoint {
     public Response getContexts(@Context UriInfo uriInfo) {
         Integer[] contextIds = mp.getContextIds();
 
-        StringBuilder sb = new StringBuilder("{\"contextUris\":[");
+        StringBuilder sb = new StringBuilder("{\"collections\":[");
         boolean comma = false;
         for (Integer contextId : contextIds) {
             if (comma) {
@@ -84,8 +81,7 @@ public class MetricsEndpoint {
         if (metrics == null) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
-        return Response.ok(metricsDataToJson(id, metrics)).build();
+        return Response.ok(metrics.toJson(id)).build();
     }
 
     @Path("/{metricsId}")
@@ -93,83 +89,22 @@ public class MetricsEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response resetContext(@PathParam("metricsId") int id) {
 
-        MetricsData metrics = mp.resetMetricsData(id);
-        ;
-        if (metrics == null) {
+        boolean found = mp.resetMetricsData(id);
+        if (!found) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
-        return Response.ok(metricsDataToJson(id, metrics)).build();
+        return Response.noContent().build();
     }
 
     @Path("/{metricsId}")
     @DELETE
     public Response deleteContext(@PathParam("metricsId") int id) {
 
-        if (id == 0) {
-            return Response.status(Status.FORBIDDEN).build();
-        }
-
-        MetricsData metrics = mp.getMetricsData(id);
-        if (metrics == null) {
+        boolean found = mp.removeContext(id);
+        if (!found) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
-        mp.removeContext(id);
-
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
-    private String metricsDataToJson(int contextId, MetricsData metrics) {
-
-        StringBuilder metricsJson = new StringBuilder("{\"id\":\"");
-        metricsJson.append(contextId);
-        metricsJson.append("\",\"startTime\":");
-        metricsJson.append(metrics.getStartTime());
-        metricsJson.append(",\"endTime\":");
-        metricsJson.append(metrics.getEndTime());
-        metricsJson.append(",\"duration\":");
-        metricsJson.append(metrics.getEndTime() - metrics.getStartTime());
-
-        metricsJson.append(",\"cpu\":{\"systemMean\":");
-        metricsJson.append(metrics.getCpuSystemMean());
-        metricsJson.append(",\"systemPeak\":");
-        metricsJson.append(metrics.getCpuSystemPeak());
-        metricsJson.append(",\"processMean\":");
-        metricsJson.append(metrics.getCpuProcessMean());
-        metricsJson.append(",\"processPeak\":");
-        metricsJson.append(metrics.getCpuProcessPeak());
-
-        metricsJson.append("},\"gc\":{\"gcTime\":");
-        metricsJson.append(metrics.getGcTime());
-        metricsJson.append("},\"memory\":{\"usedHeapAfterGCPeak\":");
-        metricsJson.append(metrics.getUsedHeapAfterGCPeak());
-        metricsJson.append(",\"usedNativePeak\":");
-        metricsJson.append(metrics.getUsedNativePeak());
-
-        metricsJson.append("},\"httpUrls\":[");
-        Iterator<Entry<String, HttpUrlData>> it = metrics.getUrlData().entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, HttpUrlData> pair = it.next();
-            metricsJson.append("{\"url\":\"");
-            metricsJson.append(pair.getKey());
-            HttpUrlData hud = pair.getValue();
-            metricsJson.append("\",\"hits\":");
-            metricsJson.append(hud.getHits());
-            metricsJson.append(",\"averageResponseTime\":");
-            metricsJson.append(hud.getAverageResponseTime());
-            metricsJson.append(",\"longestResponseTime\":");
-            metricsJson.append(hud.getLongestResponseTime());
-            metricsJson.append('}');
-            if (it.hasNext()) {
-                {
-                    metricsJson.append(',');
-                }
-
-            }
-        }
-        metricsJson.append("]}");
-
-        return metricsJson.toString();
-    }
 }

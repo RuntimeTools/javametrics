@@ -21,7 +21,7 @@ import javax.ws.rs.core.Application;
 import com.ibm.javametrics.Javametrics;
 import com.ibm.javametrics.analysis.MetricsProcessor;
 
-@ApplicationPath("/rest")
+@ApplicationPath("/api/v1")
 public class JaxrsApplication extends Application {
     {
         // Initialize the Metrics Processor

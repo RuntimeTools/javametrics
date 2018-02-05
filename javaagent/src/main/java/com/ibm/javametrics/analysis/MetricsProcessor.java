@@ -32,7 +32,6 @@ public class MetricsProcessor extends ApiDataListener {
     static int contextCount = 0;
 
     private MetricsProcessor() {
-        addContext();
     }
 
     public int addContext() {
@@ -196,8 +195,8 @@ public class MetricsProcessor extends ApiDataListener {
         }
     }
 
-    public void removeContext(int id) {
-        metricsContexts.remove(id);
+    public boolean removeContext(int id) {
+        return (metricsContexts.remove(id) != null);
     }
 
     public MetricsData getMetricsData(int id) {
@@ -208,14 +207,13 @@ public class MetricsProcessor extends ApiDataListener {
         return null;
     }
 
-    public MetricsData resetMetricsData(int id) {
+    public boolean resetMetricsData(int id) {
         MetricsContext context = metricsContexts.get(id);
         if (context != null) {
-            MetricsData md = context.getMetricsData();
             context.reset();
-            return md;
+            return true;
         }
-        return null;
+        return false;
     }
 
     public Integer[] getContextIds() {

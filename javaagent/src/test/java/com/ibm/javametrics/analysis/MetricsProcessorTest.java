@@ -45,7 +45,7 @@ public class MetricsProcessorTest {
     @Test
     public void testInitialState() {
         MetricsData md = mp.getMetricsData(0);
-        assertNotNull("Expected context 0 but not found", md);
+        assertNull("Expected no contexts but found one", md);
         
         md = mp.getMetricsData(1);
         assertNull("Context 1 should not exist", md);              
@@ -79,11 +79,12 @@ public class MetricsProcessorTest {
 
     @Test
     public void getContextIdsTest() {
+        
         Integer ids[] = mp.getContextIds();
         int size = ids.length;
-        assertTrue("Expecting at least one context", size > 0);
-        
-        int contextId = mp.addContext();
+
+        int contextId = mp.addContext();        
+
         ids = mp.getContextIds();
         assertEquals(size + 1, ids.length);
         
@@ -133,8 +134,8 @@ public class MetricsProcessorTest {
         assertNotNull("Added context should exist", md);
 
         checkUrlData(md);
-        md = mp.resetMetricsData(contextId);
-        checkUrlData(md);        // Data should be the same as before
+        boolean exists = mp.resetMetricsData(contextId);
+        assertTrue("context should exist", exists);
         
         md = mp.getMetricsData(contextId);
         assertNotNull("Added context should exist", md);
@@ -213,12 +214,11 @@ public class MetricsProcessorTest {
 
         printSummary(id);
         printSummary(id2);
-
-        printSummary(0);
     }
 
     private void printSummary(int id) {
         MetricsData summary = mp.getMetricsData(id);
+        assertNotNull("Summary " + id + " does not exist", summary);
         
         System.out.println("\nsummary for " + id);
         System.out.println("Start time: " + summary.getStartTime() + " duration : "

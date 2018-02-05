@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.ibm.javametrics.analysis;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 
@@ -76,4 +78,57 @@ public class MetricsData {
         return urlData;
     }
 
+
+    public String toJson(int contextId) {
+
+        StringBuilder metricsJson = new StringBuilder("{\"id\":\"");
+        metricsJson.append(contextId);
+        metricsJson.append("\",\"startTime\":");
+        metricsJson.append(getStartTime());
+        metricsJson.append(",\"endTime\":");
+        metricsJson.append(getEndTime());
+        metricsJson.append(",\"duration\":");
+        metricsJson.append(getEndTime() - getStartTime());
+
+        metricsJson.append(",\"cpu\":{\"systemMean\":");
+        metricsJson.append(getCpuSystemMean());
+        metricsJson.append(",\"systemPeak\":");
+        metricsJson.append(getCpuSystemPeak());
+        metricsJson.append(",\"processMean\":");
+        metricsJson.append(getCpuProcessMean());
+        metricsJson.append(",\"processPeak\":");
+        metricsJson.append(getCpuProcessPeak());
+
+        metricsJson.append("},\"gc\":{\"gcTime\":");
+        metricsJson.append(getGcTime());
+        metricsJson.append("},\"memory\":{\"usedHeapAfterGCPeak\":");
+        metricsJson.append(getUsedHeapAfterGCPeak());
+        metricsJson.append(",\"usedNativePeak\":");
+        metricsJson.append(getUsedNativePeak());
+
+        metricsJson.append("},\"httpUrls\":[");
+        Iterator<Entry<String, HttpUrlData>> it = getUrlData().entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, HttpUrlData> pair = it.next();
+            metricsJson.append("{\"url\":\"");
+            metricsJson.append(pair.getKey());
+            HttpUrlData hud = pair.getValue();
+            metricsJson.append("\",\"hits\":");
+            metricsJson.append(hud.getHits());
+            metricsJson.append(",\"averageResponseTime\":");
+            metricsJson.append(hud.getAverageResponseTime());
+            metricsJson.append(",\"longestResponseTime\":");
+            metricsJson.append(hud.getLongestResponseTime());
+            metricsJson.append('}');
+            if (it.hasNext()) {
+                {
+                    metricsJson.append(',');
+                }
+
+            }
+        }
+        metricsJson.append("]}");
+
+        return metricsJson.toString();
+    }
 }
