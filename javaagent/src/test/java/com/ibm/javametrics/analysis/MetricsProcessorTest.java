@@ -132,7 +132,7 @@ public class MetricsProcessorTest {
         jsonData.clear();
         MetricsData md = mp.getMetricsData(contextId);
         assertNotNull("Added context should exist", md);
-
+        
         checkUrlData(md);
         boolean exists = mp.resetMetricsData(contextId);
         assertTrue("context should exist", exists);
@@ -220,6 +220,7 @@ public class MetricsProcessorTest {
         MetricsData summary = mp.getMetricsData(id);
         assertNotNull("Summary " + id + " does not exist", summary);
         
+        System.out.println(summary.toJson(id));
         System.out.println("\nsummary for " + id);
         System.out.println("Start time: " + summary.getStartTime() + " duration : "
                 + (summary.getEndTime() - summary.getStartTime()));

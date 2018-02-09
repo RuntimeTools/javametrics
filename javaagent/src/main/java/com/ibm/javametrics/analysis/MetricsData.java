@@ -78,7 +78,6 @@ public class MetricsData {
         return urlData;
     }
 
-
     public String toJson(int contextId) {
 
         StringBuilder metricsJson = new StringBuilder("{\"id\":\"");
@@ -121,10 +120,7 @@ public class MetricsData {
             metricsJson.append(hud.getLongestResponseTime());
             metricsJson.append('}');
             if (it.hasNext()) {
-                {
-                    metricsJson.append(',');
-                }
-
+                metricsJson.append(',');
             }
         }
         metricsJson.append("]}");
