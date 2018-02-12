@@ -44,7 +44,7 @@ public class MetricsEndpoint {
     public Response getContexts(@Context UriInfo uriInfo) {
         Integer[] contextIds = mp.getContextIds();
 
-        StringBuilder sb = new StringBuilder("{\"collections\":[");
+        StringBuilder sb = new StringBuilder("{\"collectionUris\":[");
         boolean comma = false;
         for (Integer contextId : contextIds) {
             if (comma) {

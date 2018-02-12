@@ -53,7 +53,7 @@ class JavametricsRestController {
         UriComponents uriComponents = ucb.path("/collections/").build();
         String uri = uriComponents.toUriString();
 
-        StringBuilder sb = new StringBuilder("{\"collections\":[");
+        StringBuilder sb = new StringBuilder("{\"collectionUris\":[");
         boolean comma = false;
         for (Integer contextId : contextIds) {
             if (comma) {
