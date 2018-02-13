@@ -42,11 +42,12 @@ Returns a list of the current metrics collections URIs.
 
   `/api/v1/collections`
 
-* **Method:**
+* **Method**
 
   `GET`
 
-*  **URL Params**
+
+* **URL Params**
 
   None
 
@@ -70,8 +71,7 @@ Returns a list of the current metrics collections URIs.
 
   * na
 
-
-### <a name="create_collection"></a>Create metrics collection
+### <a name="create_collection"></a>Create metrics collection
 
 Creates a new metrics collection.
 
@@ -79,11 +79,11 @@ Creates a new metrics collection.
 
   `/api/v1/collections`
 
-* **Method:**
+* **Method**
 
   `POST`
 
-*  **URL Params**
+* **URL Params**
 
   None
 
@@ -113,11 +113,11 @@ Returns the metrics from the specified collection.
 
   `/api/v1/collections/{id}`
 
-* **Method:**
+* **Method**
 
   `POST`
 
-*  **URL Params**
+* **URL Params**
 
   `Required: id=[integer]`
 
@@ -170,7 +170,7 @@ Returns the metrics from the specified collection.
   * **Content:** none
 
 
-### <a name="clear_collection"></a>Clear metrics collection
+### <a name="clear_collection"></a>Clear metrics collection
 
 Clear the metrics in a collection.
 
@@ -178,11 +178,11 @@ Clear the metrics in a collection.
 
   `/api/v1/collections/{id}`
 
-* **Method:**
+* **Method**
 
   `PUT`
 
-*  **URL Params**
+* **URL Params**
 
   `Required: id=[integer]`
 
@@ -208,11 +208,11 @@ Delete a collection.
 
   `/api/v1/collections/{id}`
 
-* **Method:**
+* **Method**
 
   `DELETE`
 
-*  **URL Params**
+* **URL Params**
 
   `Required: id=[integer]`
 
