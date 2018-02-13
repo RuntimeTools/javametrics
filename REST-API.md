@@ -33,6 +33,7 @@ or from the time of a clear request
 * [Clear metrics from collection](#clear_collection)
 * [Delete a metrics collection](#delete_collection)
 
+
 ### <a name="list_collections"></a>List metrics collections
 
 Returns a list of the current metrics collections URIs.
@@ -103,6 +104,7 @@ Creates a new metrics collection.
 
   * na
 
+
 ### <a name="retrieve_collection"></a>Retrieve metrics collection
 
 Returns the metrics from the specified collection.
@@ -130,7 +132,7 @@ Returns the metrics from the specified collection.
   Example:
   ```JSON
   {
-    "id": "0",
+    "id": 0,
     "startTime": 1517491521423,
     "endTime": 1517491786220,
     "duration": 264797,
@@ -161,7 +163,6 @@ Returns the metrics from the specified collection.
     ]
   }
   ```
-
 
 * **Error Responses**
 
@@ -197,7 +198,6 @@ Clear the metrics in a collection.
 * **Error Responses**
   * **Code:** `404 (NOT_FOUND)`
   * **Content:** none
-
 
 
 ### <a name="delete_collection"></a>Delete collection
