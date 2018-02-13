@@ -80,9 +80,9 @@ public class MetricsData {
 
     public String toJson(int contextId) {
 
-        StringBuilder metricsJson = new StringBuilder("{\"id\":\"");
+        StringBuilder metricsJson = new StringBuilder("{\"id\":");
         metricsJson.append(contextId);
-        metricsJson.append("\",\"startTime\":");
+        metricsJson.append(",\"startTime\":");
         metricsJson.append(getStartTime());
         metricsJson.append(",\"endTime\":");
         metricsJson.append(getEndTime());
