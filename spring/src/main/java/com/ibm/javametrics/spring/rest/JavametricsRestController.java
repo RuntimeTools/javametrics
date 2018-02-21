@@ -75,6 +75,11 @@ class JavametricsRestController {
         if (!initialized) {
             init();
         }
+        
+        if (mp.getContextIds().length > 10) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
         int contextId = mp.addContext();
 
         UriComponents uriComponents = ucb.path("/collections/{id}").buildAndExpand(contextId);
