@@ -115,7 +115,7 @@ Returns the metrics from the specified collection.
 
 * **Method**
 
-  `POST`
+  `GET`
 
 * **URL Params**
 
@@ -155,7 +155,7 @@ Returns the metrics from the specified collection.
         "averageResponseTime": 4.0,
         "longestResponseTime": 4
       },
-      {"url": "http://localhost:9080/myApplication/endpoint1",
+      {"url": "http://localhost:9080/myApplication/endpoint2",
         "hits": 7,
         "averageResponseTime": 53.678,
         "longestResponseTime": 232
