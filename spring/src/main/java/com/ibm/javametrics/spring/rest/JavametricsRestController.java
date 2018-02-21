@@ -76,7 +76,7 @@ class JavametricsRestController {
             init();
         }
         
-        if (mp.getContextIds().length > 10) {
+        if (mp.getContextIds().length > 9) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         

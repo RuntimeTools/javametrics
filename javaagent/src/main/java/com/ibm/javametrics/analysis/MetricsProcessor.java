@@ -81,30 +81,27 @@ public class MetricsProcessor extends ApiDataListener {
             String payload;
 
             Matcher matcher = topicPayload.matcher(jsonStr);
-            if (matcher.find()) {
-                if (matcher.groupCount() == 2) {
-                    topic = matcher.group(1);
-                    payload = matcher.group(2);
-                    switch (topic) {
-                    case "http":
-                        aggregateHttpData(payload);
-                        break;
-                    case "gc":
-                        aggregateGCData(payload);
-                        break;
-                    case "cpu":
-                        aggregateCPUData(payload);
-                        break;
-                    case "memoryPools":
-                        aggregateMemoryPoolsData(payload);
-                        break;
-                    case "env":
-                        aggregateEnvData(payload);
-                        break;
-                    default:
-                        break;
-                    }
-
+            if ((matcher.find()) && (matcher.groupCount() == 2)) {
+                topic = matcher.group(1);
+                payload = matcher.group(2);
+                switch (topic) {
+                case "http":
+                    aggregateHttpData(payload);
+                    break;
+                case "gc":
+                    aggregateGCData(payload);
+                    break;
+                case "cpu":
+                    aggregateCPUData(payload);
+                    break;
+                case "memoryPools":
+                    aggregateMemoryPoolsData(payload);
+                    break;
+                case "env":
+                    aggregateEnvData(payload);
+                    break;
+                default:
+                    break;
                 }
             }
 
@@ -122,16 +119,14 @@ public class MetricsProcessor extends ApiDataListener {
         long timeStamp;
         double system;
         double process;
-        if (matcher.find()) {
-            if (matcher.groupCount() == 5) {
-                timeStamp = Long.parseLong(matcher.group(1));
-                system = Double.parseDouble(matcher.group(2));
-                process = Double.parseDouble(matcher.group(4));
-                Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
-                while (it.hasNext()) {
-                    Entry<Integer, MetricsContext> pair = it.next();
-                    pair.getValue().aggregateCpu(timeStamp, system, process);
-                }
+        if ((matcher.find()) && (matcher.groupCount() == 5)) {
+            timeStamp = Long.parseLong(matcher.group(1));
+            system = Double.parseDouble(matcher.group(2));
+            process = Double.parseDouble(matcher.group(4));
+            Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<Integer, MetricsContext> pair = it.next();
+                pair.getValue().aggregateCpu(timeStamp, system, process);
             }
         }
     }
@@ -141,16 +136,14 @@ public class MetricsProcessor extends ApiDataListener {
         long timeStamp = 0;
         double gcTime;
         // double gcTimeMetrics;
-        if (matcher.find()) {
-            if (matcher.groupCount() == 3) {
-                timeStamp = Long.parseLong(matcher.group(1));
-                gcTime = Double.parseDouble(matcher.group(2));
-                // gcTimeMetrics = Double.parseDouble(matcher.group(4);
-                Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
-                while (it.hasNext()) {
-                    Entry<Integer, MetricsContext> pair = it.next();
-                    pair.getValue().aggregateGc(timeStamp, gcTime);
-                }
+        if ((matcher.find()) && (matcher.groupCount() == 3)) {
+            timeStamp = Long.parseLong(matcher.group(1));
+            gcTime = Double.parseDouble(matcher.group(2));
+            // gcTimeMetrics = Double.parseDouble(matcher.group(4);
+            Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<Integer, MetricsContext> pair = it.next();
+                pair.getValue().aggregateGc(timeStamp, gcTime);
             }
         }
     }
@@ -161,17 +154,15 @@ public class MetricsProcessor extends ApiDataListener {
         long usedHeapAfterGC;
         long usedHeap;
         long usedNative;
-        if (matcher.find()) {
-            if (matcher.groupCount() == 6) {
-                timeStamp = Long.parseLong(matcher.group(1));
-                usedHeapAfterGC = Long.parseLong(matcher.group(2));
-                usedHeap = Long.parseLong(matcher.group(3));
-                usedNative = Long.parseLong(matcher.group(4));
-                Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
-                while (it.hasNext()) {
-                    Entry<Integer, MetricsContext> pair = it.next();
-                    pair.getValue().aggregateMemoryPools(timeStamp, usedHeapAfterGC, usedHeap, usedNative);
-                }
+        if ((matcher.find()) && (matcher.groupCount() == 6)) {
+            timeStamp = Long.parseLong(matcher.group(1));
+            usedHeapAfterGC = Long.parseLong(matcher.group(2));
+            usedHeap = Long.parseLong(matcher.group(3));
+            usedNative = Long.parseLong(matcher.group(4));
+            Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<Integer, MetricsContext> pair = it.next();
+                pair.getValue().aggregateMemoryPools(timeStamp, usedHeapAfterGC, usedHeap, usedNative);
             }
         }
     }
@@ -181,16 +172,14 @@ public class MetricsProcessor extends ApiDataListener {
         long timeStamp = 0;
         long duration;
         String url;
-        if (matcher.find()) {
-            if (matcher.groupCount() == 3) {
-                timeStamp = Long.parseLong(matcher.group(1));
-                duration = Long.parseLong(matcher.group(2));
-                url = matcher.group(3);
-                Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
-                while (it.hasNext()) {
-                    Entry<Integer, MetricsContext> pair = it.next();
-                    pair.getValue().aggregateHttp(timeStamp, duration, url);
-                }
+        if ((matcher.find()) && (matcher.groupCount() == 3)) {
+            timeStamp = Long.parseLong(matcher.group(1));
+            duration = Long.parseLong(matcher.group(2));
+            url = matcher.group(3);
+            Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
+            while (it.hasNext()) {
+                Entry<Integer, MetricsContext> pair = it.next();
+                pair.getValue().aggregateHttp(timeStamp, duration, url);
             }
         }
     }

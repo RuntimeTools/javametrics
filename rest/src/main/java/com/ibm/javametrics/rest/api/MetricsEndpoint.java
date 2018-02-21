@@ -65,7 +65,7 @@ public class MetricsEndpoint {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response newContext(@Context UriInfo uriInfo) {
-        if (mp.getContextIds().length > 10) {
+        if (mp.getContextIds().length > 9) {
             return Response.status(Status.BAD_REQUEST).build();
         }
         int contextId = mp.addContext();

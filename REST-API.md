@@ -73,7 +73,9 @@ Returns a list of the current metrics collections URIs.
 
 ### <a name="create_collection"></a>Create metrics collection
 
-Creates a new metrics collection.
+Creates a new metrics collection. The collection uri is returned in the Location header.
+
+A maximum of 10 collections are allowed at any one time. Return code 400 indicates too many collections.
 
 * **URL**
 
@@ -102,7 +104,8 @@ Creates a new metrics collection.
 
 * **Error Responses**
 
-  * na
+  * **Code:** `400 (BAD REQUEST)`
+  * **Content** none
 
 
 ### <a name="retrieve_collection"></a>Retrieve metrics collection
