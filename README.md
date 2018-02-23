@@ -34,6 +34,7 @@ This contains:
 * `webapp/prometheus/javametrics-prometheus-x.x.x.war` - Javametrics Prometheus Endpoint
 * `agent/javametrics-agent-x.x.x.jar` - Javametrics agent and required ASM libraries
 * `spring/javametrics-spring-x.x.x.jar` - Javametrics spring
+* `rest/javametrics-rest-x.x.x.war` - Javametrics REST api package
 
 ### Building with Maven
 
@@ -53,26 +54,30 @@ Javametrics is also released on Maven Central with the following artifacts
 
 ```
 javametrics-agent
-
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-agent</artifactId>
 
 javametrics-dash
-
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-dash</artifactId>
 
 javametrics-prometheus
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-prometheus</artifactId>
+
+javametrics-spring
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-spring</artifactId>
+
+javametrics-rest
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-rest</artifactId>
 ```
 
-#### Websphere Liberty
-Unpack the release `.zip` archive that you downloaded in the previous step.  Copy the `javametrics-dash-x.x.x.war` and the `javametrics-prometheus-x.x.x.war` files into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
+### Websphere Liberty
+Unpack the release `.zip` archive that you downloaded in the previous step.  
 
-If you only want the dashboard or prometheus support you can just copy the appropriate war file to the 'dropins' directory. Both require the agent to be loaded following the instructions below.
-
-Javametrics requires a Java option to be set in order to load the agent.  A [jvm.options](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_admin_customvars.html) file is the best way to configure this for Websphere Liberty. It should contain the following entry, where `path_to_install_dir` is replaced with the actual path containing the javametrics file:
+Javametrics requires a Java option to be set in order to load the agent.  A [jvm.options](https://www.ibm.com/support/knowledgecenter/en/SSAW57_liberty/com.ibm.websphere.wlp.nd.multiplatform.doc/ae/twlp_admin_customvars.html) file is the best way to configure this for Websphere Liberty. It should contain the following entry, where `path_to_javametrics_agent_dir` is replaced with the actual path containing the javametrics file:
 
 ```
 # Load Javametrics Java agent
@@ -81,16 +86,22 @@ Javametrics requires a Java option to be set in order to load the agent.  A [jvm
 If you have built the agent locally, your path_to_javametrics_agent_dir will need to point to your clone of javametrics.
 e.g.
 ```
-# Load Javametrics Java agent
 -javaagent:<path_to_git_home>/javametrics/javaagent/target/javametrics-agent-1.1.0.jar
 ```
 * NOTE, if you move the javametrics-agent to another directory you need to make sure you take the asm folder with it.  The asm folder is required for the agent to run as it contains files that the agent needs
+
+Copy the required war files into your [Websphere Liberty](https://developer.ibm.com/wasdev/websphere-liberty/) 'dropins' directory.
+- `javametrics-dash-x.x.x.war` to use the Javametrics dashboard
+- `javametrics-rest-x.x.x.war` to use the Javametrics REST api
+- `javametrics-prometheus-x.x.x.war` to use Prometheus support
 
 The URL for the dashboard consists of the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
 The URL for the prometheus endpoint consists of the server's default HTTP endpoint plus the default prometheus metrics path `/metrics`.  E.g. Running locally it might be: http://localhost:9080/metrics/
 
-#### Spring Boot
+The URL for the REST API context root consists of the server's default HTTP endpoint plus `/javametrics`.  E.g. Running locally it might be: http://localhost:9080/javametrics/api/v1/collections
+
+### Spring Boot
 To enable Javametrics in a Spring Boot application you need to add an extra annotation to your main application class:
 ```
 @ComponentScan(basePackages = {"com.ibm.javametrics.spring", "mypackage"})
@@ -119,13 +130,18 @@ You also need to add the following dependencies to your pom.xml:
 
 Once you have launched your application you will find the dashboard at the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. running locally with Spring Boot it might be: http://localhost:8080/javametrics-dash/
 
-#### Apache Tomcat
+The URL for the REST API context root consists of the server's default HTTP endpoint plus `/javametrics/`.  e.g. http://localhost:9080/javametrics/api/v1/collections
+
+### Apache Tomcat
 Coming soon
 
 <a name="api-doc"></a>
 
 ## API Documentation
 - [API Documentation](API-DOCUMENTATION.md)
+
+## REST API Documentation
+- [REST API](REST-API.md)
 
 <a name="building"></a>
 

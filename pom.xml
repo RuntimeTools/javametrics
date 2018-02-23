@@ -10,6 +10,7 @@
     <module>dashboard</module>
     <module>prometheus</module>
     <module>spring</module>
+    <module>rest</module>
   </modules>
   <build>
     <plugins>

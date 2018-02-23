@@ -17,8 +17,10 @@
 package com.ibm.javametrics.analysis;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,13 +45,25 @@ public class MetricsProcessorTest {
     @Test
     public void testInitialState() {
         MetricsData md = mp.getMetricsData(0);
-        assertNotNull("Expected context 0 but not found", md);
+        assertNull("Expected no contexts but found one", md);
         
         md = mp.getMetricsData(1);
-        assertNull("Context 1 should not exist", md);
-        
+        assertNull("Context 1 should not exist", md);              
     }
 
+    @Test
+    public void testenvironment() {
+        String env = mp.getEnvironment();
+        assertEquals(env, "[]");
+        List<String> jsonData = new ArrayList<String>();
+        String fakeEnv = "Any old rubbish";
+        jsonData.add("{\"topic\":\"env\",\"payload\":[" + fakeEnv  + "]}");
+        mp.processData(jsonData);
+        env = mp.getEnvironment();
+
+        assertEquals(env, "[" + fakeEnv + "]");
+    }
+    
     @Test
     public void addDeleteContextTest() {
         int contextId = mp.addContext();
@@ -63,6 +77,38 @@ public class MetricsProcessorTest {
         
     }
 
+    @Test
+    public void getContextIdsTest() {
+        
+        Integer ids[] = mp.getContextIds();
+        int size = ids.length;
+
+        int contextId = mp.addContext();        
+
+        ids = mp.getContextIds();
+        assertEquals(size + 1, ids.length);
+        
+        boolean found = false;
+        for(Integer i : ids) {
+            if (i == contextId) {
+                found = true;
+            }
+        }
+        assertTrue("New context should exist", found);
+        
+        mp.removeContext(contextId);
+        ids = mp.getContextIds();
+        assertEquals(size, ids.length);
+        found = false;
+        for(Integer i : ids) {
+            if (i == contextId) {
+                found = true;
+            }
+        }
+        assertFalse("Deleted context should not exist", found);
+        
+    }
+    
     @Test
     public void testResetContext() {
 
@@ -83,13 +129,13 @@ public class MetricsProcessorTest {
                 + ",\"duration\":0,\"url\":\"http://localhost:9080/testy/v1/example\",\"method\":\"GET\",\"status\":200,\"contentType\":\"null\",\"header\":{},\"requestHeader\":{}}}");
         
         mp.processData(jsonData);
-        jsonData.clear(); 
+        jsonData.clear();
         MetricsData md = mp.getMetricsData(contextId);
         assertNotNull("Added context should exist", md);
-
+        
         checkUrlData(md);
-        md = mp.resetMetricsData(contextId);
-        checkUrlData(md);        // Data should be the same as before
+        boolean exists = mp.resetMetricsData(contextId);
+        assertTrue("context should exist", exists);
         
         md = mp.getMetricsData(contextId);
         assertNotNull("Added context should exist", md);
@@ -168,13 +214,13 @@ public class MetricsProcessorTest {
 
         printSummary(id);
         printSummary(id2);
-
-        printSummary(0);
     }
 
     private void printSummary(int id) {
         MetricsData summary = mp.getMetricsData(id);
+        assertNotNull("Summary " + id + " does not exist", summary);
         
+        System.out.println(summary.toJson(id));
         System.out.println("\nsummary for " + id);
         System.out.println("Start time: " + summary.getStartTime() + " duration : "
                 + (summary.getEndTime() - summary.getStartTime()));
