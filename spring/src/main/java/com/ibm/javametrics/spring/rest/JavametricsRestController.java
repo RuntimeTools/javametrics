@@ -17,6 +17,8 @@ package com.ibm.javametrics.spring.rest;
 
 import java.net.URI;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ibm.javametrics.Javametrics;
 import com.ibm.javametrics.analysis.MetricsData;
@@ -48,10 +50,11 @@ class JavametricsRestController {
     MetricsProcessor mp = MetricsProcessor.getInstance();
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.GET)
-    public ResponseEntity<?> getCollections(UriComponentsBuilder ucb) {
+    public ResponseEntity<?> getCollections(HttpServletRequest req) {
         Integer[] contextIds = mp.getContextIds();
-        UriComponents uriComponents = ucb.path("/collections/").build();
-        String uri = uriComponents.toUriString();
+
+        ServletUriComponentsBuilder ucb = ServletUriComponentsBuilder.fromRequestUri(req);
+        String uri = ucb.toUriString();
 
         StringBuilder sb = new StringBuilder("{\"collectionUris\":[");
         boolean comma = false;
@@ -71,7 +74,7 @@ class JavametricsRestController {
     }
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.POST)
-    public ResponseEntity<?> createCollection(UriComponentsBuilder ucb) {
+    public ResponseEntity<?> createCollection(HttpServletRequest req) {
         if (!initialized) {
             init();
         }
@@ -81,8 +84,8 @@ class JavametricsRestController {
         }
         
         int contextId = mp.addContext();
-
-        UriComponents uriComponents = ucb.path("/collections/{id}").buildAndExpand(contextId);
+        ServletUriComponentsBuilder ucb = ServletUriComponentsBuilder.fromRequestUri(req);
+        UriComponents uriComponents = ucb.path("/{id}").buildAndExpand(contextId);
         URI uri = uriComponents.toUri();
 
         HttpHeaders headers = new HttpHeaders();
