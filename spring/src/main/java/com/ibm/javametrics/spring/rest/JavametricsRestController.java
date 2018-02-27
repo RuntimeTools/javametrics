@@ -15,10 +15,6 @@
  ******************************************************************************/
 package com.ibm.javametrics.spring.rest;
 
-import java.net.URI;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +22,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ibm.javametrics.Javametrics;
 import com.ibm.javametrics.analysis.MetricsData;
@@ -50,11 +46,8 @@ class JavametricsRestController {
     MetricsProcessor mp = MetricsProcessor.getInstance();
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.GET)
-    public ResponseEntity<?> getCollections(HttpServletRequest req) {
+    public ResponseEntity<?> getCollections() {
         Integer[] contextIds = mp.getContextIds();
-
-        ServletUriComponentsBuilder ucb = ServletUriComponentsBuilder.fromRequestUri(req);
-        String uri = ucb.toUriString();
 
         StringBuilder sb = new StringBuilder("{\"collectionUris\":[");
         boolean comma = false;
@@ -62,8 +55,7 @@ class JavametricsRestController {
             if (comma) {
                 sb.append(',');
             }
-            sb.append('\"');
-            sb.append(uri);
+            sb.append("\"collections/");
             sb.append(contextId);
             sb.append('\"');
             comma = true;
@@ -74,24 +66,23 @@ class JavametricsRestController {
     }
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.POST)
-    public ResponseEntity<?> createCollection(HttpServletRequest req) {
+    public ResponseEntity<?> createCollection() {
         if (!initialized) {
             init();
         }
-        
+
         if (mp.getContextIds().length > 9) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        
+
         int contextId = mp.addContext();
-        ServletUriComponentsBuilder ucb = ServletUriComponentsBuilder.fromRequestUri(req);
-        UriComponents uriComponents = ucb.path("/{id}").buildAndExpand(contextId);
-        URI uri = uriComponents.toUri();
+
+        UriComponents uriComponents = UriComponentsBuilder.fromPath("collections/{id}").buildAndExpand(contextId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uri);
+        headers.setLocation(uriComponents.toUri());
 
-        String json = new String("{\"uri\":\"" + uri + "\"}");
+        String json = new String("{\"uri\":\"" + uriComponents.getPath() + "\"}");
         return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
     }
 
