@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.ibm.javametrics.spring.rest;
 
-import java.net.URI;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,10 +46,8 @@ class JavametricsRestController {
     MetricsProcessor mp = MetricsProcessor.getInstance();
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.GET)
-    public ResponseEntity<?> getCollections(UriComponentsBuilder ucb) {
+    public ResponseEntity<?> getCollections() {
         Integer[] contextIds = mp.getContextIds();
-        UriComponents uriComponents = ucb.path("/collections/").build();
-        String uri = uriComponents.toUriString();
 
         StringBuilder sb = new StringBuilder("{\"collectionUris\":[");
         boolean comma = false;
@@ -59,8 +55,7 @@ class JavametricsRestController {
             if (comma) {
                 sb.append(',');
             }
-            sb.append('\"');
-            sb.append(uri);
+            sb.append("\"collections/");
             sb.append(contextId);
             sb.append('\"');
             comma = true;
@@ -71,24 +66,23 @@ class JavametricsRestController {
     }
 
     @RequestMapping(produces = "application/json", path = "/collections", method = RequestMethod.POST)
-    public ResponseEntity<?> createCollection(UriComponentsBuilder ucb) {
+    public ResponseEntity<?> createCollection() {
         if (!initialized) {
             init();
         }
-        
+
         if (mp.getContextIds().length > 9) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        
+
         int contextId = mp.addContext();
 
-        UriComponents uriComponents = ucb.path("/collections/{id}").buildAndExpand(contextId);
-        URI uri = uriComponents.toUri();
+        UriComponents uriComponents = UriComponentsBuilder.fromPath("collections/{id}").buildAndExpand(contextId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(uri);
+        headers.setLocation(uriComponents.toUri());
 
-        String json = new String("{\"uri\":\"" + uri + "\"}");
+        String json = new String("{\"uri\":\"" + uriComponents.getPath() + "\"}");
         return new ResponseEntity<>(json, headers, HttpStatus.CREATED);
     }
 

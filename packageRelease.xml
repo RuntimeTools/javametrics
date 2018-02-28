@@ -28,6 +28,11 @@
 		<copy file="rest/target/javametrics-rest-${project.version}.war" todir="${rest.dir}" />
 
 		<zip destfile="${dist.dir}/javametrics-release-${project.version}.zip" basedir="${javametrics.dir}" includes="**/**" />
+		<tar destfile="${dist.dir}/javametrics-release-${project.version}.tar.gz" basedir="${javametrics.dir}" includes="**/**" compression="gzip"/>
+		<checksum file="${dist.dir}/javametrics-release-${project.version}.zip" algorithm="MD5"/>
+		<checksum file="${dist.dir}/javametrics-release-${project.version}.zip" algorithm="SHA-512"/>
+		<checksum file="${dist.dir}/javametrics-release-${project.version}.tar.gz" algorithm="MD5"/>
+		<checksum file="${dist.dir}/javametrics-release-${project.version}.tar.gz" algorithm="SHA-512"/>
 
 	</target>
 

@@ -51,7 +51,7 @@ public class MetricsEndpoint {
                 sb.append(',');
             }
             sb.append('\"');
-            UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+            UriBuilder builder = UriBuilder.fromPath(uriInfo.getPath());
             builder.path(Integer.toString(contextId));
             URI uri = builder.build();
             sb.append(uri.toString());
@@ -69,10 +69,10 @@ public class MetricsEndpoint {
             return Response.status(Status.BAD_REQUEST).build();
         }
         int contextId = mp.addContext();
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+        UriBuilder builder = UriBuilder.fromPath(uriInfo.getPath());
         builder.path(Integer.toString(contextId));
         URI uri = builder.build();
-        return Response.created(uri).entity("{\"uri\":\"" + builder.build() + "\"}").build();
+        return Response.status(Status.CREATED).header("Location", uri).entity("{\"uri\":\"" + uri + "\"}").build();
     }
 
     @Path("/{metricsId}")
