@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -139,17 +140,23 @@ public class MetricsProcessorTest {
         
         md = mp.getMetricsData(contextId);
         assertNotNull("Added context should exist", md);
-        Map<String, HttpUrlData> urlData = md.getUrlData();
+        Collection<HttpUrlData> urlData = md.getUrlData();
         assertEquals(0, urlData.size());
         
         mp.removeContext(contextId);
     }
     
     private void checkUrlData(MetricsData md) {
-        Map<String, HttpUrlData> urlData = md.getUrlData();
+        Collection<HttpUrlData> urlData = md.getUrlData();
         assertEquals(3, urlData.size());
+
+        HttpUrlData hud = null;
+        for (HttpUrlData d : urlData) {
+            if ("http://localhost:9080/testy/v1/example".equals(d.getUrl())) {
+                hud = d;
+            }
+        }
         
-        HttpUrlData hud = urlData.get("http://localhost:9080/testy/v1/example");
         assertNotNull("Missing url data for http://localhost:9080/testy/v1/example", hud);
         assertEquals(2, hud.getHits());
         assertEquals(75, hud.getAverageResponseTime(), 0);
@@ -230,12 +237,12 @@ public class MetricsProcessorTest {
         System.out.println("gcTime:" + summary.getGcTime());
         System.out.println("usedHeapAfterGCPeak:" + summary.getUsedHeapAfterGCPeak() + " usedNativePeak:"
                 + summary.getUsedNativePeak());
-        Iterator<Entry<String, HttpUrlData>> it = summary.getUrlData().entrySet().iterator();
+        Iterator<HttpUrlData> it = summary.getUrlData().iterator();
         while (it.hasNext()) {
-            Entry<String, HttpUrlData> pair = it.next();
-            System.out.println(pair.getKey() + " hits:" + pair.getValue().getHits() + " average:"
-                    + pair.getValue().getAverageResponseTime() + " longest:"
-                    + pair.getValue().getLongestResponseTime());
+            HttpUrlData data = it.next();
+            System.out.println(data.getUrl() + " hits:" + data.getHits() + " average:"
+                    + data.getAverageResponseTime() + " longest:"
+                    + data.getLongestResponseTime());
         }
     }
 }

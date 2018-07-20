@@ -57,9 +57,9 @@ public class MetricsContext {
         httpData.clear();
     }
 
-    public void aggregateHttp(long timeStamp, long duration, String url) {
+    public void aggregateHttp(long timeStamp, long duration, String url, String method) {
         if (timeStamp >= startTime) {
-            httpData.aggregate(timeStamp, duration, url);
+            httpData.aggregate(timeStamp, duration, url, method);
         }
     }
 

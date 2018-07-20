@@ -69,7 +69,7 @@ public class MetricsProcessor extends ApiDataListener {
     // HTTP payload:
     // "duration":150,"url":"http://blah/example","method":"GET","status":200,"contentType":"null","header":{},"requestHeader":{}
     final static private Pattern httpPayload = Pattern
-            .compile("\\{\"time\":([0-9]*),\"duration\":([0-9]*),\"url\":\"(.*)\",\"method\":\".*");
+          .compile("\\{\"time\":([0-9]*),\"duration\":([0-9]*),\"url\":\"(.*)\",\"method\":\"(.*)\",\"status\".*");
 
     @Override
     public void processData(List<String> jsonData) {
@@ -172,14 +172,16 @@ public class MetricsProcessor extends ApiDataListener {
         long timeStamp = 0;
         long duration;
         String url;
-        if ((matcher.find()) && (matcher.groupCount() == 3)) {
+        String method;
+        if ((matcher.find()) && (matcher.groupCount() == 4)) {
             timeStamp = Long.parseLong(matcher.group(1));
             duration = Long.parseLong(matcher.group(2));
             url = matcher.group(3);
+            method = matcher.group(4);
             Iterator<Entry<Integer, MetricsContext>> it = metricsContexts.entrySet().iterator();
             while (it.hasNext()) {
                 Entry<Integer, MetricsContext> pair = it.next();
-                pair.getValue().aggregateHttp(timeStamp, duration, url);
+                pair.getValue().aggregateHttp(timeStamp, duration, url, method);
             }
         }
     }

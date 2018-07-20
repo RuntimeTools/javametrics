@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.ibm.javametrics.client;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Aggregate HTTP request data
@@ -27,9 +27,13 @@ public class HttpDataAggregator {
     double total;
     long longest;
     long time;
-    String url;
+    String longestUrl;
+    String longestMethod;
+
 
     public class HttpUrlData {
+        private String url;
+        private String method;
         private int hits;
         private double totalResponseTime;
         private long longestResponseTime;
@@ -46,7 +50,17 @@ public class HttpDataAggregator {
             return longestResponseTime;
         }
 
-        public HttpUrlData() {
+        public String getUrl() {
+            return url;
+        }
+
+        public String getMethod() {
+            return method;
+        }
+
+        public HttpUrlData(String url, String method) {
+            this.url = url;
+            this.method = method;
             hits = 0;
             totalResponseTime = 0;
             longestResponseTime = 0;
@@ -64,7 +78,8 @@ public class HttpDataAggregator {
         total = 0;
         longest = 0;
         time = 0;
-        url = "";
+        longestUrl = "";
+        longestMethod = "";
     }
 
     public void clear() {
@@ -77,23 +92,24 @@ public class HttpDataAggregator {
      *            representing the HTTP request
      * @throws JsonException
      */
-    public void aggregate(long requestTime, long requestDuration, String requestUrl) {
+    public void aggregate(long requestTime, long requestDuration, String requestUrl, String requestMethod) {
         totalHits += 1;
         total += requestDuration;
 
         if ((totalHits == 1) || (requestDuration > longest)) {
             time = requestTime;
             longest = requestDuration;
-            url = requestUrl;
+            longestUrl = requestUrl;
+            longestMethod = requestMethod;
         }
-
-        HttpUrlData urlData = responseTimes.getOrDefault(requestUrl, new HttpUrlData());
+        String urlKey = requestMethod + requestUrl;
+        HttpUrlData urlData = responseTimes.getOrDefault(urlKey, new HttpUrlData(requestUrl, requestMethod));
         urlData.hits += 1;
         urlData.totalResponseTime += requestDuration;
         if (requestDuration > urlData.longestResponseTime) {
             urlData.longestResponseTime = requestDuration;
         }
-        responseTimes.put(requestUrl, urlData);
+        responseTimes.put(urlKey, urlData);
     }
 
     public double getAverage() {
@@ -112,10 +128,6 @@ public class HttpDataAggregator {
         return time;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public int getTotalHits() {
         return totalHits;
     }
@@ -124,8 +136,16 @@ public class HttpDataAggregator {
         time = timeStamp;
     }
 
-    public Map<String, HttpUrlData> getUrlData() {
-        return new HashMap<String, HttpUrlData>(responseTimes);
+    public Collection<HttpUrlData> getUrlData() {
+        return responseTimes.values();
+    }
+
+    public String getLongestUrl() {
+        return longestUrl;
+    }
+
+    public String getLongestMethod() {
+        return longestMethod;
     }
 
 
