@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.ibm.javametrics.analysis;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +37,7 @@ public class MetricsData {
     long usedHeapAfterGCPeak;
     long usedNativePeak;
 
-    Map<String, HttpUrlData> urlData;
+    Collection<HttpUrlData> urlData;
 
     public double getGcTime() {
         return gcTime;
@@ -74,7 +75,7 @@ public class MetricsData {
         return usedNativePeak;
     }
 
-    public Map<String, HttpUrlData> getUrlData() {
+    public Collection<HttpUrlData> getUrlData() {
         return urlData;
     }
 
@@ -106,15 +107,14 @@ public class MetricsData {
         metricsJson.append(getUsedNativePeak());
 
         metricsJson.append("},\"httpUrls\":[");
-        Iterator<Entry<String, HttpUrlData>> it = getUrlData().entrySet().iterator();
+        Iterator<HttpUrlData> it = getUrlData().iterator();
         while (it.hasNext()) {
-            Entry<String, HttpUrlData> pair = it.next();
+            HttpUrlData hud = it.next();
             metricsJson.append("{\"url\":\"");
-            metricsJson.append(pair.getKey());
-            HttpUrlData hud = pair.getValue();
-            metricsJson.append("\",\"hits\":");
-            metricsJson.append(hud.getHits());
-            metricsJson.append(",\"averageResponseTime\":");
+            metricsJson.append(hud.getUrl());
+            metricsJson.append("\",\"method\":\"");
+            metricsJson.append(hud.getMethod());
+            metricsJson.append("\",\"averageResponseTime\":");
             metricsJson.append(hud.getAverageResponseTime());
             metricsJson.append(",\"longestResponseTime\":");
             metricsJson.append(hud.getLongestResponseTime());

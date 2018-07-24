@@ -99,9 +99,10 @@ public class DataHandler extends ApiDataListener {
                         long requestTime = payload.getJsonNumber("time").longValue();
                         long requestDuration = payload.getJsonNumber("duration").longValue();
                         String requestUrl = payload.getString("url", "");
+                        String requestMethod = payload.getString("method", "");
 
                         synchronized (aggregateHttpData) {
-                            aggregateHttpData.aggregate(requestTime, requestDuration, requestUrl);
+                            aggregateHttpData.aggregate(requestTime, requestDuration, requestUrl, requestMethod);
                         }
                     } else {
                         emit(jsonObject.toString());
@@ -122,6 +123,7 @@ public class DataHandler extends ApiDataListener {
         long longest;
         double average;
         String url;
+        String method;
         StringBuilder httpUrlData;
         StringBuilder httpData;
 
@@ -130,7 +132,8 @@ public class DataHandler extends ApiDataListener {
             total = aggregateHttpData.getTotalHits();
             longest = aggregateHttpData.getLongest();
             average = aggregateHttpData.getAverage();
-            url = aggregateHttpData.getUrl();
+            url = aggregateHttpData.getLongestUrl();
+            method = aggregateHttpData.getLongestMethod();
 
             if (total == 0) {
                 time = System.currentTimeMillis();
@@ -148,22 +151,26 @@ public class DataHandler extends ApiDataListener {
             httpData.append(average);
             httpData.append(",\"url\":\"");
             httpData.append(url);
+            httpData.append("\",\"method\":\"");
+            httpData.append(method);
             httpData.append("\"}}");
 
             // emit JSON String representing HTTP request data by URL in the
             // format expected by the javascript
             httpUrlData = new StringBuilder("{\"topic\":\"httpURLs\",\"payload\":[");
-            Iterator<Entry<String, HttpUrlData>> it = aggregateHttpData.getUrlData().entrySet().iterator();
+            Iterator<HttpUrlData> it = aggregateHttpData.getUrlData().iterator();
             while (it.hasNext()) {
-                Entry<String, HttpUrlData> pair = it.next();
+                HttpUrlData hud = it.next();
                 httpUrlData.append("{\"url\":\"");
-                httpUrlData.append(pair.getKey());
+                httpUrlData.append(hud.getMethod());
+                httpUrlData.append(" ");
+                httpUrlData.append(hud.getUrl());
                 httpUrlData.append("\",\"hits\":");
-                httpUrlData.append(pair.getValue().getHits());
+                httpUrlData.append(hud.getHits());
                 httpUrlData.append(",\"longestResponseTime\":");
-                httpUrlData.append(pair.getValue().getLongestResponseTime());
+                httpUrlData.append(hud.getLongestResponseTime());
                 httpUrlData.append(",\"averageResponseTime\":");
-                httpUrlData.append(pair.getValue().getAverageResponseTime());
+                httpUrlData.append(hud.getAverageResponseTime());
                 httpUrlData.append('}');
                 if (it.hasNext()) {
                     httpUrlData.append(',');
