@@ -152,8 +152,9 @@ public class MetricsData {
         metricsJson.append("\"" + usedHeapAfterGCPeakUnit + "\"");
         metricsJson.append(",\"usedNativePeak\":");
         metricsJson.append("\"" + usedNativePeakUnit + "\"");
+        metricsJson.append("}}");
 
-        metricsJson.append("},\"httpUrls\":{\"data\":[");
+        metricsJson.append(",\"httpUrls\":{\"data\":[");
         Iterator<HttpUrlData> it = getUrlData().iterator();
         while (it.hasNext()) {
             HttpUrlData hud = it.next();
@@ -177,7 +178,7 @@ public class MetricsData {
         metricsJson.append("\"" + longestResponseTimeUnit + "\"");
         metricsJson.append(",\"hits\":");
         metricsJson.append("\"" + hitsUnit + "\"");
-        metricsJson.append("}}");
+        metricsJson.append("}}}");
 
         return metricsJson.toString();
     }
