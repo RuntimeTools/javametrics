@@ -25,75 +25,109 @@ import com.ibm.javametrics.client.HttpDataAggregator.HttpUrlData;
 public class MetricsData {
 
     // time
-    long startTime;
-    long endTime;
-    String startTimeUnit = "UNIX time (ms)";
-    String endTimeUnit = "UNIX time (ms)";
+    private long startTime;
+    private long endTime;
+    private static final String TIME_UNIT = "UNIX time (ms)";
 
     // gc
-    double gcTime;
-    String gcTimeUnit = "decimal fraction";
+    private double gcTime;
+    private static final String GC_TIME_UNIT = "decimal fraction";
 
     // cpu
-    double cpuSystemMean;
-    double cpuSystemPeak;
-    double cpuProcessMean;
-    double cpuProcessPeak;
-    String cpuSystemMeanUnit = "decimal fraction";
-    String cpuSystemPeakUnit = "decimal fraction";
-    String cpuProcessMeanUnit = "decimal fraction";
-    String cpuProcessPeakUnit = "decimal fraction";
+    private double cpuSystemMean;
+    private double cpuSystemPeak;
+    private double cpuProcessMean;
+    private double cpuProcessPeak;
+    private static final String CPU_UNIT = "decimal fraction";
 
     // memory
-    long usedHeapAfterGCPeak;
-    long usedNativePeak;
-    String usedHeapAfterGCPeakUnit = "bytes";
-    String usedNativePeakUnit = "bytes";
+    private long usedHeapAfterGCPeak;
+    private long usedNativePeak;
+    private static final String MEMORY_UNIT = "bytes";
 
     // http
-    Collection<HttpUrlData> urlData;
-    String hitsUnit = "count";
-    String averageResponseTimeUnit = "ms";
-    String longestResponseTimeUnit = "ms";
+    private Collection<HttpUrlData> urlData;
+    private static final String HITS_UNIT = "count";
+    private static final String RESPONSE_UNIT = "ms";
 
     public double getGcTime() {
         return gcTime;
+    }
+
+    public void setGcTime(double gcTime) {
+        this.gcTime = gcTime;
     }
 
     public long getStartTime() {
         return startTime;
     }
 
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
     public long getEndTime() {
         return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     public double getCpuSystemMean() {
         return cpuSystemMean;
     }
 
+    public void setCpuSystemMean(double cpuSystemMean) {
+        this.cpuSystemMean = cpuSystemMean;
+    }
+
     public double getCpuSystemPeak() {
         return cpuSystemPeak;
+    }
+
+    public void setCpuSystemPeak(double cpuSystemPeak) {
+        this.cpuSystemPeak = cpuSystemPeak;
     }
 
     public double getCpuProcessMean() {
         return cpuProcessMean;
     }
 
+    public void setCpuProcessMean(double cpuProcessMean) {
+        this.cpuProcessMean = cpuProcessMean;
+    }
+
     public double getCpuProcessPeak() {
         return cpuProcessPeak;
+    }
+
+    public void setCpuProcessPeak(double cpuProcessPeak) {
+        this.cpuProcessPeak = cpuProcessPeak;
     }
 
     public long getUsedHeapAfterGCPeak() {
         return usedHeapAfterGCPeak;
     }
 
+    public void setUsedHeapAfterGCPeak(long usedHeapAfterGCPeak) {
+        this.usedHeapAfterGCPeak = usedHeapAfterGCPeak;
+    }
+
     public long getUsedNativePeak() {
         return usedNativePeak;
     }
 
+    public void setUsedNativePeak(long usedNativePeak) {
+        this.usedNativePeak = usedNativePeak;
+    }
+
     public Collection<HttpUrlData> getUrlData() {
         return urlData;
+    }
+
+    public void setUrlData(Collection<HttpUrlData> urlData) {
+        this.urlData = urlData;
     }
 
     public String toJson(int contextId) {
@@ -107,9 +141,9 @@ public class MetricsData {
         metricsJson.append(getEndTime());
         metricsJson.append("},\"units\": {");
         metricsJson.append("\"startTime\":");
-        metricsJson.append("\"" + startTimeUnit + "\"");
+        metricsJson.append("\"" + TIME_UNIT + "\"");
         metricsJson.append(",\"endTime\":");
-        metricsJson.append("\"" + endTimeUnit + "\"");
+        metricsJson.append("\"" + TIME_UNIT + "\"");
         metricsJson.append("}}");
 
         metricsJson.append(",\"cpu\":{\"data\":{");
@@ -123,13 +157,13 @@ public class MetricsData {
         metricsJson.append(getCpuProcessPeak());
         metricsJson.append("},\"units\": {");
         metricsJson.append("\"systemMean\":");
-        metricsJson.append("\"" + cpuSystemMeanUnit + "\"");
+        metricsJson.append("\"" + CPU_UNIT + "\"");
         metricsJson.append(",\"systemPeak\":");
-        metricsJson.append("\"" + cpuSystemPeakUnit + "\"");
+        metricsJson.append("\"" + CPU_UNIT + "\"");
         metricsJson.append(",\"processMean\":");
-        metricsJson.append("\"" + cpuProcessMeanUnit + "\"");
+        metricsJson.append("\"" + CPU_UNIT + "\"");
         metricsJson.append(",\"processPeak\":");
-        metricsJson.append("\"" + cpuProcessPeakUnit + "\"");
+        metricsJson.append("\"" + CPU_UNIT + "\"");
         metricsJson.append("}}");
 
         // gc
@@ -138,7 +172,7 @@ public class MetricsData {
         metricsJson.append(getGcTime());
         metricsJson.append("},\"units\": {");
         metricsJson.append("\"gcTime\":");
-        metricsJson.append("\"" + gcTimeUnit + "\"");
+        metricsJson.append("\"" + GC_TIME_UNIT + "\"");
         metricsJson.append("}}");
 
         // memory
@@ -149,9 +183,9 @@ public class MetricsData {
         metricsJson.append(getUsedNativePeak());
         metricsJson.append("},\"units\": {");
         metricsJson.append("\"usedHeapAfterGCPeak\":");
-        metricsJson.append("\"" + usedHeapAfterGCPeakUnit + "\"");
+        metricsJson.append("\"" + MEMORY_UNIT + "\"");
         metricsJson.append(",\"usedNativePeak\":");
-        metricsJson.append("\"" + usedNativePeakUnit + "\"");
+        metricsJson.append("\"" + MEMORY_UNIT + "\"");
         metricsJson.append("}}");
 
         metricsJson.append(",\"httpUrls\":{\"data\":[");
@@ -173,11 +207,11 @@ public class MetricsData {
         }
         metricsJson.append("],\"units\":{");
         metricsJson.append("\"averageResponseTime\":");
-        metricsJson.append("\"" + averageResponseTimeUnit + "\"");
+        metricsJson.append("\"" + RESPONSE_UNIT + "\"");
         metricsJson.append(",\"longestResponseTime\":");
-        metricsJson.append("\"" + longestResponseTimeUnit + "\"");
+        metricsJson.append("\"" + RESPONSE_UNIT + "\"");
         metricsJson.append(",\"hits\":");
-        metricsJson.append("\"" + hitsUnit + "\"");
+        metricsJson.append("\"" + HITS_UNIT + "\"");
         metricsJson.append("}}}");
 
         return metricsJson.toString();
