@@ -196,6 +196,8 @@ public class MetricsData {
             metricsJson.append(hud.getUrl());
             metricsJson.append("\",\"method\":\"");
             metricsJson.append(hud.getMethod());
+            metricsJson.append("\",\"hits\":\"");
+            metricsJson.append(hud.getHits());
             metricsJson.append("\",\"averageResponseTime\":");
             metricsJson.append(hud.getAverageResponseTime());
             metricsJson.append(",\"longestResponseTime\":");
