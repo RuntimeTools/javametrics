@@ -101,6 +101,13 @@ The URL for the prometheus endpoint consists of the server's default HTTP endpoi
 
 The URL for the REST API context root consists of the server's default HTTP endpoint plus `/javametrics`.  E.g. Running locally it might be: http://localhost:9080/javametrics/api/v1/collections
 
+### Open Liberty
+
+Follow all the steps for [Websphere Liberty](#websphere-liberty) and in addition, make sure that the `websocket-1.0` feature is installed on the server. To do this, open the `server.xml` for the server in question, and in the `<featureManager>` tags add the following line
+```xml
+<feature>websocket-1.0</feature>
+```
+
 ### Spring Boot
 To enable Javametrics in a Spring Boot application you need to add an extra annotation to your main application class:
 ```
