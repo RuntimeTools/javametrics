@@ -121,12 +121,12 @@ You also need to add the following dependencies to your pom.xml:
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-spring</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
 </dependency>
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-agent</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
 </dependency>
 <dependency>
     <groupId>org.glassfish</groupId>
@@ -162,4 +162,4 @@ This project is released under an Apache 2.0 open source license.
 This project uses a semver-parsable X.0.Z version number for releases, where X is incremented for breaking changes to the public API described in this document and Z is incremented for bug fixes **and** for non-breaking changes to the public API that provide new function.
 
 ## Version
-1.3.1
+1.4.0
