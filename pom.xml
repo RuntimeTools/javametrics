@@ -4,11 +4,12 @@
   <groupId>com.ibm.runtimetools</groupId>
   <artifactId>javametrics</artifactId>
   <packaging>pom</packaging>
-  <version>1.4.0</version>
+  <version>1.5.0</version>
   <modules>
     <module>javaagent</module>
     <module>dashboard</module>
     <module>prometheus</module>
+    <module>codewind</module>
     <module>spring</module>
     <module>rest</module>
   </modules>

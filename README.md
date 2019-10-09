@@ -32,6 +32,7 @@ Download the latest Application Metrics for Java release zip from [Github](http:
 This contains:
 * `webapp/dashboard/javametrics-dash-x.x.x.war` - Javametrics Web Application
 * `webapp/prometheus/javametrics-prometheus-x.x.x.war` - Javametrics Prometheus Endpoint
+* `webapp/codewind/javametrics-codewind-x.x.x.war` - Javametrics Codewind Endpoint
 * `agent/javametrics-agent-x.x.x.jar` - Javametrics agent and required ASM libraries
 * `spring/javametrics-spring-x.x.x.jar` - Javametrics spring
 * `rest/javametrics-rest-x.x.x.war` - Javametrics REST api package
@@ -65,6 +66,10 @@ javametrics-prometheus
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-prometheus</artifactId>
 
+javametrics-codewind
+ <groupId>com.ibm.runtimetools</groupId>
+ <artifactId>javametrics-codewind</artifactId>
+
 javametrics-spring
  <groupId>com.ibm.runtimetools</groupId>
  <artifactId>javametrics-spring</artifactId>
@@ -94,10 +99,13 @@ Copy the required war files into your [Websphere Liberty](https://developer.ibm.
 - `javametrics-dash-x.x.x.war` to use the Javametrics dashboard
 - `javametrics-rest-x.x.x.war` to use the Javametrics REST api
 - `javametrics-prometheus-x.x.x.war` to use Prometheus support
+- `javametrics-codewind-x.x.x.war` to use Codewind support
 
 The URL for the dashboard consists of the server's default HTTP endpoint plus `/javametrics-dash/`.  E.g. Running locally it might be: http://localhost:9080/javametrics-dash/
 
 The URL for the prometheus endpoint consists of the server's default HTTP endpoint plus the default prometheus metrics path `/metrics`.  E.g. Running locally it might be: http://localhost:9080/metrics/
+
+The URL for the codewind endpoint consists of the server's default HTTP endpoint plus the default codewind metrics path `/codewind`.  E.g. Running locally it might be: http://localhost:9080/codewind/
 
 The URL for the REST API context root consists of the server's default HTTP endpoint plus `/javametrics`.  E.g. Running locally it might be: http://localhost:9080/javametrics/api/v1/collections
 
@@ -121,12 +129,12 @@ You also need to add the following dependencies to your pom.xml:
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-spring</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 <dependency>
     <groupId>com.ibm.runtimetools</groupId>
     <artifactId>javametrics-agent</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
 </dependency>
 <dependency>
     <groupId>org.glassfish</groupId>
@@ -162,4 +170,4 @@ This project is released under an Apache 2.0 open source license.
 This project uses a semver-parsable X.0.Z version number for releases, where X is incremented for breaking changes to the public API described in this document and Z is incremented for bug fixes **and** for non-breaking changes to the public API that provide new function.
 
 ## Version
-1.4.0
+1.5.0

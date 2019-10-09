@@ -10,6 +10,7 @@
 		<property name="webapp.dir" value="${javametrics.dir}/webapp" />
 		<property name="dashboard.dir" value="${webapp.dir}/dashboard" />
 		<property name="prometheus.dir" value="${webapp.dir}/prometheus" />
+		<property name="codewind.dir" value="${webapp.dir}/codewind" />
 		<property name="spring.dir" value="${javametrics.dir}/spring" />
 		<property name="rest.dir" value="${javametrics.dir}/rest" />
 
@@ -24,6 +25,7 @@
 		</copy>
 		<copy file="dashboard/target/javametrics-dash-${project.version}.war" todir="${dashboard.dir}" />
 		<copy file="prometheus/target/javametrics-prometheus-${project.version}.war" todir="${prometheus.dir}" />
+		<copy file="codewind/target/javametrics-codewind-${project.version}.war" todir="${codewind.dir}" />
 		<copy file="spring/target/javametrics-spring-${project.version}.jar" todir="${spring.dir}" />
 		<copy file="rest/target/javametrics-rest-${project.version}.war" todir="${rest.dir}" />
 
