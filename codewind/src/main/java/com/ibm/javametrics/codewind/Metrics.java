@@ -9,6 +9,7 @@ import java.util.List;
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
@@ -37,6 +38,10 @@ public class Metrics {
     private Counter http_requests_total = Counter.build().labelNames("code", "handler", "method")
             .name("http_requests_total").help("Total number of HTTP requests made.").register();
 
+    // Counter for environment variables.
+    private Counter env_variable = Counter.build().labelNames("name", "value").name("env_variable")
+            .help("The name and value of a variable set in the target environment").register();
+
     private ApiDataListener listener = new ApiDataListener() {
 
         @Override
@@ -58,6 +63,14 @@ public class Metrics {
                         os_cpu_used_ratio.set(Double.valueOf(system.doubleValue()));
                         process_cpu_used_ratio.set(Double.valueOf(process.doubleValue()));
                         break;
+                    case "env":
+                        JsonArray payload = jsonObject.getJsonArray("payload");
+                        for (int i=0; i < payload.size(); i++) {
+                            JsonObject envar = payload.getJsonObject(i);
+                            String param = envar.getJsonString("Parameter").getString();
+                            String value = envar.getJsonString("Value").getString();
+                            env_variable.labels(param, value).inc();
+                        }
                     default:
                         break;
                     }
