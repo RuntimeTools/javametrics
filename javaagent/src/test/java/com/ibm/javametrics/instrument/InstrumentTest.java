@@ -28,7 +28,6 @@ import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.ibm.javametrics.Javametrics;
 import com.ibm.javametrics.JavametricsListener;
