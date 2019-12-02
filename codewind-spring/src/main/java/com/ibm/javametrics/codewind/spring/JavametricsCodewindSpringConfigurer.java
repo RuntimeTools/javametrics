@@ -28,8 +28,8 @@ import com.ibm.javametrics.codewind.web.WebPage;
 public class JavametricsCodewindSpringConfigurer {
 	
 	@Bean
-	ServletRegistrationBean<HttpServlet> JavametricsCodewindSpringServletRegistration () {
-		ServletRegistrationBean<HttpServlet> srb = new ServletRegistrationBean<HttpServlet>();
+	ServletRegistrationBean JavametricsCodewindSpringServletRegistration () {
+		ServletRegistrationBean srb = new ServletRegistrationBean();
 		srb.setServlet(new WebPage());
 		srb.setUrlMappings(Arrays.asList("/metrics/codewind"));
 		return srb;
