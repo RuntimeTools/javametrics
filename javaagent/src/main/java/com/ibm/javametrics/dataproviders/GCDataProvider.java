@@ -35,9 +35,12 @@ public class GCDataProvider {
      *
      * (Will always return -1 on first call.)
      *
+     * This method has been found to generate unexpected and erroneous data items
+     * It will be commented out until it is fixed
+     * 
      * @return
      */
-    public static double getLatestGCPercentage() {
+    /*public static double getLatestGCPercentage() {
         long now = System.currentTimeMillis();
         long totalCollectionTime = getTotalCollectionTime();
         if( totalCollectionTime == -1) {
@@ -58,7 +61,7 @@ public class GCDataProvider {
             previousRequestTimeStamp = now;
             return timeInGc;
         }
-    }
+    }*/
 
     /**
      * Returns the time spent in GC as a proportion of the time elapsed since

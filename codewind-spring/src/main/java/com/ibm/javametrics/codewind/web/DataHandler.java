@@ -53,7 +53,6 @@ public class DataHandler extends ApiDataListener {
     private long latestMemEventUsedNativeMax =  0L;
 
     private double latestGCEventGCTime = 0.0;
-    private double latestGCEventGCTimeSummary = 0.0;
 
     private HashMap<String, String> latestEnvMap = new HashMap<String, String>();
 
@@ -119,7 +118,6 @@ public class DataHandler extends ApiDataListener {
                       case "gc":
                          payload = jsonObject.getJsonObject("payload");
                          latestGCEventGCTime = payload.getJsonNumber("gcTime").doubleValue();
-                         latestGCEventGCTimeSummary = payload.getJsonNumber("gcTimeSummary").doubleValue();
                          break;
                       case "env":
                          JsonArray envPayload = jsonObject.getJsonArray("payload");
@@ -171,9 +169,6 @@ public class DataHandler extends ApiDataListener {
     }
     public double getLatestGCEventGCTime() {
         return latestGCEventGCTime;
-    }
-    public double getLatestGCEventGCTimeSummary() {
-        return latestGCEventGCTimeSummary;
     }
     public HashMap<String, String> getLatestEnvMap() {
         return latestEnvMap;

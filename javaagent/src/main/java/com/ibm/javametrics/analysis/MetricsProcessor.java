@@ -57,9 +57,9 @@ public class MetricsProcessor extends ApiDataListener {
             "\\{\"time\":([0-9]*),\"system\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"process\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),.*");
 
     // gc payload:
-    // "gcTime":0.123,"gcTimeMetrics":0.037585808468701146
+    // "gcTime":0.123
     final static private Pattern gcPayload = Pattern
-            .compile("\\{\"time\":([0-9]*),\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?),\"gcTimeSummary\":.*");
+            .compile("\\{\"time\":([0-9]*),\"gcTime\":([0-9]\\.[0-9]*(E[+-][0-9]*)?)");
 
     // memoryPools paylood:
     // "usedHeapAfterGC":40533936,"usedHeap":86093152,"usedNative":86955016,"usedHeapAfterGCMax":40533936,"usedNativeMax":86955016

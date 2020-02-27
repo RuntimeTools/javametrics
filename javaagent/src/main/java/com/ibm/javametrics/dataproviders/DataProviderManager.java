@@ -85,20 +85,20 @@ public class DataProviderManager {
 
     private void emitGCData() {
         long timeStamp = System.currentTimeMillis();
-        double gcFraction = GCDataProvider.getLatestGCPercentage();
+        //double gcFraction = GCDataProvider.getLatestGCPercentage();
         double gcFractionSummary = GCDataProvider.getTotalGCPercentage();
 
-        if (gcFraction >= 0) { // Don't send -1 'no data' values
-            StringBuilder message = new StringBuilder();
-            message.append("{\"time\":");
-            message.append(timeStamp);
-            message.append(",\"gcTime\":");
-            message.append(gcFraction);
-            message.append(",\"gcTimeSummary\":");
-            message.append(gcFractionSummary);
-            message.append("}");
-            Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
-        }
+        //if (gcFraction >= 0) { // Don't send -1 'no data' values
+        StringBuilder message = new StringBuilder();
+        message.append("{\"time\":");
+        message.append(timeStamp);
+        message.append(",\"gcTime\":");
+        /*message.append(gcFraction);
+        message.append(",\"gcTimeSummary\":");*/
+        message.append(gcFractionSummary);
+        message.append("}");
+        Javametrics.getInstance().sendJSON(GC_TOPIC, message.toString());
+        //}
     }
 
     private void emitCPUUsage() {
