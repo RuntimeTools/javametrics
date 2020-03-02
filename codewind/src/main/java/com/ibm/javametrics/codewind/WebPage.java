@@ -59,12 +59,9 @@ public class WebPage extends HttpServlet {
 			write.println("environment_variable{" + entry.getKey().replaceAll(" ", "") + "=\"" + entry.getValue() + "\"} 1\n");
 		}
 		// output gc data
-		write.println("# HELP time_in_gc_percentage The current amount of time spent performing garbage collection as a percentage of the current runtime of the application \n");
-		write.println("# TYPE time_in_gc_percentage gauge\n");
-		write.println("time_in_gc_percentage " + dataHandler.getLatestGCEventGCTime() + "\n");
 		write.println("# HELP overall_time_in_gc_percentage The overall amount of time spent performing garbage collection as a percentage of the overall runtime of the application \n");
 		write.println("# TYPE overall_time_in_gc_percentage gauge\n");
-		write.println("overall_time_in_gc_percentage " + dataHandler.getLatestGCEventGCTimeSummary() + "\n");
+		write.println("overall_time_in_gc_percentage " + dataHandler.getLatestGCEventGCTime() + "\n");
 		// output http data
 		synchronized (dataHandler.getAggregateHttpData()) {
 			write.println("# HELP http_requests_total Total number of HTTP requests received in this snapshot.\n");
