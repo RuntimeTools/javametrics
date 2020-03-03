@@ -4,7 +4,7 @@
 
 	<groupId>com.ibm.runtimetools</groupId>
 	<artifactId>javametrics-spring</artifactId>
-	<version>1.7.0</version>
+	<version>1.8.0</version>
 	<packaging>jar</packaging>
 
 	<name>javametrics-spring</name>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>com.ibm.runtimetools</groupId>
 			<artifactId>javametrics-agent</artifactId>
-			<version>1.7.0</version>
+			<version>1.8.0</version>
 			<scope>provided</scope>
 		</dependency>
 
